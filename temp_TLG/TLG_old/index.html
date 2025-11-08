@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Légion - Gaming</title>
+    <meta name="description" content="Communauté gaming The Légion">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/webp" href="assets/logo.webp">
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#">
+          <img src="./assets/logo.jpg" alt="The Légion" class="brand-logo" />
+          <span class="brand-name">The Légion</span>
+        </a>
+        <nav class="nav">
+          <a href="#about">À propos</a>
+          <a href="#games">Jeux</a>
+          <a href="#community">Communauté</a>
+          <a href="#join" class="btn btn-primary">Rejoindre</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="tease">
+        <!-- Logo/Brand -->
+        <div class="logo-container">
+            <div class="logo-glow"></div>
+            <a href="../index.html"><img src="../Assets/logo.png" alt="The Legion Logo" class="logo" id="teamLogo"></a>
+        </div>
+
+        <!-- Team Name -->
+        <div class="team-name">
+            <h1>Préparez-vous à nous voir entrer dans la légende avec notre nouveau logo</h1>
+            <p>Un nouveau site est en construction. Restez connectés !</p>
+            <div class="divider"></div>
+        </div>
+      </section>
+      <section class="hero" id="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <h1>Entrez dans l’arène</h1>
+            <p>Guildes, tournois, entraide – tout l’univers gaming de The Légion.
+            </p>
+            <div class="cta">
+              <a id="join" href="#community" class="btn btn-primary">Rejoindre la communauté</a>
+              <a href="#games" class="btn btn-ghost">Voir nos jeux</a>
+            </div>
+          </div>
+          <div class="hero-art">
+            <!-- Placez le logo dans assets/logo.jpg -->
+            <img src="./assets/logo.jpg" alt="Logo The Légion"/>
+          </div>
+        </div>
+        <div class="glow"></div>
+      </section>
+
+      <section class="features container" id="about">
+        <h2>Pourquoi nous rejoindre ?</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Esprit d’équipe</h3>
+            <p>Des squads organisées, des leads attentifs et une progression collective.</p>
+          </article>
+          <article class="card">
+            <h3>Compétitif</h3>
+            <p>Des scrims réguliers, des tournois et un coaching communautaire.</p>
+          </article>
+          <article class="card">
+            <h3>Ambiance</h3>
+            <p>Des events fun, des giveaways et un Discord actif 24/7.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="gallery" id="games">
+        <div class="container">
+          <h2>Nos jeux</h2>
+          <div class="tiles">
+            <a class="tile" href="valorant.html">Valorant</a>
+            <a class="tile" href="league-of-legends.html">League of Legends</a>
+            <a class="tile" href="teamfight-tactics.html">Teamfight Tactics</a>
+            <a class="tile" href="rocket-league.html">Rocket League</a>
+            <a class="tile" href="fortnite.html">Fortnite</a>
+            <a class="tile" href="roblox.html">Roblox</a>
+            <a class="tile" href="delta-force.html">Delta Force</a>
+            <a class="tile" href="csgo.html">CS:GO</a>
+            <a class="tile" href="among-us.html">Among Us</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="community container" id="community">
+        <h2>Rejoins-nous</h2>
+        <p>Liens officiels et réseaux.</p>
+        <div class="links">
+          <a id="discordLink" class="btn btn-primary" href="#" data-link="discord">Discord</a>
+          <a class="btn btn-ghost" href="#" data-link="twitch">Twitch</a>
+          <a class="btn btn-ghost" href="#" data-link="youtube">YouTube</a>
+        </div>
+      </section>
+
+      <section class="container" id="shop" aria-labelledby="shop-title">
+        <h2 id="shop-title">Shop</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Boutique The Légion</h3>
+            <p>Arrive bientôt. Restez à l’écoute pour découvrir nos articles exclusifs.</p>
+            <div class="cta">
+              <a class="btn btn-ghost" href="#" aria-disabled="true">Bientôt disponible</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>© <span id="year"></span> The Légion</span>
+      </div>
+    </footer>
+
+    <!-- Modal simple -->
+    <div class="modal-backdrop" data-modal-backdrop hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+        <button class="modal-close" type="button" aria-label="Fermer" data-modal-close>✕</button>
+        <h3 id="modal-title">Bientôt disponible</h3>
+        <p id="modal-desc">Cette fonctionnalité arrive prochainement. Revenez vite !</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" type="button" data-modal-close>Ok</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
+
+
