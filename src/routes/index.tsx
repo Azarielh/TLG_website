@@ -3,8 +3,8 @@ import Counter from "~/components/Counter";
 
 export default function Home() {
   return (
-    <main>
-      <Title>Hel World</Title>
+    <main id="home">
+      <Title>Hello World</Title>
       <h1>Hello world!</h1>
       <Counter />
       <p>
