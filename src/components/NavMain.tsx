@@ -1,4 +1,3 @@
-import { Link } from "@solidjs/meta";
 
 export default function NavMain() {
   return (
@@ -9,9 +8,5 @@ export default function NavMain() {
         <a rel="icon" href="/academy">Académie</a>
         <a rel="icon" href="/contact">Contact</a>
       </nav>
-    </>
-  );
-}
-    </nav>
   );
 }
