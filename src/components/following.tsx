@@ -3,7 +3,11 @@ import { Component } from "solid-js";
 {/* <a href="https://www.flaticon.com/fr/icones-gratuites/discorde" title="discorde icônes">Discorde icônes créées par Freepik - Flaticon</a> */}
 {/* <a href="https://www.flaticon.com/fr/icones-gratuites/youtube" title="youtube icônes">Youtube icônes créées par Freepik - Flaticon</a> */}
 {/* <a href="https://www.flaticon.com/fr/icones-gratuites/twitchtv" title="twitch.tv icônes">Twitch.tv icônes créées par Vector Stall - Flaticon</a> */}
+{/* <a href="https://www.flaticon.com/fr/icones-gratuites/tweeter" title="tweeter icônes">Tweeter icônes créées par Freepik - Flaticon</a> */}
 {/* <a href="https://www.flaticon.com/fr/icones-gratuites/tic-tac" title="tic tac icônes">Tic tac icônes créées par Freepik - Flaticon</a> */}
+{/* <a href="https://www.flaticon.com/fr/icones-gratuites/logo-instagram" title="logo instagram icônes">Logo instagram icônes créées par Freepik - Flaticon</a> */}
+
+
 type Props = {
   class?: string;
   discordUrl?: string;
@@ -16,10 +20,10 @@ type Props = {
 };
 
 const Following: Component<Props> = (props) => {
-  const discord = props.discordUrl ?? "/Assets/Discord_logo.svg";
+  const discord = props.discordUrl ?? "https://discord.com/invite/wfSyp6xBnF";
   const youtube = props.youtubeUrl ?? "https://www.youtube.com/@TheLegion.esport";
   const twitch = props.twitchUrl ?? "https://www.twitch.tv/thelegionallstar";
-  const x = props.xUrl ?? "https://t.co/EYMhZjMZrD";
+  const x = props.xUrl ?? "https://x.com/TheLegionAlStar";
   const tiktok = props.tiktokUrl ?? "https://www.tiktok.com/@thelegion.esport";
   const instagram = props.instagramUrl ?? "https://www.instagram.com/thelegion.esport";
   const facebook = props.facebookUrl ?? "https://www.facebook.com/share/19tHcfLs1t";
