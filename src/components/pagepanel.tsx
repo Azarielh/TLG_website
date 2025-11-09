@@ -8,7 +8,7 @@ type Props = {
 };
 
 const PagePanel: Component<Props> = (props) => {
-  const overlay = `rgba(6,6,8,${props.overlayOpacity ?? 0.35})`;
+  const overlay = `rgba(6,10,30,${props.overlayOpacity ?? 0.70})`;
   return (
     <div
       class={`fixed inset-y-0 left-1/2 -translate-x-1/2 w-[65vw] max-w-[1600px] z-0 pointer-events-none ${props.class ?? ""}`}

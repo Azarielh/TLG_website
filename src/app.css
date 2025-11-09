@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @layer base {
   body {
-    background-color: theme('colors.neutral.900');
+    background-color: theme('colors.black');
     color: theme('colors.neutral.100');
     min-height: 100vh;
   }
