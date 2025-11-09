@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import MainLogo from "~/components/MainLogo";
+import MainLogo from "../components/MainLogo";
 
 export default function Home() {
   return (
