@@ -33,7 +33,7 @@ const Following: Component<Props> = (props) => {
       <span class="text-sm text-gray-400">Follow Us</span>
 
       <a href={discord} class="social-icon" aria-label="Discord">
-          <img src="public/discord_logo.png" alt="Discord Icon" width="20" height="20"/>
+          <img src="public/discordLogo.png" alt="Discord Icon" width="20" height="20"/>
       </a>
       <a href={youtube} class="social-icon" aria-label="Youtube">
           <img src="public/youtube_logo.png" alt="Youtube Icon" width="20" height="20"/>
