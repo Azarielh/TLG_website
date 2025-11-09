@@ -23,10 +23,11 @@ export default function App() {
         <PocketBaseProvider url={import.meta.env.VITE_PB_URL}>
           <MetaProvider>
             <Title>TLG Website</Title>
-            <PagePanel />
-            <NavMain />
-            <Suspense>{props.children}</Suspense>
-            <BuildInProgress />
+            <PagePanel bgImage="/assets/bg.jpg" overlayOpacity={0.6}>
+              <NavMain />
+              <Suspense>{props.children}</Suspense>
+              <BuildInProgress />
+            </PagePanel>
             <Following />
           </MetaProvider>
         </PocketBaseProvider>

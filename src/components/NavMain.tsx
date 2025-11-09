@@ -6,7 +6,7 @@ export default function Nav() {
 			<div class="w-[min(1200px,92%)] mx-auto flex items-center justify-between gap-4 h-[56px] relative">
         <a href="/">The Legion</a>
         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-2.5 items-center whitespace-nowrap">
-          <SessionStatus text="Section à venir" placement="bottom">
+          <SessionStatus text="🚧 En production" placement="bottom">
             <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/about">A propos</a>
           </SessionStatus>
           <SessionStatus text="Section à venir" placement="bottom">
@@ -21,6 +21,9 @@ export default function Nav() {
           <SessionStatus text="Section à venir" placement="bottom">
             <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">Contacts</a>
           </SessionStatus>
+        </div>
+        <div class="">
+          <button class="text-sm px-4 py-2 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors duration-150 font-semibold">Se connecter</button>
         </div>
 			<div class="navbar-end">
 			</div>

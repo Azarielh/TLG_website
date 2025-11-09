@@ -45,7 +45,7 @@ const SessionStatus: Component<Props> = (props) => {
       >
         <div class="flex items-center gap-2 bg-[#16862ed9] mt-4 text-white text-sm px-3 py-1 rounded-full shadow-md backdrop-blur-sm">
           {renderIcon()}
-          <span class="whitespace-nowrap">🚧 {props.text}</span>
+          <span class="whitespace-nowrap">{props.text}</span>
         </div>
 
         <div
