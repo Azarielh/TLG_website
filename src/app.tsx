@@ -5,6 +5,7 @@ import { Suspense, createContext } from "solid-js";
 import PocketBase from "pocketbase";
 import NavMain from "./components/NavMain";
 import Following from "./components/following";
+import PagePanel from "./components/pagepanel";
 import BuildInProgress from "./components/buildinprogress";
 import "./app.css";
 
@@ -22,6 +23,7 @@ export default function App() {
         <PocketBaseProvider url={import.meta.env.VITE_PB_URL}>
           <MetaProvider>
             <Title>TLG Website</Title>
+            <PagePanel />
             <NavMain />
             <Suspense>{props.children}</Suspense>
             <BuildInProgress />
