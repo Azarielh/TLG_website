@@ -7,13 +7,9 @@ export default function Home() {
       <Title>TLG: The Legion</Title>
       <h1>Bienvenue sur le site de TLG</h1>
       <MainLogo />
-      <p>
-        Visitez{" "}
-        <a href="https://start.solidjs.com" target="_blank">
-          start.solidjs.com
-        </a>{" "}
-        to learn how to build SolidStart apps.
-      </p>
+        <p class="mt-5 mx-auto text-center max-w-[45ch] min-h-[3rem] leading-relaxed break-words [word-spacing:0.28rem]">
+            Nous construisons notre <span class="highlight text-[2rem] text-[#D4AF37]" style="font-size:2rem; color: #D4AF37;">légende</span>. Rejoignez notre communauté et soyez les premiers informés lors du lancement de notre nouvelle plateforme esports.
+        </p>
     </main>
   );
 }

@@ -2,8 +2,8 @@ import { createSignal } from "solid-js";
 
 export default function MainLogo() {
   return (
-    // <div class="relative z-[70] min-h-[calc(100vh-56px)] flex items-start justify-center">
-      <img src="../../public/logo.png" alt="Logo TLG" class="h-100 w-auto object-contain" />
-    // </div>
+    <div class="relative z-[70] flex items-center justify-center mt-6">
+      <img src="/logo.png" alt="Logo TLG" class="h-36 sm:h-44 md:h-48 w-auto object-contain" />
+    </div>
   );
 }

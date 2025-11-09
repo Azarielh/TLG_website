@@ -4,6 +4,8 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense, createContext } from "solid-js";
 import PocketBase from "pocketbase";
 import NavMain from "./components/NavMain";
+import Following from "./components/following";
+import BuildInProgress from "./components/buildinprogress";
 import "./app.css";
 
 const PocketBaseContext = createContext<PocketBase | null>(null);
@@ -22,6 +24,8 @@ export default function App() {
             <Title>TLG Website</Title>
             <NavMain />
             <Suspense>{props.children}</Suspense>
+            <BuildInProgress />
+            <Following />
           </MetaProvider>
         </PocketBaseProvider>
       )}
