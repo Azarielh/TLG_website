@@ -83,9 +83,7 @@ const Auth: Component<AuthProps> = (props) => {
                 display: "flex",
                 "flex-direction": "column",
                 gap: "10px",
-                width: "100%",
-                "max-width": "420px",
-                margin: "0 auto",
+                width: "100%"
             }}
         >
             <div>
