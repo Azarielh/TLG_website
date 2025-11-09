@@ -19,7 +19,7 @@ export default function App() {
       root={props => (
         <PocketBaseProvider url={import.meta.env.VITE_PB_URL}>
           <MetaProvider>
-            <Title>SolidStart - Basic</Title>
+            <Title>TLG Website</Title>
             <NavMain />
             <Suspense>{props.children}</Suspense>
           </MetaProvider>
