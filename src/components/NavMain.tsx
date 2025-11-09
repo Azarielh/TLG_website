@@ -7,7 +7,7 @@ export default function Nav() {
           <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/about">À propos</a>
           <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/games">Nos Jeux</a>
           <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/academy">Académie</a>
-          <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/joinus">Rejoins-nous !</a>
+          <a class="text-[rgb(156,163,175)] px-3 py-2 rounded-[10px] transition-all duration-150 border border-transparent bg-transparent font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/contact">Contacts</a>
         </div>
 			<div class="navbar-end">
 			</div>

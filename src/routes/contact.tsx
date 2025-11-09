@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 
-export default function About() {
+export default function Contacts() {
   return (
     <main>
       <Title>Contacts</Title>
