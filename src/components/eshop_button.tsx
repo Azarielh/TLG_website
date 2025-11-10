@@ -18,7 +18,7 @@ export default function EshopButton(props: EshopButtonProps) {
       type="button"
       {...rest}
       aria-label={ariaLabel}
-      class={`fixed bottom-0.2 left-0.2 z-50
+      class={`fixed bottom-2 left-2 z-50
               w-[${sizePx}px] h-[${sizePx}px]
               hover:scale-110 transform transition-transform duration-150
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
