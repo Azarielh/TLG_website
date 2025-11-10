@@ -1,7 +1,7 @@
 import { createSignal, onMount, onCleanup, Show } from "solid-js";
-import SessionStatus from "./session_status";
 import Auth from "./Auth";
 import EshopButton from "./eshop_button";
+import { DesktopMenu, MobileMenu } from "./NavMenuItems";
 
 export default function Nav() {
   const [showAuth, setShowAuth] = createSignal(false);
@@ -32,33 +32,7 @@ export default function Nav() {
           </a>
 
           {/* Desktop menu */}
-          <div class="hidden sm:flex flex-1 justify-center gap-2.5">
-            <SessionStatus text="🚧 En production" placement="bottom">
-              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/about">
-                À propos
-              </a>
-            </SessionStatus>
-            <SessionStatus text="Section à venir" placement="bottom">
-              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
-                Actualités
-              </a>
-            </SessionStatus>
-            <SessionStatus text="Section à venir" placement="bottom">
-              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
-                Agenda
-              </a>
-            </SessionStatus>
-            <SessionStatus text="Section à venir" placement="bottom">
-              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
-                Recrutements
-              </a>
-            </SessionStatus>
-            <SessionStatus text="Section à venir" placement="bottom">
-              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
-                Académie
-              </a>
-            </SessionStatus>
-          </div>
+          <DesktopMenu />
 
           {/* Mobile menu button */}
           <button
@@ -93,31 +67,7 @@ export default function Nav() {
         >
           {/* Mobile Menu */}
           <Show when={showMobileMenu()}>
-            <div
-              class="absolute top-16 left-0 bg-gray-900/90 p-4 flex flex-col gap-2 sm:hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <SessionStatus text="🚧 En production" placement="bottom">
-                <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/about">
-                  À propos
-                </a>
-              </SessionStatus>
-              <SessionStatus text="Section à venir" placement="bottom">
-                <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
-                  Actualités
-                </a>
-              </SessionStatus>
-              <SessionStatus text="Section à venir" placement="bottom">
-                <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
-                  Agenda
-                </a>
-              </SessionStatus>
-              <SessionStatus text="Section à venir" placement="bottom">
-                <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
-                  Recrutement
-                </a>
-              </SessionStatus>
-            </div>
+            <MobileMenu onClose={() => setShowMobileMenu(false)} />
           </Show>
 
 
