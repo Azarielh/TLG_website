@@ -33,25 +33,25 @@ const Following: Component<Props> = (props) => {
       <span class="text-sm text-gray-400">Follow Us</span>
 
       <a href={discord} class="social-icon" aria-label="Discord">
-          <img src="discordLogo.png" alt="Discord Icon" width="20" height="20"/>
+          <img src="social_media/discordLogo.png" alt="Discord Icon" width="20" height="20"/>
       </a>
       <a href={youtube} class="social-icon" aria-label="Youtube">
-          <img src="youtube_logo.png" alt="Youtube Icon" width="20" height="20"/>
+          <img src="social_media/youtube_logo.png" alt="Youtube Icon" width="20" height="20"/>
       </a>
       <a href={twitch} class="social-icon" aria-label="Twitch">
-          <img src="twitch_logo.png" alt="Twitch Icon" width="20" height="20"/>
+          <img src="social_media/twitch_logo.png" alt="Twitch Icon" width="20" height="20"/>
       </a>
       <a href={x} class="social-icon" aria-label="X">
-          <img src="x_logo.png" alt="X Icon" width="20" height="20"/>
+          <img src="social_media/x_logo.png" alt="X Icon" width="20" height="20"/>
       </a>
       <a href={tiktok} class="social-icon" aria-label="TikTok">
-          <img src="tiktok_logo.png" alt="TikTok Icon" width="20" height="20"/>
+          <img src="social_media/tiktok_logo.png" alt="TikTok Icon" width="20" height="20"/>
       </a>
       <a href={instagram} class="social-icon" aria-label="Instagram">
-          <img src="instagram_logo.png" alt="Instagram Icon" width="20" height="20"/>
+          <img src="social_media/instagram_logo.png" alt="Instagram Icon" width="20" height="20"/>
       </a>
       <a href={facebook} class="social-icon" aria-label="Facebook">
-          <img src="facebook_logo.svg" alt="Facebook Icon" width="20" height="20"/>
+          <img src="social_media/facebook_logo.svg" alt="Facebook Icon" width="20" height="20"/>
       </a>
     </div>
   );
