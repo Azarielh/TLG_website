@@ -23,6 +23,7 @@ export default function EshopButton(props: EshopButtonProps) {
               hover:scale-110 transform transition-transform duration-150
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
               ${extraClass}`}
+      style={{ width: `${sizePx}px`, height: `${sizePx}px` }}
     >
       <img
         src={logoSrc}
