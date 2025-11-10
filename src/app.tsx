@@ -6,6 +6,7 @@ import PocketBase from "pocketbase";
 import NavMain from "./components/NavMain";
 import Following from "./components/following";
 import PagePanel from "./components/pagepanel";
+import EshopButton from "./components/eshop_button";
 import BuildInProgress from "./components/buildinprogress";
 import "./app.css";
 
@@ -30,6 +31,7 @@ export default function App() {
             </PagePanel>
             <Following />
           </MetaProvider>
+          <EshopButton />
         </PocketBaseProvider>
       )}
     >
