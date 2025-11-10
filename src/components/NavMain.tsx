@@ -1,10 +1,21 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, onMount, onCleanup, Show } from "solid-js";
 import SessionStatus from "./session_status";
 import Auth from "./Auth";
+import EshopButton from "./eshop_button";
 
 export default function Nav() {
   const [showAuth, setShowAuth] = createSignal(false);
   const [showMobileMenu, setShowMobileMenu] = createSignal(false);
+  const [isCompact, setIsCompact] = createSignal(typeof window !== "undefined" && window.innerWidth < 800);
+
+  onMount(() => {
+    const handleResize = () => setIsCompact(window.innerWidth < 800);
+    window.addEventListener("resize", handleResize);
+    setIsCompact(window.innerWidth < 800);
+    onCleanup(() => {
+      window.removeEventListener("resize", handleResize);
+    });
+  });
 
   return (
     <>
@@ -106,6 +117,9 @@ export default function Nav() {
 
           {/* Auth Popup */}
           <Show when={showAuth()}>
+            <Show when={isCompact()}>
+              <EshopButton logoSrc="eshop_logo.svg" sizePx={36} />
+            </Show>
             <div
               class="absolute top-16 right-8 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
               onClick={(e) => e.stopPropagation()}
@@ -114,6 +128,9 @@ export default function Nav() {
             </div>
           </Show>
         </div>
+      </Show>
+      <Show when={!isCompact()}>
+          <EshopButton logoSrc="eshop_logo.svg" sizePx={80} />
       </Show>
     </>
   );
