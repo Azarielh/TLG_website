@@ -28,7 +28,17 @@ export default function Nav() {
             </SessionStatus>
             <SessionStatus text="Section à venir" placement="bottom">
               <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
-                Nos Jeux
+                Actualités
+              </a>
+            </SessionStatus>
+            <SessionStatus text="Section à venir" placement="bottom">
+              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
+                Agenda
+              </a>
+            </SessionStatus>
+            <SessionStatus text="Section à venir" placement="bottom">
+              <a class="text-gray-400 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)] hover:border-[rgba(168,85,247,0.18)]" href="/">
+                Recrutements
               </a>
             </SessionStatus>
             <SessionStatus text="Section à venir" placement="bottom">
@@ -78,12 +88,17 @@ export default function Nav() {
               </SessionStatus>
               <SessionStatus text="Section à venir" placement="bottom">
                 <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
-                  Nos Jeux
+                  Actualités
                 </a>
               </SessionStatus>
               <SessionStatus text="Section à venir" placement="bottom">
                 <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
-                  Académie
+                  Agenda
+                </a>
+              </SessionStatus>
+              <SessionStatus text="Section à venir" placement="bottom">
+                <a class="text-gray-200 px-3 py-2 rounded-[10px] font-semibold hover:text-white hover:bg-[rgba(147,51,234,0.12)]" href="/">
+                  Recrutement
                 </a>
               </SessionStatus>
             </div>
