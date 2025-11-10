@@ -31,7 +31,6 @@ export default function App() {
             </PagePanel>
             <Following />
           </MetaProvider>
-          <EshopButton />
         </PocketBaseProvider>
       )}
     >

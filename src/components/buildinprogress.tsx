@@ -10,7 +10,7 @@ const BuildInProgress: Component = () => {
                 title="This website is under construction"
             >
                 <span aria-hidden class="text-lg">🚧</span>
-                <span>This website is under construction</span>
+                <span>Le site est en cours de développement</span>
             </span>
         </div>
     );

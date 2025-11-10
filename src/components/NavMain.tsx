@@ -6,10 +6,11 @@ import EshopButton from "./eshop_button";
 export default function Nav() {
   const [showAuth, setShowAuth] = createSignal(false);
   const [showMobileMenu, setShowMobileMenu] = createSignal(false);
-  const [isCompact, setIsCompact] = createSignal(typeof window !== "undefined" && window.innerWidth < 800);
+  const [isCompact, setIsCompact] = createSignal(false);
 
   onMount(() => {
     const handleResize = () => setIsCompact(window.innerWidth < 800);
+    handleResize();
     window.addEventListener("resize", handleResize);
     setIsCompact(window.innerWidth < 800);
     onCleanup(() => {
@@ -68,11 +69,14 @@ export default function Nav() {
           </button>
 
           {/* Login button */}
+          <Show when={isCompact()}>
+            <EshopButton logoSrc="eshop_logo.svg" sizePx={80} />
+          </Show>
           <button
             class="flex-shrink-0 text-white px-4 py-2 rounded-lg bg-[rgba(147,51,234,0.15)] hover:bg-[rgba(147,51,234,0.3)] transition-all font-semibold"
             onClick={() => setShowAuth(!showAuth())}
           >
-            {showAuth() ? "Fermer" : "Connexion"}
+            {showAuth() ? "Fermer" : "👤"}
           </button>
         </div>
       </nav>
@@ -117,9 +121,6 @@ export default function Nav() {
 
           {/* Auth Popup */}
           <Show when={showAuth()}>
-            <Show when={isCompact()}>
-              <EshopButton logoSrc="eshop_logo.svg" sizePx={36} />
-            </Show>
             <div
               class="absolute top-16 right-8 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
               onClick={(e) => e.stopPropagation()}
@@ -130,7 +131,7 @@ export default function Nav() {
         </div>
       </Show>
       <Show when={!isCompact()}>
-          <EshopButton logoSrc="eshop_logo.svg" sizePx={80} />
+        <EshopButton logoSrc="eshop_logo.svg" />
       </Show>
     </>
   );
