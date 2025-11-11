@@ -2,235 +2,253 @@ import { createSignal, Show } from "solid-js";
 import type { Component } from "solid-js";
 import { usePocketBase } from "../app";
 
-type Credentials = {
-    email: string;
-    password: string;
-    remember?: boolean;
-};
-
 type AuthProps = {
-    /**
-     * Optional callback. If provided it's called with credentials and should return a Promise.
-     * If omitted the component will POST to /api/login with JSON { email, password, remember }.
-     */
-    onLogin?: (creds: Credentials) => Promise<any>;
-    initialEmail?: string;
     class?: string;
 };
 
-const emailRegex =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const defaultLogin = async (creds: Credentials) => {
-    const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(creds),
-    });
-
-    if (!res.ok) {
-        const json = await res.json().catch(() => null);
-        const msg = json?.message || res.statusText || "Login failed";
-        throw new Error(msg);
-    }
-    return res.json();
-};
+// Mot de passe temporaire pour l'accès staff
+const STAFF_ACCESS_PASSWORD = import.meta.env.VITE_STAFF_PASSWORD || "TLG2025Staff!";
 
 const Auth: Component<AuthProps> = (props) => {
     const pb = usePocketBase();
-    const [email, setEmail] = createSignal(props.initialEmail ?? "");
-    const [password, setPassword] = createSignal("");
-    const [remember, setRemember] = createSignal(false);
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string | null>(null);
+    const [accessPassword, setAccessPassword] = createSignal("");
+    const [isAccessGranted, setIsAccessGranted] = createSignal(false);
     const [showPassword, setShowPassword] = createSignal(false);
 
-    const validate = () => {
-        if (!email().trim()) return "Email is required.";
-        if (!emailRegex.test(email().trim())) return "Enter a valid email address.";
-        if (!password()) return "Password is required.";
-        if (password().length < 6) return "Password must be at least 6 characters.";
-        return null;
+    const handlePasswordSubmit = (e: Event) => {
+        e.preventDefault();
+        
+        if (accessPassword() === STAFF_ACCESS_PASSWORD) {
+            setIsAccessGranted(true);
+            setError(null);
+            console.log('✅ Staff access granted');
+        } else {
+            setError("Mot de passe incorrect. Accès réservé au staff.");
+            console.log('❌ Invalid staff password');
+        }
     };
 
     const handleGoogleLogin = async () => {
         if (!pb) {
+            console.error('❌ PocketBase not initialized');
             setError("PocketBase not initialized");
             return;
         }
+
+        console.log('🚀 Starting Google OAuth2 login...');
+        console.log('🔗 PocketBase URL:', pb.baseUrl);
 
         setLoading(true);
         setError(null);
 
         try {
             // Initier l'authentification OAuth2 avec Google
-            // PocketBase ouvrira automatiquement une popup pour Google
+            console.log('📝 Calling authWithOAuth2...');
             const authData = await pb.collection('users').authWithOAuth2({ 
                 provider: 'google',
-                // Options pour forcer l'ouverture d'une popup
                 urlCallback: (url: string) => {
+                    console.log('🌐 OAuth2 URL received:', url);
                     // Ouvrir la popup Google OAuth
                     const width = 500;
                     const height = 600;
                     const left = window.screenX + (window.outerWidth - width) / 2;
                     const top = window.screenY + (window.outerHeight - height) / 2;
                     
-                    window.open(
+                    const popup = window.open(
                         url,
                         'OAuth2 Login',
                         `width=${width},height=${height},left=${left},top=${top},toolbar=0,scrollbars=1,status=1,resizable=1,location=1,menuBar=0`
                     );
+                    console.log('🪟 Popup opened:', popup);
                 }
             });
-            console.log('Google auth successful:', authData);
-            // Fermer le modal auth après connexion réussie
-            window.location.reload(); // Recharger pour mettre à jour l'état d'auth
+            console.log('✅ Google auth successful!');
+            console.log('👤 Auth data:', authData);
+            console.log('🎫 Token:', authData.token);
+            console.log('👤 Record:', authData.record);
         } catch (err: any) {
-            console.error('Google auth error:', err);
+            console.error('❌ Google auth error:', err);
+            console.error('❌ Error message:', err?.message);
+            console.error('❌ Error data:', err?.data);
+            console.error('❌ Error status:', err?.status);
+            
             if (err?.message && !err.message.includes('autocancelled')) {
-                setError(err.message || "Google authentication failed.");
+                setError(err.message || "Échec de l'authentification Google.");
             }
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSubmit = async (e?: Event) => {
-        e?.preventDefault();
-        setError(null);
-        const validationError = validate();
-        if (validationError) {
-            setError(validationError);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const creds = { email: email().trim(), password: password(), remember: remember() };
-            const result = props.onLogin ? await props.onLogin(creds) : await defaultLogin(creds);
-            // result handling is left to caller (onLogin) or backend. Default returns parsed JSON.
-            return result;
-        } catch (err: any) {
-            setError(err?.message || "An unknown error occurred.");
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
-        <form
+        <div
             class={props.class ?? "auth-form"}
-            onSubmit={handleSubmit}
-            aria-live="polite"
             style={{
                 display: "flex",
                 "flex-direction": "column",
-                gap: "10px",
+                gap: "20px",
                 width: "100%"
             }}
         >
-            <div>
-                <label for="email" style={{ display: "block", "font-weight": "600", "margin-bottom": "6px" }}>
-                    Email
-                </label>
-                <input
-                    id="email"
-                    type="email"
-                    value={email()}
-                    onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-                    autocomplete="email"
-                    required
-                    style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        "border-radius": "6px",
-                        border: "1px solid #cbd5e1",
-                    }}
-                />
-            </div>
+            <Show when={!isAccessGranted()}>
+                {/* Formulaire de mot de passe d'accès */}
+                <form onSubmit={handlePasswordSubmit} style={{ display: "flex", "flex-direction": "column", gap: "20px" }}>
+                    <div class="text-center mb-4">
+                        <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px" }}>
+                            Accès Staff
+                        </h2>
+                        <p style={{ color: "#9ca3af", "font-size": "14px" }}>
+                            Entrez le mot de passe d'accès pour continuer
+                        </p>
+                    </div>
 
-            <div>
-                <label for="password" style={{ display: "block", "font-weight": "600", "margin-bottom": "6px" }}>
-                    Password
-                </label>
-                <div style={{ position: "relative" }}>
-                    <input
-                        id="password"
-                        type={showPassword() ? "text" : "password"}
-                        value={password()}
-                        onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
-                        autocomplete="current-password"
-                        required
-                        style={{
-                            width: "100%",
-                            padding: "8px 40px 8px 10px",
-                            "border-radius": "6px",
-                            border: "1px solid #cbd5e1",
-                        }}
-                    />
+                    <Show when={error()}>
+                        <div role="alert" style={{ 
+                            color: "#ef4444", 
+                            "font-size": "14px",
+                            padding: "12px",
+                            "background-color": "rgba(239, 68, 68, 0.1)",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            "border-radius": "8px"
+                        }}>
+                            {error()}
+                        </div>
+                    </Show>
+
+                    <div>
+                        <label for="access-password" style={{ display: "block", color: "#9ca3af", "font-size": "14px", "margin-bottom": "8px" }}>
+                            Mot de passe d'accès
+                        </label>
+                        <div style={{ position: "relative" }}>
+                            <input
+                                id="access-password"
+                                type={showPassword() ? "text" : "password"}
+                                value={accessPassword()}
+                                onInput={(e) => setAccessPassword(e.currentTarget.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    padding: "12px 40px 12px 12px",
+                                    "border-radius": "8px",
+                                    border: "1px solid #4b5563",
+                                    "background-color": "#1f2937",
+                                    color: "white",
+                                    "font-size": "16px"
+                                }}
+                                placeholder="Entrez le mot de passe"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword())}
+                                style={{
+                                    position: "absolute",
+                                    right: "12px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    background: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    "font-size": "20px"
+                                }}
+                            >
+                                {showPassword() ? "🙈" : "👁️"}
+                            </button>
+                        </div>
+                    </div>
+
                     <button
-                        type="button"
-                        aria-label={showPassword() ? "Hide password" : "Show password"}
-                        onClick={() => setShowPassword(!showPassword())}
+                        type="submit"
                         style={{
-                            position: "absolute",
-                            right: "6px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            "background-color": "transparent",
+                            padding: "12px 16px",
+                            "border-radius": "8px",
                             border: "none",
                             cursor: "pointer",
-                            padding: "6px",
+                            "background-color": "#d4af37",
+                            color: "black",
+                            "font-weight": "700",
+                            "font-size": "16px",
+                            transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => {
+                            (e.target as HTMLElement).style.backgroundColor = "#c09f2f";
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.target as HTMLElement).style.backgroundColor = "#d4af37";
                         }}
                     >
-                        {showPassword() ? "🙈" : "👁️"}
+                        Continuer
                     </button>
-                </div>
-            </div>
-
-            <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between" }}>
-                <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
-                    <input
-                        type="checkbox"
-                        checked={remember()}
-                        onChange={(e) => setRemember((e.target as HTMLInputElement).checked)}
-                    />
-                    <span style={{ "font-size": "14px" }}>Remember me</span>
-                </label>
-                <a href="/forgot-password" style={{ "font-size": "14px", color: "#2563eb", "text-decoration": "none" }}>
-                    Forgot?
-                </a>
-            </div>
-
-            <Show when={error()}>
-                <div role="alert" style={{ color: "#ef4444", "font-size": "14px" }}>
-                    {error()}
-                </div>
+                </form>
             </Show>
 
-            <button
-                type="submit"
-                disabled={loading()}
-                style={{
-                    padding: "10px",
-                    "border-radius": "8px",
-                    border: "none",
-                    cursor: loading() ? "wait" : "pointer",
-                    "background-color": loading() ? "#94a3b8" : "#2563eb",
-                    color: "white",
-                    "font-weight": "600",
-                }}
-            >
-                <Show
-                    when={loading()}
-                    fallback={<span>Sign in</span>}
+            <Show when={isAccessGranted()}>
+                {/* Connexion Google */}
+                <div class="text-center mb-4">
+                    <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px" }}>
+                        Connexion
+                    </h2>
+                    <p style={{ color: "#9ca3af", "font-size": "14px" }}>
+                        Connectez-vous avec votre compte Google
+                    </p>
+                </div>
+
+                <Show when={error()}>
+                    <div role="alert" style={{ 
+                        color: "#ef4444", 
+                        "font-size": "14px",
+                        padding: "12px",
+                        "background-color": "rgba(239, 68, 68, 0.1)",
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        "border-radius": "8px"
+                    }}>
+                        {error()}
+                    </div>
+                </Show>
+
+                {/* Bouton Google */}
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={loading()}
+                    style={{
+                        padding: "12px 16px",
+                        "border-radius": "8px",
+                        border: "1px solid #cbd5e1",
+                        cursor: loading() ? "wait" : "pointer",
+                        "background-color": "white",
+                        color: "#1f2937",
+                        "font-weight": "600",
+                        display: "flex",
+                        "align-items": "center",
+                        "justify-content": "center",
+                        gap: "12px",
+                        transition: "all 0.2s",
+                        opacity: loading() ? "0.7" : "1",
+                    }}
+                    onMouseEnter={(e) => {
+                        if (!loading()) {
+                            (e.target as HTMLElement).style.backgroundColor = "#f3f4f6";
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = "white";
+                    }}
                 >
-                    <span style={{ display: "inline-flex", gap: "8px", "align-items": "center" }}>
+                    <Show when={!loading()}>
+                        <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+                            <path d="M9.003 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18z" fill="#34A853"/>
+                            <path d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                            <path d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z" fill="#EA4335"/>
+                        </svg>
+                    </Show>
+                    <Show when={loading()}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
+                            width="20"
+                            height="20"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -242,64 +260,24 @@ const Auth: Component<AuthProps> = (props) => {
                             <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
                             <path d="M22 12a10 10 0 0 0-10-10" />
                         </svg>
-                        Signing in…
-                    </span>
-                </Show>
-            </button>
+                    </Show>
+                    <span>{loading() ? "Connexion en cours..." : "Continuer avec Google"}</span>
+                </button>
 
-            {/* Séparateur */}
-            <div style={{ 
-                display: "flex", 
-                "align-items": "center", 
-                gap: "10px",
-                margin: "10px 0"
-            }}>
-                <div style={{ flex: "1", height: "1px", "background-color": "#cbd5e1" }} />
-                <span style={{ "font-size": "14px", color: "#64748b" }}>ou</span>
-                <div style={{ flex: "1", height: "1px", "background-color": "#cbd5e1" }} />
-            </div>
-
-            {/* Bouton Google */}
-            <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={loading()}
-                style={{
-                    padding: "10px",
-                    "border-radius": "8px",
-                    border: "1px solid #cbd5e1",
-                    cursor: loading() ? "wait" : "pointer",
-                    "background-color": "white",
-                    color: "#1f2937",
-                    "font-weight": "600",
-                    display: "flex",
-                    "align-items": "center",
-                    "justify-content": "center",
-                    gap: "8px",
-                    transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                    if (!loading()) {
-                        (e.target as HTMLElement).style.backgroundColor = "#f3f4f6";
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.backgroundColor = "white";
-                }}
-            >
-                <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-                    <path d="M9.003 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18z" fill="#34A853"/>
-                    <path d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                    <path d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z" fill="#EA4335"/>
-                </svg>
-                <span>Se connecter avec Google</span>
-            </button>
+                <p style={{ 
+                    "text-align": "center", 
+                    "font-size": "12px", 
+                    color: "#6b7280",
+                    "margin-top": "8px"
+                }}>
+                    Discord sera bientôt disponible
+                </p>
+            </Show>
 
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
-        </form>
+        </div>
     );
 };
 

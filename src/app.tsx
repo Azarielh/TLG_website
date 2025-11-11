@@ -17,16 +17,25 @@ export function usePocketBase() {
 }
 
 function PocketBaseProvider(props: { url: string; children?: any }) {
-  const url = props.url || import.meta.env.VITE_PB_URL;
-  console.log('PocketBase URL:', url);
+  const url = props.url || import.meta.env.VITE_PB_URL || 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
+  console.log('🔧 PocketBase URL from props:', props.url);
+  console.log('🔧 PocketBase URL from env:', import.meta.env.VITE_PB_URL);
+  console.log('🔧 PocketBase URL final:', url);
+  
+  if (!url) {
+    console.error('❌ No PocketBase URL provided!');
+    return <PocketBaseContext.Provider value={null}>{props.children}</PocketBaseContext.Provider>;
+  }
+  
   const pb = new PocketBase(url);
   
   // S'assurer que le baseUrl ne contient pas le préfixe /_/
   if (pb.baseUrl.includes('/_/')) {
+    console.log('⚠️ Removing /_/ from baseUrl');
     pb.baseUrl = pb.baseUrl.replace('/_/', '/');
   }
   
-  console.log('PocketBase instance created, baseUrl:', pb.baseUrl);
+  console.log('✅ PocketBase instance created, baseUrl:', pb.baseUrl);
   return <PocketBaseContext.Provider value={pb}>{props.children}</PocketBaseContext.Provider>;
 }
 

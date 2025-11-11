@@ -9,7 +9,7 @@ app.config.timestamp_*.js
 # Environment
 .env
 .env*.local
-
+.GOOGLE_OAUTH_SETUP
 # dependencies
 /node_modules
 
