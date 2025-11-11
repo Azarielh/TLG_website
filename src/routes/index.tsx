@@ -1,5 +1,6 @@
 import { Title } from "@solidjs/meta";
 import MainLogo from "../components/MainLogo";
+import "../app.css"; // Force le chargement du CSS
 
 export default function Home() {
   return (

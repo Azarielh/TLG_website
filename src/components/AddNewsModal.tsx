@@ -10,9 +10,13 @@ interface AddNewsModalProps {
 const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const pb = usePocketBase();
   const [title, setTitle] = createSignal("");
+  const [excerpt, setExcerpt] = createSignal(""); // Phrase courte
   const [content, setContent] = createSignal("");
   const [selectedTags, setSelectedTags] = createSignal<string[]>([]);
   const [availableTags, setAvailableTags] = createSignal<string[]>([]);
+  const [mediaType, setMediaType] = createSignal<'none' | 'image' | 'video'>('none');
+  const [mediaUrl, setMediaUrl] = createSignal(""); // URL externe
+  const [mediaFile, setMediaFile] = createSignal<File | null>(null); // Fichier uploadé
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [error, setError] = createSignal("");
   const [isLoadingTags, setIsLoadingTags] = createSignal(true);
@@ -92,24 +96,41 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
     setIsSubmitting(true);
 
     try {
-      const newsData = {
-        title: title(),
-        content: content(),
-        tags: selectedTags(),
-        author: pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme",
-      };
+      // Préparer les données du formulaire
+      const formData = new FormData();
+      formData.append('title', title());
+      formData.append('excerpt', excerpt());
+      formData.append('content', content());
+      formData.append('tags', JSON.stringify(selectedTags()));
+      formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
+      formData.append('mediaType', mediaType());
       
-      console.log('📝 Creating news with data:', newsData);
+      // Ajouter le média selon le type
+      if (mediaType() !== 'none') {
+        if (mediaFile()) {
+          // Upload de fichier
+          formData.append('media', mediaFile()!);
+        } else if (mediaUrl()) {
+          // URL externe
+          formData.append('mediaUrl', mediaUrl());
+        }
+      }
+      
+      console.log('📝 Creating news with form data');
       
       // Créer la news dans PocketBase
-      const result = await pb.collection("news").create(newsData);
+      const result = await pb.collection("news").create(formData);
       
       console.log('✅ News created successfully:', result);
 
       // Réinitialiser le formulaire
       setTitle("");
+      setExcerpt("");
       setContent("");
       setSelectedTags([]);
+      setMediaType('none');
+      setMediaUrl("");
+      setMediaFile(null);
 
       // Callback et fermeture
       props.onNewsAdded?.();
