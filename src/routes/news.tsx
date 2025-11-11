@@ -51,9 +51,18 @@ export default function News() {
       // Vérifier immédiatement
       const checkPermissions = () => {
         const isValid = pb.authStore.isValid;
-        const hasRank = !!pb.authStore.record?.Rank;
-        console.log('🔐 Checking permissions:', { isValid, hasRank, rank: pb.authStore.record?.Rank });
-        setCanAddNews(isValid && hasRank);
+        const userRank = pb.authStore.record?.Rank;
+        const allowedRanks = ['Dev', 'Admin', 'Staff']; // Ranks autorisés
+        const hasAuthorizedRank = userRank && allowedRanks.includes(userRank);
+        
+        console.log('🔐 Checking permissions:', { 
+          isValid, 
+          userRank, 
+          hasAuthorizedRank,
+          allowedRanks 
+        });
+        
+        setCanAddNews(isValid && hasAuthorizedRank);
       };
       
       checkPermissions();
