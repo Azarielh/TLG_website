@@ -103,17 +103,14 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       formData.append('content', content());
       formData.append('tags', JSON.stringify(selectedTags()));
       formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
-      formData.append('media_type', mediaType());
       
       // Ajouter le média selon le type
-      if (mediaType() !== 'none') {
-        if (mediaFile()) {
-          // Upload de fichier
-          formData.append('media_file', mediaFile()!);
-        } else if (mediaUrl()) {
-          // URL externe
-          formData.append('media_url', mediaUrl());
-        }
+      if (mediaType() === 'image' && mediaFile()) {
+        // Upload d'image - utiliser le champ 'image' de PocketBase
+        formData.append('image', mediaFile()!);
+      } else if (mediaType() === 'video' && mediaUrl()) {
+        // URL vidéo - utiliser le champ 'Video_Url' de PocketBase
+        formData.append('Video_Url', mediaUrl());
       }
       
       console.log('📝 Creating news with data:');
@@ -122,8 +119,8 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       console.log('  - Content length:', content().length);
       console.log('  - Tags:', selectedTags());
       console.log('  - Media type:', mediaType());
-      console.log('  - Media file:', mediaFile()?.name);
-      console.log('  - Media URL:', mediaUrl());
+      console.log('  - Image file:', mediaFile()?.name);
+      console.log('  - Video URL:', mediaUrl());
       
       // Créer la news dans PocketBase
       const result = await pb.collection("news").create(formData);

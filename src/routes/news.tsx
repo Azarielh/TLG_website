@@ -116,84 +116,99 @@ export default function News() {
     <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-20 px-4 sm:px-6 min-h-screen">
       <Title>News - TLG</Title>
 
-      {/* En-tête avec titre et bouton d'ajout */}
-      <div class="w-full max-w-4xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Actualités</h1>
-        
-        {/* Bouton visible uniquement si connecté ET avec un Rank */}
-        <Show when={canAddNews()} fallback={
-          <div class="text-xs text-gray-600">
-            {/* Debug invisible : {canAddNews() ? 'Authorized' : 'Not authorized'} */}
+      {/* En-tête amélioré avec gradient */}
+      <div class="w-full max-w-4xl mb-12">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
+          <div class="text-center sm:text-left">
+            <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-gradient-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+              Actualités
+            </h1>
+            <p class="text-gray-400 text-lg">
+              Restez informé de toutes nos actualités
+            </p>
           </div>
-        }>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            class="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 rounded-lg text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg"
-          >
-            + Ajouter une News
-          </button>
-        </Show>
-      </div>
-
-      {/* Filtres et tri */}
-      <div class="w-full max-w-4xl mb-8">
-        <div class="flex flex-wrap items-center gap-3 bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 backdrop-blur-sm">
-          {/* Label */}
-          <span class="text-gray-400 text-sm font-medium">Affichage :</span>
           
-          {/* Tri chronologique - Pills style */}
+          {/* Bouton visible uniquement si connecté ET avec un Rank */}
+          <Show when={canAddNews()}>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              class="group relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-black transition-all duration-300 hover:scale-105 shadow-xl shadow-yellow-400/30 hover:shadow-2xl hover:shadow-yellow-400/50"
+            >
+              <span class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Ajouter une News
+              </span>
+            </button>
+          </Show>
+        </div>
+
+        {/* Filtres et tri améliorés */}
+        <div class="flex flex-wrap items-center gap-3 bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-5 backdrop-blur-sm shadow-xl">
+          {/* Label avec icône */}
+          <span class="flex items-center gap-2 text-gray-400 text-sm font-bold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filtres
+          </span>
+          
+          {/* Tri chronologique - Pills style amélioré */}
           <div class="flex gap-2">
             <button
               onClick={() => setSortBy("recent")}
-              class={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              class={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
                 sortBy() === "recent"
-                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/30"
-                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/40 scale-105"
+                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white hover:scale-105"
               }`}
             >
-              Récentes
+              ⚡ Récentes
             </button>
             <button
               onClick={() => setSortBy("oldest")}
-              class={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              class={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
                 sortBy() === "oldest"
-                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/30"
-                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/40 scale-105"
+                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white hover:scale-105"
               }`}
             >
-              Anciennes
+              📅 Anciennes
             </button>
           </div>
 
           {/* Séparateur vertical */}
-          <div class="hidden sm:block w-px h-6 bg-gray-700"></div>
+          <div class="hidden sm:block w-px h-8 bg-gray-600/50"></div>
 
-          {/* Filtrage par tags - Dropdown compact */}
+          {/* Filtrage par tags - Dropdown amélioré */}
           <div class="flex items-center gap-2">
-            <span class="text-gray-400 text-sm font-medium hidden sm:inline">Tag :</span>
+            <span class="text-gray-400 text-sm font-bold hidden sm:inline">🏷️ Tag :</span>
             <div class="relative">
               <select
                 value={selectedTag()}
                 onChange={(e) => setSelectedTag(e.currentTarget.value)}
-                class="appearance-none pl-4 pr-10 py-1.5 bg-gray-700/50 border border-gray-600/50 rounded-full text-white text-sm font-medium hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400 cursor-pointer transition-all"
+                class="appearance-none pl-4 pr-10 py-2 bg-gray-700/70 border border-gray-600/50 rounded-xl text-white text-sm font-bold hover:bg-gray-700 hover:border-yellow-400/50 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400 cursor-pointer transition-all"
               >
-                <option value="all">Tous</option>
+                <option value="all">Tous les tags</option>
                 <For each={allTags()}>
                   {(tag) => <option value={tag}>{tag}</option>}
                 </For>
               </select>
-              {/* Icône dropdown custom */}
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-yellow-400">
+                <svg width="14" height="14" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* Indicateur de résultats */}
-          <div class="ml-auto text-gray-500 text-sm font-medium">
-            {filteredAndSortedNews().length} {filteredAndSortedNews().length > 1 ? 'news' : 'news'}
+          {/* Indicateur de résultats avec badge */}
+          <div class="ml-auto flex items-center gap-2">
+            <span class="text-gray-500 text-sm font-medium">Résultats :</span>
+            <span class="px-3 py-1 bg-yellow-400/20 text-yellow-400 text-sm font-black rounded-lg border border-yellow-400/30">
+              {filteredAndSortedNews().length}
+            </span>
           </div>
         </div>
       </div>
