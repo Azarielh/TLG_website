@@ -2,7 +2,7 @@ import { Title } from "@solidjs/meta";
 
 export default function About() {
   return (
-      <main class="relative z-10 flex flex-col items-center justify-center py-12 px-6">
+      <main class="relative z-10 flex flex-col items-center justify-center pt-20 pb-12 px-6">
         <Title>A propos</Title>
         <h1 class="text-4xl font-extrabold mb-10">À propos</h1>
 

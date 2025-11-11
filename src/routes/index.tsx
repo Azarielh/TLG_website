@@ -3,7 +3,7 @@ import MainLogo from "../components/MainLogo";
 
 export default function Home() {
   return (
-    <main id="home">
+    <main id="home" class="pt-20">
       <Title>TLG: The Legion</Title>
       <h1>Bienvenue sur le site de TLG</h1>
       <MainLogo />

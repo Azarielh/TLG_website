@@ -74,14 +74,14 @@ export default function News() {
   };
 
   return (
-    <main class="relative z-10 flex flex-col items-center justify-start py-8 px-4 sm:px-6 min-h-[65vh]">
+    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-8 px-4 sm:px-6 min-h-[65vh]">
       <Title>News - TLG</Title>
 
       {/* En-tête avec titre et bouton d'ajout */}
       <div class="w-full max-w-6xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Actualités</h1>
         
-        <Show when={pb?.authStore.isValid}>
+        <Show when={true || pb?.authStore.isValid}>
           <button
             onClick={() => setIsModalOpen(true)}
             class="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 rounded-lg text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg"
