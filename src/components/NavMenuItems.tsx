@@ -40,9 +40,9 @@ export const menuItems = [
   },
   {
     id: "news",
-    href: "/",
+    href: "/news",
     label: "Actualités",
-    status: "Section à venir",
+    status: "🚧 En production",
   },
   {
     id: "agenda",
@@ -87,7 +87,6 @@ export function MobileMenu(props: { onClose: () => void }) {
       onClick={(e) => e.stopPropagation()}
     >
       {menuItems
-        .filter((item) => item.id !== "academy") // Académie pas en mobile pour ce premier jet
         .map((item) => (
           <div onClick={props.onClose}>
             <MenuItem
