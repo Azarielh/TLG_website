@@ -15,6 +15,7 @@ export default function News() {
   const [sortBy, setSortBy] = createSignal<SortOption>("recent");
   const [selectedTag, setSelectedTag] = createSignal<FilterTag>("all");
   const [isModalOpen, setIsModalOpen] = createSignal(false);
+  const [canAddNews, setCanAddNews] = createSignal(false); // Client-only pour éviter hydration mismatch
 
   // Fonction pour charger/recharger les news
   const loadNews = async () => {
@@ -24,14 +25,12 @@ export default function News() {
       return;
     }
     
-    console.log('🔄 Loading news from PocketBase...');
     setIsLoading(true);
     try {
       const records = await pb.collection("news").getFullList({
         sort: "-created",
       });
       
-      console.log('✅ News loaded successfully:', records.length, 'items');
       setNewsItems(records as unknown as NewsItemData[]);
     } catch (error) {
       console.error("❌ Error loading news:", error);
@@ -44,6 +43,32 @@ export default function News() {
   // Charger les news au montage
   createEffect(() => {
     loadNews();
+  });
+
+  // Vérifier les permissions côté client uniquement
+  createEffect(() => {
+    if (pb) {
+      // Vérifier immédiatement
+      const checkPermissions = () => {
+        const isValid = pb.authStore.isValid;
+        const hasRank = !!pb.authStore.record?.Rank;
+        console.log('🔐 Checking permissions:', { isValid, hasRank, rank: pb.authStore.record?.Rank });
+        setCanAddNews(isValid && hasRank);
+      };
+      
+      checkPermissions();
+      
+      // Écouter les changements d'authentification
+      const unsubscribe = pb.authStore.onChange(() => {
+        console.log('🔄 Auth state changed');
+        checkPermissions();
+      });
+      
+      // Cleanup
+      return () => {
+        unsubscribe();
+      };
+    }
   });
 
   // Extraire tous les tags uniques
@@ -79,14 +104,19 @@ export default function News() {
   };
 
   return (
-    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-8 px-4 sm:px-6 min-h-[65vh]">
+    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-20 px-4 sm:px-6 min-h-screen">
       <Title>News - TLG</Title>
 
       {/* En-tête avec titre et bouton d'ajout */}
-      <div class="w-full max-w-6xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="w-full max-w-4xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Actualités</h1>
         
-        <Show when={true || pb?.authStore.isValid}>
+        {/* Bouton visible uniquement si connecté ET avec un Rank */}
+        <Show when={canAddNews()} fallback={
+          <div class="text-xs text-gray-600">
+            {/* Debug invisible : {canAddNews() ? 'Authorized' : 'Not authorized'} */}
+          </div>
+        }>
           <button
             onClick={() => setIsModalOpen(true)}
             class="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 rounded-lg text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg"
@@ -97,7 +127,7 @@ export default function News() {
       </div>
 
       {/* Filtres et tri */}
-      <div class="w-full max-w-6xl mb-8">
+      <div class="w-full max-w-4xl mb-8">
         <div class="flex flex-wrap items-center gap-3 bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 backdrop-blur-sm">
           {/* Label */}
           <span class="text-gray-400 text-sm font-medium">Affichage :</span>
@@ -160,7 +190,7 @@ export default function News() {
       </div>
 
       {/* Liste des news */}
-      <div class="w-full max-w-6xl">
+      <div class="w-full max-w-4xl">
         <Show
           when={!isLoading()}
           fallback={
@@ -186,7 +216,8 @@ export default function News() {
               </div>
             }
           >
-            <div class="grid gap-6 grid-cols-1 lg:grid-cols-2">
+            {/* Format blog : liste verticale avec espacement */}
+            <div class="flex flex-col gap-12">
               <For each={filteredAndSortedNews()}>
                 {(news) => <NewsItem news={news} />}
               </For>

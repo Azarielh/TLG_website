@@ -103,20 +103,27 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       formData.append('content', content());
       formData.append('tags', JSON.stringify(selectedTags()));
       formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
-      formData.append('mediaType', mediaType());
+      formData.append('media_type', mediaType());
       
       // Ajouter le média selon le type
       if (mediaType() !== 'none') {
         if (mediaFile()) {
           // Upload de fichier
-          formData.append('media', mediaFile()!);
+          formData.append('media_file', mediaFile()!);
         } else if (mediaUrl()) {
           // URL externe
-          formData.append('mediaUrl', mediaUrl());
+          formData.append('media_url', mediaUrl());
         }
       }
       
-      console.log('📝 Creating news with form data');
+      console.log('📝 Creating news with data:');
+      console.log('  - Title:', title());
+      console.log('  - Excerpt:', excerpt());
+      console.log('  - Content length:', content().length);
+      console.log('  - Tags:', selectedTags());
+      console.log('  - Media type:', mediaType());
+      console.log('  - Media file:', mediaFile()?.name);
+      console.log('  - Media URL:', mediaUrl());
       
       // Créer la news dans PocketBase
       const result = await pb.collection("news").create(formData);
@@ -180,6 +187,25 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                 class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
                 placeholder="Titre de la news"
               />
+            </div>
+
+            <div>
+              <label for="excerpt" class="block text-sm font-medium text-gray-300 mb-2">
+                Phrase courte / Résumé *
+              </label>
+              <input
+                id="excerpt"
+                type="text"
+                value={excerpt()}
+                onInput={(e) => setExcerpt(e.currentTarget.value)}
+                required
+                maxLength={200}
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
+                placeholder="Résumé en une phrase (max 200 caractères)"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                {excerpt().length}/200 caractères
+              </p>
             </div>
 
             <div>
@@ -252,6 +278,121 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                     </div>
                   </Show>
                 </Show>
+              </Show>
+            </div>
+
+            {/* Section Média */}
+            <div class="border-t border-gray-700 pt-6">
+              <label class="block text-sm font-medium text-gray-300 mb-3">
+                Média (optionnel)
+              </label>
+              
+              {/* Sélecteur de type de média */}
+              <div class="flex gap-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMediaType('none');
+                    setMediaUrl("");
+                    setMediaFile(null);
+                  }}
+                  class={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    mediaType() === 'none'
+                      ? 'bg-yellow-400 text-black'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Aucun
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMediaType('image');
+                    setMediaUrl("");
+                    setMediaFile(null);
+                  }}
+                  class={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    mediaType() === 'image'
+                      ? 'bg-yellow-400 text-black'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Image
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMediaType('video');
+                    setMediaUrl("");
+                    setMediaFile(null);
+                  }}
+                  class={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    mediaType() === 'video'
+                      ? 'bg-yellow-400 text-black'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Vidéo
+                </button>
+              </div>
+
+              {/* Upload de fichier ou URL selon le type */}
+              <Show when={mediaType() !== 'none'}>
+                <div class="space-y-3">
+                  <div>
+                    <label for="mediaFile" class="block text-sm text-gray-400 mb-2">
+                      Uploader un fichier
+                    </label>
+                    <input
+                      id="mediaFile"
+                      type="file"
+                      accept={mediaType() === 'image' ? 'image/*' : 'video/*'}
+                      onChange={(e) => {
+                        const file = e.currentTarget.files?.[0];
+                        if (file) {
+                          setMediaFile(file);
+                          setMediaUrl(""); // Reset URL si fichier uploadé
+                        }
+                      }}
+                      class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-yellow-400 file:text-black file:font-medium hover:file:bg-yellow-500 file:cursor-pointer"
+                    />
+                  </div>
+
+                  <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                      <div class="w-full border-t border-gray-700"></div>
+                    </div>
+                    <div class="relative flex justify-center text-xs">
+                      <span class="px-2 bg-gray-900 text-gray-500">OU</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="mediaUrl" class="block text-sm text-gray-400 mb-2">
+                      URL externe
+                    </label>
+                    <input
+                      id="mediaUrl"
+                      type="url"
+                      value={mediaUrl()}
+                      onInput={(e) => {
+                        setMediaUrl(e.currentTarget.value);
+                        setMediaFile(null); // Reset fichier si URL ajoutée
+                      }}
+                      placeholder={mediaType() === 'image' ? 'https://exemple.com/image.jpg' : 'https://youtube.com/watch?v=...'}
+                      class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
+                    />
+                  </div>
+
+                  <Show when={mediaFile()}>
+                    <div class="flex items-center gap-2 text-sm text-green-400 bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Fichier sélectionné : {mediaFile()!.name}</span>
+                    </div>
+                  </Show>
+                </div>
               </Show>
             </div>
 

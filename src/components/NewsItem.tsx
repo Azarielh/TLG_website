@@ -3,7 +3,7 @@ import { Component, Show } from "solid-js";
 export interface NewsItemData {
   id: string;
   title: string;
-  excerpt: string; // Phrase courte
+  excerpt?: string; // Phrase courte (optionnel)
   content: string;
   tags: string[];
   created: string;
@@ -51,42 +51,49 @@ const NewsItem: Component<NewsItemProps> = (props) => {
   const hasMedia = props.news.mediaType && props.news.mediaType !== 'none' && mediaUrl;
 
   return (
-    <article class="bg-gray-800/60 border border-gray-700 rounded-2xl p-6 shadow-lg hover:translate-y-[-4px] transition-all duration-300 hover:border-yellow-400/50">
-      {/* Tags */}
-      <Show when={props.news.tags && props.news.tags.length > 0}>
-        <div class="flex flex-wrap gap-2 mb-4">
-          {props.news.tags.map((tag) => (
-            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </Show>
+    <article class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-8 shadow-xl backdrop-blur-sm">
+      {/* En-tête avec tags et date */}
+      <div class="flex flex-wrap justify-between items-start gap-3 mb-6">
+        <Show when={props.news.tags && props.news.tags.length > 0}>
+          <div class="flex flex-wrap gap-2">
+            {props.news.tags.map((tag) => (
+              <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </Show>
+        <time datetime={props.news.created} class="text-sm text-gray-500 whitespace-nowrap">
+          {formatDate(props.news.created)}
+        </time>
+      </div>
 
       {/* Titre */}
-      <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-white">{props.news.title}</h3>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4 text-white leading-tight">
+        {props.news.title}
+      </h2>
 
       {/* Phrase courte (excerpt) */}
       <Show when={props.news.excerpt}>
-        <p class="text-lg text-yellow-400/90 font-medium mb-4 italic">
+        <p class="text-xl text-gray-300 font-medium mb-6 leading-relaxed border-l-4 border-yellow-400 pl-4 italic">
           {props.news.excerpt}
         </p>
       </Show>
 
       {/* Média (Image ou Vidéo) */}
       <Show when={hasMedia}>
-        <div class="w-full mb-6 rounded-lg overflow-hidden bg-black/20">
+        <div class="w-full mb-8 rounded-xl overflow-hidden bg-black/20 shadow-lg">
           <Show when={props.news.mediaType === 'image'}>
             <img
               src={mediaUrl!}
               alt={props.news.title}
-              class="w-full h-auto object-contain max-h-[500px]"
+              class="w-full h-auto object-cover"
             />
           </Show>
           <Show when={props.news.mediaType === 'video'}>
             <video
               controls
-              class="w-full h-auto max-h-[500px]"
+              class="w-full h-auto"
             >
               <source src={mediaUrl!} type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de vidéos.
@@ -96,19 +103,23 @@ const NewsItem: Component<NewsItemProps> = (props) => {
       </Show>
 
       {/* Contenu complet */}
-      <div class="text-gray-300 leading-relaxed mb-6 whitespace-pre-line prose prose-invert max-w-none">
-        {props.news.content}
-      </div>
+      <Show when={props.news.content}>
+        <div class="text-gray-300 text-lg leading-relaxed mb-8 whitespace-pre-line">
+          {props.news.content}
+        </div>
+      </Show>
 
-      {/* Footer : Auteur et Date */}
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pt-4 border-t border-gray-700/50 text-sm text-gray-400">
-        <Show when={props.news.author}>
-          <span class="font-medium">Par {props.news.author}</span>
-        </Show>
-        <time datetime={props.news.created}>
-          {formatDate(props.news.created)}
-        </time>
-      </div>
+      {/* Footer : Auteur */}
+      <Show when={props.news.author}>
+        <div class="flex items-center gap-3 pt-6 border-t border-gray-700/50">
+          <div class="flex items-center gap-2 text-gray-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span class="font-medium">Par {props.news.author}</span>
+          </div>
+        </div>
+      </Show>
     </article>
   );
 };
