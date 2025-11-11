@@ -10,21 +10,24 @@ import EshopButton from "./components/eshop_button";
 import BuildInProgress from "./components/buildinprogress";
 import "./app.css";
 
-export const PocketBaseContext = createContext<PocketBase | null>(null);
+// Créer une instance PocketBase UNIQUE et GLOBALE
+const createPocketBaseInstance = () => {
+  // Vérifier si on est côté client
+  const isBrowser = typeof window !== 'undefined';
+  
+  if (!isBrowser) {
+    // Côté serveur, retourner null pour éviter les erreurs
+    return null;
+  }
 
-export function usePocketBase() {
-  return useContext(PocketBaseContext);
-}
-
-function PocketBaseProvider(props: { url: string; children?: any }) {
-  const url = props.url || import.meta.env.VITE_PB_URL || 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
-  console.log('🔧 PocketBase URL from props:', props.url);
-  console.log('🔧 PocketBase URL from env:', import.meta.env.VITE_PB_URL);
-  console.log('🔧 PocketBase URL final:', url);
+  const url = import.meta.env.VITE_PB_URL || 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
+  
+  console.log('🔧 Creating PocketBase instance...');
+  console.log('🔧 PocketBase URL:', url);
   
   if (!url) {
     console.error('❌ No PocketBase URL provided!');
-    return <PocketBaseContext.Provider value={null}>{props.children}</PocketBaseContext.Provider>;
+    return null;
   }
   
   const pb = new PocketBase(url);
@@ -36,14 +39,28 @@ function PocketBaseProvider(props: { url: string; children?: any }) {
   }
   
   console.log('✅ PocketBase instance created, baseUrl:', pb.baseUrl);
-  return <PocketBaseContext.Provider value={pb}>{props.children}</PocketBaseContext.Provider>;
+  
+  return pb;
+};
+
+// Instance GLOBALE - créée une seule fois
+const globalPocketBase = createPocketBaseInstance();
+
+export const PocketBaseContext = createContext<PocketBase | null>(globalPocketBase);
+
+export function usePocketBase() {
+  return useContext(PocketBaseContext);
+}
+
+function PocketBaseProvider(props: { children?: any }) {
+  return <PocketBaseContext.Provider value={globalPocketBase}>{props.children}</PocketBaseContext.Provider>;
 }
 
 export default function App() {
   return (
     <Router
       root={props => (
-        <PocketBaseProvider url={import.meta.env.VITE_PB_URL}>
+        <PocketBaseProvider>
           <MetaProvider>
             <Title>TLG Website</Title>
             <PagePanel overlayOpacity={0.8}>

@@ -10,6 +10,9 @@ app.config.timestamp_*.js
 .env
 .env*.local
 .GOOGLE_OAUTH_SETUP
+.ARCHITECTURE_POCKETBASE
+.POCKETBASE_SETUP
+.TAGS_SETUP
 # dependencies
 /node_modules
 
@@ -26,3 +29,4 @@ gitignore
 # System Files
 .DS_Store
 Thumbs.db
+*.md

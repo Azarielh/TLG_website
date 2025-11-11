@@ -16,20 +16,25 @@ export default function News() {
   const [selectedTag, setSelectedTag] = createSignal<FilterTag>("all");
   const [isModalOpen, setIsModalOpen] = createSignal(false);
 
-  // Charger les news depuis PocketBase
+  // Fonction pour charger/recharger les news
   const loadNews = async () => {
-    if (!pb) return;
+    if (!pb) {
+      console.error('❌ PocketBase not available (SSR context)');
+      setIsLoading(false);
+      return;
+    }
     
+    console.log('🔄 Loading news from PocketBase...');
     setIsLoading(true);
     try {
       const records = await pb.collection("news").getFullList({
         sort: "-created",
       });
       
+      console.log('✅ News loaded successfully:', records.length, 'items');
       setNewsItems(records as unknown as NewsItemData[]);
     } catch (error) {
-      console.error("Erreur lors du chargement des news:", error);
-      // Pour l'instant, si la collection n'existe pas, on garde le tableau vide
+      console.error("❌ Error loading news:", error);
       setNewsItems([]);
     } finally {
       setIsLoading(false);
@@ -92,51 +97,65 @@ export default function News() {
       </div>
 
       {/* Filtres et tri */}
-      <div class="w-full max-w-6xl mb-8 flex flex-col lg:flex-row gap-4 bg-gray-800/40 border border-gray-700 rounded-xl p-4">
-        {/* Tri chronologique */}
-        <div class="flex-1">
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Trier par
-          </label>
+      <div class="w-full max-w-6xl mb-8">
+        <div class="flex flex-wrap items-center gap-3 bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 backdrop-blur-sm">
+          {/* Label */}
+          <span class="text-gray-400 text-sm font-medium">Affichage :</span>
+          
+          {/* Tri chronologique - Pills style */}
           <div class="flex gap-2">
             <button
               onClick={() => setSortBy("recent")}
-              class={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
+              class={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
                 sortBy() === "recent"
-                  ? "bg-yellow-400 text-black"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/30"
+                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white"
               }`}
             >
-              Plus récentes
+              Récentes
             </button>
             <button
               onClick={() => setSortBy("oldest")}
-              class={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
+              class={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
                 sortBy() === "oldest"
-                  ? "bg-yellow-400 text-black"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/30"
+                  : "bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white"
               }`}
             >
-              Plus anciennes
+              Anciennes
             </button>
           </div>
-        </div>
 
-        {/* Filtrage par tags */}
-        <div class="flex-1">
-          <label class="block text-sm font-medium text-gray-300 mb-2">
-            Filtrer par tag
-          </label>
-          <select
-            value={selectedTag()}
-            onChange={(e) => setSelectedTag(e.currentTarget.value)}
-            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
-          >
-            <option value="all">Tous les tags</option>
-            <For each={allTags()}>
-              {(tag) => <option value={tag}>{tag}</option>}
-            </For>
-          </select>
+          {/* Séparateur vertical */}
+          <div class="hidden sm:block w-px h-6 bg-gray-700"></div>
+
+          {/* Filtrage par tags - Dropdown compact */}
+          <div class="flex items-center gap-2">
+            <span class="text-gray-400 text-sm font-medium hidden sm:inline">Tag :</span>
+            <div class="relative">
+              <select
+                value={selectedTag()}
+                onChange={(e) => setSelectedTag(e.currentTarget.value)}
+                class="appearance-none pl-4 pr-10 py-1.5 bg-gray-700/50 border border-gray-600/50 rounded-full text-white text-sm font-medium hover:bg-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400 cursor-pointer transition-all"
+              >
+                <option value="all">Tous</option>
+                <For each={allTags()}>
+                  {(tag) => <option value={tag}>{tag}</option>}
+                </For>
+              </select>
+              {/* Icône dropdown custom */}
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Indicateur de résultats */}
+          <div class="ml-auto text-gray-500 text-sm font-medium">
+            {filteredAndSortedNews().length} {filteredAndSortedNews().length > 1 ? 'news' : 'news'}
+          </div>
         </div>
       </div>
 

@@ -39,13 +39,15 @@ const NewsItem: Component<NewsItemProps> = (props) => {
         </div>
       </Show>
 
-      <div class="flex flex-wrap gap-2 mb-3">
-        {props.news.tags.map((tag) => (
-          <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
-            {tag}
-          </span>
-        ))}
-      </div>
+      <Show when={props.news.tags && props.news.tags.length > 0}>
+        <div class="flex flex-wrap gap-2 mb-3">
+          {props.news.tags.map((tag) => (
+            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </Show>
 
       <h3 class="text-2xl font-bold mb-3 text-white">{props.news.title}</h3>
 

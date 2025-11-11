@@ -1,4 +1,4 @@
-import { Component, createSignal, Show, For } from "solid-js";
+import { Component, createSignal, Show, For, createEffect, onMount } from "solid-js";
 import { usePocketBase } from "../app";
 
 interface AddNewsModalProps {
@@ -11,57 +11,114 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const pb = usePocketBase();
   const [title, setTitle] = createSignal("");
   const [content, setContent] = createSignal("");
-  const [tags, setTags] = createSignal<string[]>([]);
-  const [currentTag, setCurrentTag] = createSignal("");
+  const [selectedTags, setSelectedTags] = createSignal<string[]>([]);
+  const [availableTags, setAvailableTags] = createSignal<string[]>([]);
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [error, setError] = createSignal("");
+  const [isLoadingTags, setIsLoadingTags] = createSignal(true);
 
-  const handleAddTag = () => {
-    const tag = currentTag().trim();
-    if (tag && !tags().includes(tag)) {
-      setTags([...tags(), tag]);
-      setCurrentTag("");
+  // Récupérer les tags depuis la collection tags
+  onMount(async () => {
+    if (!pb) {
+      console.error('❌ PocketBase not available (SSR context)');
+      setError("PocketBase non disponible - Veuillez rafraîchir la page");
+      setIsLoadingTags(false);
+      return;
     }
-  };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags().filter(tag => tag !== tagToRemove));
-  };
-
-  const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddTag();
+    try {
+      console.log('🔍 Fetching tags from tags collection...');
+      console.log('🔐 Current user:', pb.authStore.record);
+      console.log('🔐 User Rank:', pb.authStore.record?.Rank);
+      
+      // Récupérer les tags depuis la collection dédiée (sans sort pour tester)
+      const tagsRecords = await pb.collection("tags").getFullList();
+      
+      console.log('✅ Tags loaded from collection:', tagsRecords);
+      
+      // Extraire les noms des tags et trier côté client
+      // Le champ s'appelle "Tags_name" dans votre collection
+      const tagNames = tagsRecords
+        .map((record: any) => record.Tags_name)
+        .filter(name => name) // Filtrer les valeurs nulles/undefined
+        .sort((a, b) => a.localeCompare(b));
+      
+      if (tagNames.length === 0) {
+        console.warn('⚠️ No tags found in collection');
+        setError("Aucun tag disponible. Créez des tags dans PocketBase.");
+      }
+      
+      setAvailableTags(tagNames);
+    } catch (err: any) {
+      console.error('❌ Error fetching tags:', err);
+      console.error('❌ Error details:', err.data);
+      console.error('❌ Error status:', err.status);
+      console.error('❌ Error response:', err.response);
+      console.error('❌ Full error object:', JSON.stringify(err, null, 2));
+      
+      // Si la collection tags n'existe pas, utiliser des tags par défaut
+      if (err.status === 404 || err.message?.includes('not found')) {
+        console.warn('⚠️ Tags collection not found, using default tags');
+        const defaultTags = [
+          "Annonce",
+          "Événement", 
+          "Tournoi",
+          "Recrutement",
+          "Mise à jour",
+          "Communauté",
+          "Partenariat",
+          "Résultat",
+          "Classement",
+          "Staff"
+        ];
+        setAvailableTags(defaultTags);
+        setError("Collection 'tags' non trouvée. Tags par défaut utilisés.");
+      } else {
+        setError(`Erreur lors du chargement des tags: ${err.message}`);
+      }
+    } finally {
+      setIsLoadingTags(false);
     }
-  };
+  });
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    if (!pb) return;
+    if (!pb) {
+      setError("PocketBase non disponible - Veuillez rafraîchir la page");
+      return;
+    }
 
     setError("");
     setIsSubmitting(true);
 
     try {
-      // Créer la news dans PocketBase
-      await pb.collection("news").create({
+      const newsData = {
         title: title(),
         content: content(),
-        tags: tags(),
-        author: pb.authStore.record?.username || pb.authStore.record?.email || "Anonyme",
-      });
+        tags: selectedTags(),
+        author: pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme",
+      };
+      
+      console.log('📝 Creating news with data:', newsData);
+      
+      // Créer la news dans PocketBase
+      const result = await pb.collection("news").create(newsData);
+      
+      console.log('✅ News created successfully:', result);
 
       // Réinitialiser le formulaire
       setTitle("");
       setContent("");
-      setTags([]);
-      setCurrentTag("");
+      setSelectedTags([]);
 
       // Callback et fermeture
       props.onNewsAdded?.();
       props.onClose();
     } catch (err: any) {
-      setError(err?.message || "Erreur lors de la création de la news");
+      console.error('❌ Error creating news:', err);
+      console.error('❌ Error response:', err?.response);
+      console.error('❌ Error data:', err?.data);
+      setError(err?.data?.message || err?.message || "Erreur lors de la création de la news");
     } finally {
       setIsSubmitting(false);
     }
@@ -123,41 +180,58 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
               <label for="tags" class="block text-sm font-medium text-gray-300 mb-2">
                 Tags
               </label>
-              <div class="flex gap-2 mb-3">
-                <input
-                  id="tags"
-                  type="text"
-                  value={currentTag()}
-                  onInput={(e) => setCurrentTag(e.currentTarget.value)}
-                  onKeyPress={handleKeyPress}
-                  class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
-                  placeholder="Ajouter un tag"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTag}
-                  class="px-4 py-2 bg-yellow-400/20 hover:bg-yellow-400/30 border border-yellow-400/30 rounded-lg text-yellow-400 font-medium transition-colors"
+              <Show
+                when={!isLoadingTags()}
+                fallback={
+                  <div class="flex items-center gap-2 text-gray-500">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-400"></div>
+                    <span class="text-sm">Chargement des tags...</span>
+                  </div>
+                }
+              >
+                <Show
+                  when={availableTags().length > 0}
+                  fallback={
+                    <p class="text-sm text-gray-500">Aucun tag disponible</p>
+                  }
                 >
-                  Ajouter
-                </button>
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <For each={tags()}>
-                  {(tag) => (
-                    <span class="px-3 py-1 text-sm rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center gap-2">
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                        class="hover:text-yellow-300 font-bold"
-                        aria-label={`Retirer ${tag}`}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  )}
-                </For>
-              </div>
+                  <select
+                    multiple
+                    size={Math.min(availableTags().length, 6)}
+                    value={selectedTags()}
+                    onChange={(e) => {
+                      const options = Array.from(e.currentTarget.selectedOptions);
+                      setSelectedTags(options.map(opt => opt.value));
+                    }}
+                    class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
+                  >
+                    <For each={availableTags()}>
+                      {(tag) => (
+                        <option 
+                          value={tag}
+                          class="py-2 hover:bg-yellow-400/20"
+                        >
+                          {tag}
+                        </option>
+                      )}
+                    </For>
+                  </select>
+                  <p class="text-xs text-gray-500 mt-2">
+                    Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
+                  </p>
+                  <Show when={selectedTags().length > 0}>
+                    <div class="flex flex-wrap gap-2 mt-3">
+                      <For each={selectedTags()}>
+                        {(tag) => (
+                          <span class="px-3 py-1 text-sm rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
+                            {tag}
+                          </span>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
+                </Show>
+              </Show>
             </div>
 
             <div class="flex gap-4 pt-4">
