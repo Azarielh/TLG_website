@@ -83,7 +83,7 @@ export function DesktopMenu() {
 export function MobileMenu(props: { onClose: () => void }) {
   return (
     <div
-      class="absolute top-16 left-0 right-0 bg-gray-900/95 backdrop-blur-sm p-4 flex flex-col gap-2 sm:hidden border-b border-[rgba(168,85,247,0.06)]"
+      class="fixed top-16 left-0 right-0 z-[75] bg-gray-900/95 backdrop-blur-sm p-4 flex flex-col gap-2 sm:hidden border-b border-[rgba(168,85,247,0.06)]"
       onClick={(e) => e.stopPropagation()}
     >
       {menuItems

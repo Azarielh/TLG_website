@@ -2,14 +2,14 @@ import { Title } from "@solidjs/meta";
 import { Component, createSignal, createMemo, For, Show } from "solid-js";
 import NewsItem, { type NewsItemData } from "../components/NewsItem";
 import AddNewsModal from "../components/AddNewsModal";
-import { usePocketbase } from "../PB/pockectbase";
+import { usePocketBase } from "../app";
 import { createEffect } from "solid-js";
 
 type SortOption = "recent" | "oldest";
 type FilterTag = string | "all";
 
 export default function News() {
-  const pb = usePocketbase();
+  const pb = usePocketBase();
   const [newsItems, setNewsItems] = createSignal<NewsItemData[]>([]);
   const [isLoading, setIsLoading] = createSignal(true);
   const [sortBy, setSortBy] = createSignal<SortOption>("recent");

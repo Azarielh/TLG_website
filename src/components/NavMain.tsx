@@ -59,29 +59,29 @@ export default function Nav() {
       {/* Overlay global pour popups */}
       <Show when={showAuth() || showMobileMenu()}>
         <div
-          class="fixed inset-0 z-[70]"
+          class="fixed inset-0 z-[70] bg-black/20 backdrop-blur-sm"
           onClick={() => {
             setShowAuth(false);
             setShowMobileMenu(false);
           }}
-        >
-          {/* Mobile Menu */}
-          <Show when={showMobileMenu()}>
-            <MobileMenu onClose={() => setShowMobileMenu(false)} />
-          </Show>
-
-
-        </div>
-                  {/* Auth Popup */}
-          <Show when={showAuth()}>
-            <div
-              class="absolute top-16 right-8 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Auth />
-            </div>
-          </Show>
+        />
       </Show>
+
+      {/* Mobile Menu */}
+      <Show when={showMobileMenu()}>
+        <MobileMenu onClose={() => setShowMobileMenu(false)} />
+      </Show>
+
+      {/* Auth Popup */}
+      <Show when={showAuth()}>
+        <div
+          class="fixed top-16 right-8 z-[80] bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Auth />
+        </div>
+      </Show>
+      
       <Show when={!isCompact()}>
         <EshopButton logoSrc="eshop_logo.svg" />
       </Show>

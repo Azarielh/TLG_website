@@ -1,5 +1,5 @@
 import { Component, createSignal, Show, For } from "solid-js";
-import { usePocketbase } from "../PB/pockectbase";
+import { usePocketBase } from "../app";
 
 interface AddNewsModalProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface AddNewsModalProps {
 }
 
 const AddNewsModal: Component<AddNewsModalProps> = (props) => {
-  const pb = usePocketbase();
+  const pb = usePocketBase();
   const [title, setTitle] = createSignal("");
   const [content, setContent] = createSignal("");
   const [tags, setTags] = createSignal<string[]>([]);

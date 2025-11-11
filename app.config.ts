@@ -6,6 +6,15 @@ export default defineConfig({
     plugins: [
       tailwindcss(), 
     ],
+    server: {
+      hmr: {
+        protocol: 'wss',
+        clientPort: 443,
+      },
+      watch: {
+        usePolling: true,
+      },
+    },
   },
   server: { preset: "vercel" },
 });
