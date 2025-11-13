@@ -11,7 +11,7 @@ export default function Home() {
   const [latestNews, setLatestNews] = createSignal<NewsItemData[]>([]);
   const [isLoadingNews, setIsLoadingNews] = createSignal(true);
   const [currentNewsIndex, setCurrentNewsIndex] = createSignal(0);
-  const [layout, setLayout] = createSignal<'classic' | 'split' | 'compact'>('classic');
+  const [layout, setLayout] = createSignal<'classic' | 'split'>('classic');
   
   // Taglines dynamiques
   const taglines = [
@@ -120,7 +120,7 @@ export default function Home() {
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6">
           <For each={latestNews()}>
             {(news, index) => (
-              <div class="transition-all duration-700 ease-in-out" style={{
+              <A href="/news" class="block transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{
                 display: currentNewsIndex() === index() ? 'block' : 'none',
                 opacity: currentNewsIndex() === index() ? 1 : 0
               }}>
@@ -135,28 +135,18 @@ export default function Home() {
                     </div>
                   </Show>
                   <h3 class={props.compact ? "text-2xl md:text-3xl font-black text-white mb-3 leading-tight" : "text-3xl md:text-5xl font-black text-white mb-4 leading-tight"}>{news.title}</h3>
-                  <Show when={news.excerpt}>
-                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed" : "text-xl text-gray-300 mb-6 leading-relaxed"}>{news.excerpt}</p>
+                  <Show when={news.headlines || news.excerpt} fallback={
+                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed italic" : "text-xl text-gray-300 mb-6 leading-relaxed italic"}>
+                      [Aucun résumé disponible]
+                    </p>
+                  }>
+                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed" : "text-xl text-gray-300 mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
                   </Show>
-                  <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-gray-700/50">
-                    <div class="flex items-center gap-4 text-sm text-gray-400">
-                      <Show when={news.author}>
-                        <span class="flex items-center gap-2">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          {news.author}
-                        </span>
-                      </Show>
-                      <span>•</span>
-                      <time>{formatDate(news.created)}</time>
-                    </div>
-                    <A href="/news" class="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/20">
-                      Lire l'article
-                    </A>
+                  <div class="py-auto border-t border-gray-700/50 flex items-center justify-center">
+                    <time class="text-sm text-gray-400">{formatDate(news.created)}</time>
                   </div>
                 </div>
-              </div>
+              </A>
             )}
           </For>
         </div>
@@ -221,13 +211,6 @@ export default function Home() {
         >
           Split
         </button>
-        <button 
-          onClick={() => setLayout('compact')}
-          class={`px-4 py-2 rounded-lg font-bold transition-all duration-300 shadow-lg ${layout() === 'compact' ? 'bg-yellow-400 text-black' : 'bg-gray-800/80 text-gray-400 hover:bg-gray-700'}`}
-          aria-label="Layout Compact"
-        >
-          Compact
-        </button>
       </div>
 
       {/* Layout Classique - Vertical classique */}
@@ -241,14 +224,9 @@ export default function Home() {
         </section>
 
         <section class="max-w-6xl mx-auto mb-20">
-          <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl md:text-4xl font-black text-white">
-              <span class="text-yellow-400">⚡</span> Dernières Actualités
-            </h2>
-            <A href="/news" class="px-6 py-3 bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 hover:border-yellow-400 rounded-lg text-yellow-400 font-bold transition-all duration-300 hover:scale-105">
-              Voir toutes →
-            </A>
-          </div>
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-8">
+            <span class="text-yellow-400">⚡</span> Dernières Actualités
+          </h2>
           <NewsCarousel />
         </section>
 
@@ -258,94 +236,28 @@ export default function Home() {
       {/* Layout Split - Logo à gauche, Carrousel à droite */}
       <Show when={layout() === 'split'}>
         <section class="max-w-7xl mx-auto mb-12">
-          <div class="grid md:grid-cols-2 gap-8 items-start">
-            {/* Colonne gauche - Logo et taglines */}
-            <div class="text-center">
-              <div class="scale-125 mb-6">
+          {/* Taglines en haut centrées */}
+          <div class="mb-8 text-center">
+            <Taglines />
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
+            {/* Colonne gauche - Logo plus gros et centré verticalement */}
+            <div class="text-center flex items-center justify-center">
+              <div class="scale-[1.75]">
                 <MainLogo />
               </div>
-              <Taglines />
             </div>
 
             {/* Colonne droite - Carrousel */}
             <div>
-              <h2 class="text-2xl md:text-3xl font-black text-white mb-6">
-                <span class="text-yellow-400">⚡</span> Dernières Actualités
-              </h2>
               <NewsCarousel compact={true} />
-              <div class="mt-6 text-center">
-                <A href="/news" class="inline-block px-6 py-3 bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 hover:border-yellow-400 rounded-lg text-yellow-400 font-bold transition-all duration-300 hover:scale-105">
-                  Voir toutes →
-                </A>
-              </div>
             </div>
           </div>
-          
-          {/* Stats en dessous des deux colonnes */}
-          <div class="mt-12">
+
+          {/* Stats sous les actualités */}
+          <div>
             <StatsCards />
-          </div>
-        </section>
-
-        <CTASection />
-      </Show>
-
-      {/* Layout Compact - Tout horizontal et condensé */}
-      <Show when={layout() === 'compact'}>
-        <section class="max-w-7xl mx-auto mb-12">
-          {/* Logo et tagline compact en haut */}
-          <div class="text-center mb-8">
-            <div class="mb-4">
-              <MainLogo />
-            </div>
-            <div class="relative mb-6 overflow-visible z-[99] min-h-[3rem]">
-              <For each={taglines}>
-                {(tagline, index) => (
-                  <p 
-                    class="absolute inset-x-0 flex items-center justify-center text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 transition-all duration-1000 z-[99] py-2"
-                    style={{
-                      opacity: currentTagline() === index() ? 1 : 0,
-                      transform: currentTagline() === index() ? 'translateY(0)' : 'translateY(20px)'
-                    }}
-                  >
-                    {tagline}
-                  </p>
-                )}
-              </For>
-            </div>
-          </div>
-
-          {/* Stats en ligne horizontale */}
-          <div class="flex flex-wrap justify-center gap-4 mb-10">
-            <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-lg px-6 py-3 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-              <span class="text-2xl font-black text-yellow-400 mr-2">100%</span>
-              <span class="text-sm text-gray-400 font-medium">Engagement</span>
-            </div>
-            <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-lg px-6 py-3 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-              <span class="text-2xl font-black text-yellow-400 mr-2">24/7</span>
-              <span class="text-sm text-gray-400 font-medium">Actif</span>
-            </div>
-            <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-lg px-6 py-3 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-              <span class="text-2xl font-black text-yellow-400 mr-2">∞</span>
-              <span class="text-sm text-gray-400 font-medium">Potentiel</span>
-            </div>
-            <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-lg px-6 py-3 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-              <span class="text-2xl font-black text-yellow-400 mr-2">1</span>
-              <span class="text-sm text-gray-400 font-medium">Membre</span>
-            </div>
-          </div>
-
-          {/* Carrousel compact */}
-          <div class="max-w-5xl mx-auto mb-8">
-            <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">
-              <span class="text-yellow-400">⚡</span> Dernières Actualités
-            </h2>
-            <NewsCarousel compact={true} />
-            <div class="mt-6 text-center">
-              <A href="/news" class="inline-block px-6 py-3 bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 hover:border-yellow-400 rounded-lg text-yellow-400 font-bold transition-all duration-300 hover:scale-105">
-                Voir toutes →
-              </A>
-            </div>
           </div>
         </section>
 

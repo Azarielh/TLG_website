@@ -84,68 +84,78 @@ export default function Nav() {
 
   return (
     <>
-      <nav class="fixed top-0 left-0 w-full min-h-[56px] z-[60] bg-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-[rgba(168,85,247,0.06)] overflow-visible">
-        <div class="w-[min(1200px,92%)] mx-auto flex items-center justify-between py-2 gap-4">
+      <nav class="fixed top-0 left-0 w-full min-h-[56px] z-[60] bg-gradient-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
+        <div class="w-[min(1200px,96%)] mx-auto flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4">
 
           {/* Logo */}
           <a
             href="/"
-            class="flex-shrink-0 text-white font-bold text-lg whitespace-nowrap min-w-[8rem]"
+            class="flex-shrink-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
+            style="font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6)) drop-shadow(0 0 20px rgba(147,51,234,0.4));"
           >
-            The Legion
+            <span class="hidden sm:inline">The Legion</span>
+            <span class="sm:hidden">TLG</span>
           </a>
 
           {/* Desktop menu */}
           <DesktopMenu />
 
-          {/* Mobile menu button */}
-          <button
-            class="sm:hidden text-white px-3 py-2 rounded-lg bg-[rgba(147,51,234,0.15)] hover:bg-[rgba(147,51,234,0.3)] font-semibold"
-            onClick={() => setShowMobileMenu(!showMobileMenu())}
-          >
-            ☰
-          </button>
-
-          {/* Eshop button */}
-          <Show when={isCompact()}>
-            <EshopButton logoSrc="eshop_logo.svg" sizePx={80} class="flex-shrink-0" />
-          </Show>
-          
-          {/* Auth button / User Avatar */}
-          <Show 
-            when={user()}
-            fallback={
-              <button
-                class="flex-shrink-0 ml-auto text-white px-4 py-2 rounded-lg bg-[rgba(147,51,234,0.15)] hover:bg-[rgba(147,51,234,0.3)] transition-all font-semibold"
-                onClick={() => setShowAuth(!showAuth())}
-              >
-                {showAuth() ? "Fermer" : "👤"}
-              </button>
-            }
-          >
+          {/* Right side elements container */}
+          <div class="flex items-center gap-2 md:gap-3">
+            {/* Mobile menu button */}
             <button
-              onClick={() => setShowAuth(!showAuth())}
-              class="flex-shrink-0 ml-auto cursor-pointer bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
-              title={user()?.name || user()?.email || "Utilisateur"}
+              class="lg:hidden text-cyan-400 px-3 py-2 rounded-lg bg-gradient-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 font-semibold transition-all shadow-[0_0_10px_rgba(34,211,238,0.3)] text-xl"
+              onClick={() => setShowMobileMenu(!showMobileMenu())}
+              aria-label="Menu"
             >
-              <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-400/50 hover:border-yellow-400 transition-all">
-                <Show 
-                  when={avatarUrl()}
-                  fallback={
-                    <div class="w-full h-full bg-gradient-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-lg">
-                      {(user()?.name || user()?.email || "?").charAt(0).toUpperCase()}
-                    </div>
-                  }
-                >
-                  <img 
-                    src={avatarUrl()} 
-                    alt="Avatar utilisateur" 
-                    class="w-full h-full object-cover"
-                  />
-                </Show>
-              </div>
+              {showMobileMenu() ? "✕" : "☰"}
             </button>
-          </Show>
+
+            {/* Eshop button - hidden on mobile when compact */}
+            <Show when={isCompact()}>
+              <div class="hidden xs:block">
+                <EshopButton logoSrc="eshop_logo.svg" sizePx={80} class="flex-shrink-0" />
+              </div>
+            </Show>
+            
+            {/* Auth button / User Avatar */}
+            <Show 
+              when={user()}
+              fallback={
+                <button
+                  class="flex-shrink-0 text-cyan-300 px-3 md:px-4 py-2 rounded-lg bg-gradient-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all font-semibold shadow-[0_0_10px_rgba(34,211,238,0.2)] hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] text-sm md:text-base"
+                  onClick={() => setShowAuth(!showAuth())}
+                  aria-label="Connexion"
+                >
+                  {showAuth() ? "✕" : "👤"}
+                </button>
+              }
+            >
+              <button
+                onClick={() => setShowAuth(!showAuth())}
+                class="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
+                title={user()?.name || user()?.email || "Utilisateur"}
+                aria-label="Profil utilisateur"
+              >
+                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-cyan-400/50 hover:border-cyan-400 transition-all shadow-[0_0_10px_rgba(34,211,238,0.4)] hover:shadow-[0_0_15px_rgba(34,211,238,0.6)]">
+                  <Show 
+                    when={avatarUrl()}
+                    fallback={
+                      <div class="w-full h-full bg-gradient-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-base md:text-lg">
+                        {(user()?.name || user()?.email || "?").charAt(0).toUpperCase()}
+                      </div>
+                    }
+                  >
+                    <img 
+                      src={avatarUrl()} 
+                      alt="Avatar utilisateur" 
+                      class="w-full h-full object-cover"
+                    />
+                  </Show>
+                </div>
+              </button>
+            </Show>
+          </div>
         </div>
       </nav>
 

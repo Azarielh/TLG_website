@@ -4,7 +4,8 @@ import { usePocketBase } from "../app";
 export interface NewsItemData {
   id: string;
   title: string;
-  headlines?: string; // Phrase courte (optionnel)
+  excerpt?: string; // Phrase courte (optionnel) - ancien nom
+  headlines?: string; // Phrase courte (nouveau nom)
   content: string;
   tags: string[];
   created: string;
