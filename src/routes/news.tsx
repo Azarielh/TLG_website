@@ -10,6 +10,7 @@ type FilterTag = string | "all";
 export default function News() {
   const pb = usePocketBase();
   const [newsItems, setNewsItems] = createSignal<NewsItemData[]>([]);
+  const [allTagsList, setAllTagsList] = createSignal<string[]>([]);
   const [isLoading, setIsLoading] = createSignal(true);
   const [sortBy, setSortBy] = createSignal<SortOption>("recent");
   const [selectedTag, setSelectedTag] = createSignal<FilterTag>("all");
@@ -32,6 +33,19 @@ export default function News() {
       });
       
       setNewsItems(records as unknown as NewsItemData[]);
+
+      // Charger la liste globale des tags (une seule fois)
+      try {
+        const tagsRecords: any[] = await pb.collection('tags').getFullList();
+        const tagNames = tagsRecords
+          .map((r) => r.Tags_name ?? r.name ?? null)
+          .filter(Boolean)
+          .sort((a: string, b: string) => a.localeCompare(b));
+        setAllTagsList(tagNames as string[]);
+      } catch (err) {
+        console.warn('⚠️ Unable to load tags collection:', err);
+        setAllTagsList([]);
+      }
     } catch (error) {
       console.error("❌ Error loading news:", error);
       setNewsItems([]);
@@ -287,7 +301,7 @@ export default function News() {
             {/* Format blog : liste verticale avec espacement */}
             <div class="flex flex-col gap-12">
               <For each={filteredAndSortedNews()}>
-                {(news) => <NewsItem news={news} centerTitle={true} />}
+                {(news) => <NewsItem news={news} centerTitle={true} availableTags={allTagsList()} />}
               </For>
             </div>
           </Show>

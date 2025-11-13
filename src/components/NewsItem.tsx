@@ -184,6 +184,19 @@ const NewsItem: Component<NewsItemProps> = (props) => {
           </div>
         </div>
 
+        {/* Tags en bas de l'article (uniquement les tags associés à cet article) */}
+        <Show when={props.news.tags && props.news.tags.length > 0}>
+          <div class="mt-8 pt-6 border-t border-gray-700/50">
+            <div class="flex flex-wrap gap-2">
+              {props.news.tags.map((tag) => (
+                <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/40 backdrop-blur-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Show>
+
         {/* Footer : Auteur avec design amélioré */}
         <Show when={props.news.author}>
           <div class="flex items-center gap-3 pt-8 mt-8 border-t border-gray-700/50">
