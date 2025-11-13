@@ -10,7 +10,7 @@ interface AddNewsModalProps {
 const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const pb = usePocketBase();
   const [title, setTitle] = createSignal("");
-  const [excerpt, setExcerpt] = createSignal(""); // Phrase courte
+  const [headlines, setHeadlines] = createSignal(""); // Phrase courte
   const [content, setContent] = createSignal("");
   const [selectedTags, setSelectedTags] = createSignal<string[]>([]);
   const [availableTags, setAvailableTags] = createSignal<string[]>([]);
@@ -99,7 +99,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       // Préparer les données du formulaire
       const formData = new FormData();
       formData.append('title', title());
-      formData.append('excerpt', excerpt());
+      formData.append('headlines', headlines());
       formData.append('content', content());
       formData.append('tags', JSON.stringify(selectedTags()));
       formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
@@ -107,7 +107,8 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       // Ajouter le média selon le type
       if (mediaType() === 'image' && mediaFile()) {
         // Upload d'image - utiliser le champ 'image' de PocketBase
-        formData.append('image', mediaFile()!);
+        // Fournir explicitement le nom du fichier au FormData (plus robuste)
+        formData.append('image', mediaFile()!, mediaFile()!.name);
       } else if (mediaType() === 'video' && mediaUrl()) {
         // URL vidéo - utiliser le champ 'Video_Url' de PocketBase
         formData.append('Video_Url', mediaUrl());
@@ -115,12 +116,22 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       
       console.log('📝 Creating news with data:');
       console.log('  - Title:', title());
-      console.log('  - Excerpt:', excerpt());
+      console.log('  - Headlines:', headlines());
       console.log('  - Content length:', content().length);
       console.log('  - Tags:', selectedTags());
       console.log('  - Media type:', mediaType());
       console.log('  - Image file:', mediaFile()?.name);
       console.log('  - Video URL:', mediaUrl());
+
+      // Debug: lister les entrées FormData (utile pour vérifier l'upload de fichiers)
+      try {
+        for (const pair of (formData as any).entries()) {
+          // Attention: les fichiers affichent un objet File
+          console.log('  - formData entry:', pair[0], pair[1]);
+        }
+      } catch (e) {
+        console.log('  - Impossible de lister FormData entries (environnement restreint)');
+      }
       
       // Créer la news dans PocketBase
       const result = await pb.collection("news").create(formData);
@@ -129,7 +140,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
 
       // Réinitialiser le formulaire
       setTitle("");
-      setExcerpt("");
+      setHeadlines("");
       setContent("");
       setSelectedTags([]);
       setMediaType('none');
@@ -187,21 +198,21 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
             </div>
 
             <div>
-              <label for="excerpt" class="block text-sm font-medium text-gray-300 mb-2">
+              <label for="headlines" class="block text-sm font-medium text-gray-300 mb-2">
                 Phrase courte / Résumé *
               </label>
               <input
-                id="excerpt"
+                id="headlines"
                 type="text"
-                value={excerpt()}
-                onInput={(e) => setExcerpt(e.currentTarget.value)}
+                value={headlines()}
+                onInput={(e) => setHeadlines(e.currentTarget.value)}
                 required
                 maxLength={200}
                 class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
                 placeholder="Résumé en une phrase (max 200 caractères)"
               />
               <p class="text-xs text-gray-500 mt-1">
-                {excerpt().length}/200 caractères
+                {headlines().length}/200 caractères
               </p>
             </div>
 

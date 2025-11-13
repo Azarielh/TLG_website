@@ -26,7 +26,7 @@ Site web officiel de **The Legion**, organisation e-sport française. Construit 
 - Layout vertical type blog pour une meilleure lisibilité
 - Support d'images uploadées (stockées dans PocketBase)
 - Support de vidéos via URL externe
-- Système d'excerpt (phrase d'accroche courte)
+- Système de headlines (phrase d'accroche courte)
 
 **Effets visuels :**
 - Zoom au survol (scale-105)
@@ -144,7 +144,7 @@ TLG_website/
 | Champ | Type | Description |
 |-------|------|-------------|
 | `title` | Text | Titre de l'article |
-| `excerpt` | Text | Phrase courte d'accroche |
+| `headlines` | Text | Phrase courte d'accroche |
 | `content` | Text | Contenu complet de l'article |
 | `tags` | JSON | Array de tags |
 | `author` | Text | Nom de l'auteur |

@@ -3,7 +3,7 @@ import { Component, Show } from "solid-js";
 export interface NewsItemData {
   id: string;
   title: string;
-  excerpt?: string; // Phrase courte (optionnel)
+  headlines?: string; // Phrase courte (optionnel)
   content: string;
   tags: string[];
   created: string;
@@ -77,12 +77,12 @@ const NewsItem: Component<NewsItemProps> = (props) => {
           {props.news.title}
         </h2>
 
-        {/* Phrase courte (excerpt) avec design amélioré */}
-        <Show when={props.news.excerpt}>
+        {/* Phrase courte (headlines) avec design amélioré */}
+        <Show when={props.news.headlines}>
           <div class="relative mb-8">
             <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
-            <p class="text-xl md:text-2xl text-gray-200 font-medium leading-relaxed pl-6 italic">
-              "{props.news.excerpt}"
+              <p class="text-xl md:text-2xl text-gray-200 font-medium leading-relaxed pl-6 italic">
+              "{props.news.headlines}"
             </p>
           </div>
         </Show>

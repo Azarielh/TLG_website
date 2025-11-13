@@ -146,8 +146,8 @@ export default function Home() {
                         </div>
                       </Show>
                       <h3 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">{news.title}</h3>
-                      <Show when={news.excerpt}>
-                        <p class="text-xl text-gray-300 mb-6 leading-relaxed">{news.excerpt}</p>
+                      <Show when={news.headlines}>
+                        <p class="text-xl text-gray-300 mb-6 leading-relaxed">{news.headlines}</p>
                       </Show>
                       <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-gray-700/50">
                         <div class="flex items-center gap-4 text-sm text-gray-400">
