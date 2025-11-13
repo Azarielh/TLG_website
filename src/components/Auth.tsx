@@ -6,8 +6,9 @@ type AuthProps = {
     class?: string;
 };
 
-// Mot de passe temporaire pour l'accès staff
-const STAFF_ACCESS_PASSWORD = import.meta.env.SECRET_STAFF_PASSWORD;
+// Vérification du mot de passe staff via la collection `temp_safety` (PocketBase)
+// Record unique fourni : id = "7xj9zyt43u77hvf"
+const TEMP_SAFETY_RECORD_ID = "7xj9zyt43u77hvf";
 
 const Auth: Component<AuthProps> = (props) => {
     const pb = usePocketBase();
@@ -17,16 +18,38 @@ const Auth: Component<AuthProps> = (props) => {
     const [isAccessGranted, setIsAccessGranted] = createSignal(false);
     const [showPassword, setShowPassword] = createSignal(false);
 
-    const handlePasswordSubmit = (e: Event) => {
+    const handlePasswordSubmit = async (e: Event) => {
         e.preventDefault();
-        
-        if (accessPassword() === STAFF_ACCESS_PASSWORD) {
-            setIsAccessGranted(true);
-            setError(null);
-            console.log('✅ Staff access granted');
-        } else {
-            setError("Mot de passe incorrect. Accès réservé au staff.");
-            console.log('❌ Invalid staff password');
+
+        setError(null);
+
+        try {
+            console.log('🔒 Envoi du mot de passe au endpoint serveur pour vérification...');
+            const resp = await fetch('/api/validate-staff', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: accessPassword() }),
+            });
+
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data.ok) {
+                    setIsAccessGranted(true);
+                    setError(null);
+                    console.log('✅ Staff access granted (server validated)');
+                } else {
+                    setError('Mot de passe incorrect. Accès réservé au staff.');
+                }
+            } else if (resp.status === 401) {
+                setError('Mot de passe incorrect. Accès réservé au staff.');
+            } else if (resp.status === 500) {
+                setError('Impossible de vérifier le mot de passe (erreur serveur).');
+            } else {
+                setError('Erreur inattendue lors de la vérification du mot de passe.');
+            }
+        } catch (err: any) {
+            console.error('❌ Error calling validate-staff endpoint:', err);
+            setError('Erreur réseau lors de la vérification du mot de passe.');
         }
     };
 
