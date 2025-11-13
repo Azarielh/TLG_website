@@ -7,7 +7,7 @@ type AuthProps = {
 };
 
 // Mot de passe temporaire pour l'accès staff
-const STAFF_ACCESS_PASSWORD = import.meta.env.VITE_STAFF_PASSWORD || "TLG2025Staff!";
+const STAFF_ACCESS_PASSWORD = import.meta.env.SECRET_STAFF_PASSWORD;
 
 const Auth: Component<AuthProps> = (props) => {
     const pb = usePocketBase();
