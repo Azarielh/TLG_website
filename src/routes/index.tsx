@@ -99,7 +99,7 @@ export default function Home() {
           </div>
           <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-6 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
             <div class="text-4xl font-black text-yellow-400 mb-2">1</div>
-            <div class="text-sm text-gray-400 font-medium">Famille</div>
+            <div class="text-sm text-gray-400 font-medium">Membre</div>
           </div>
         </div>
       </section>
