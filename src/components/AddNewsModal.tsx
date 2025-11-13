@@ -282,7 +282,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
             </div>
 
             <div>
-              <label for="tags" class="block text-sm font-medium text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-gray-300 mb-2">
                 Tags
               </label>
               <Show
@@ -300,40 +300,38 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                     <p class="text-sm text-gray-500">Aucun tag disponible</p>
                   }
                 >
-                  <select
-                    multiple
-                    size={Math.min(availableTags().length, 6)}
-                    value={selectedTags()}
-                    onChange={(e) => {
-                      const options = Array.from(e.currentTarget.selectedOptions);
-                      setSelectedTags(options.map(opt => opt.value));
-                    }}
-                    class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
-                  >
+                  <div class="flex flex-wrap gap-2">
                     <For each={availableTags()}>
-                      {(tag) => (
-                        <option 
-                          value={tag}
-                          class="py-2 hover:bg-yellow-400/20"
-                        >
-                          {tag}
-                        </option>
-                      )}
-                    </For>
-                  </select>
-                  <p class="text-xs text-gray-500 mt-2">
-                    Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
-                  </p>
-                  <Show when={selectedTags().length > 0}>
-                    <div class="flex flex-wrap gap-2 mt-3">
-                      <For each={selectedTags()}>
-                        {(tag) => (
-                          <span class="px-3 py-1 text-sm rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
+                      {(tag) => {
+                        const isSelected = () => selectedTags().includes(tag);
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (isSelected()) {
+                                // Désélectionner
+                                setSelectedTags(selectedTags().filter(t => t !== tag));
+                              } else {
+                                // Sélectionner
+                                setSelectedTags([...selectedTags(), tag]);
+                              }
+                            }}
+                            class={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              isSelected()
+                                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/30 scale-105'
+                                : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white hover:scale-105'
+                            }`}
+                          >
                             {tag}
-                          </span>
-                        )}
-                      </For>
-                    </div>
+                          </button>
+                        );
+                      }}
+                    </For>
+                  </div>
+                  <Show when={selectedTags().length > 0}>
+                    <p class="text-xs text-gray-500 mt-3">
+                      {selectedTags().length} tag{selectedTags().length > 1 ? 's' : ''} sélectionné{selectedTags().length > 1 ? 's' : ''}
+                    </p>
                   </Show>
                 </Show>
               </Show>

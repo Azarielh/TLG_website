@@ -33,19 +33,6 @@ export default function News() {
       });
       
       setNewsItems(records as unknown as NewsItemData[]);
-
-      // Charger la liste globale des tags (une seule fois)
-      try {
-        const tagsRecords: any[] = await pb.collection('tags').getFullList();
-        const tagNames = tagsRecords
-          .map((r) => r.Tags_name ?? r.name ?? null)
-          .filter(Boolean)
-          .sort((a: string, b: string) => a.localeCompare(b));
-        setAllTagsList(tagNames as string[]);
-      } catch (err) {
-        console.warn('⚠️ Unable to load tags collection:', err);
-        setAllTagsList([]);
-      }
     } catch (error) {
       console.error("❌ Error loading news:", error);
       setNewsItems([]);
@@ -54,9 +41,28 @@ export default function News() {
     }
   };
 
-  // Charger les news au montage
-  createEffect(() => {
+  // Charger les tags une seule fois au montage
+  const loadTags = async () => {
+    if (!pb) return;
+    
+    try {
+      const tagsRecords: any[] = await pb.collection('tags').getFullList();
+      const tagNames = tagsRecords
+        .map((r) => r.Tags_name ?? r.name ?? null)
+        .filter(Boolean)
+        .sort((a: string, b: string) => a.localeCompare(b));
+      setAllTagsList(tagNames as string[]);
+      console.log('✅ Tags chargés:', tagNames);
+    } catch (err) {
+      console.error('❌ Erreur lors du chargement des tags:', err);
+      setAllTagsList([]);
+    }
+  };
+
+  // Charger les news et tags au montage (une seule fois)
+  onMount(() => {
     loadNews();
+    loadTags();
   });
 
   // Vérifier les permissions côté client uniquement
@@ -202,14 +208,12 @@ export default function News() {
           <Show when={canAddNews()}>
             <button
               onClick={() => setIsModalOpen(true)}
-              class="group relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-black transition-all duration-300 hover:scale-105 shadow-xl shadow-yellow-400/30 hover:shadow-2xl hover:shadow-yellow-400/50"
+              class="group relative w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-full text-black font-black transition-all duration-300 hover:scale-110 shadow-xl shadow-yellow-400/30 hover:shadow-2xl hover:shadow-yellow-400/50"
+              aria-label="Ajouter une News"
             >
-              <span class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Ajouter une News
-              </span>
+              <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
             </button>
           </Show>
         </div>
