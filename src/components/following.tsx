@@ -20,7 +20,7 @@ type Props = {
 };
 
 const Following: Component<Props> = (props) => {
-  const discord = props.discordUrl ?? "https://discord.com/invite/wfSyp6xBnF";
+  const discord = props.discordUrl ?? "discord.gg/esport-the-legion";
   const youtube = props.youtubeUrl ?? "https://www.youtube.com/@TheLegion.esport";
   const twitch = props.twitchUrl ?? "https://www.twitch.tv/thelegionallstar";
   const x = props.xUrl ?? "https://x.com/TheLegionAlStar";

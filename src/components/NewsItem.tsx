@@ -1,4 +1,5 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createSignal } from "solid-js";
+import { usePocketBase } from "../app";
 
 export interface NewsItemData {
   id: string;
@@ -19,9 +20,25 @@ export interface NewsItemData {
 
 interface NewsItemProps {
   news: NewsItemData;
+  centerTitle?: boolean;
 }
 
 const NewsItem: Component<NewsItemProps> = (props) => {
+  const pb = usePocketBase();
+  const [menuOpen, setMenuOpen] = createSignal(false);
+
+  // Vérifier si l'utilisateur a le rôle Admin/Dev pour afficher le bouton (reactif)
+  const [isAdminOrDev, setIsAdminOrDev] = createSignal(false);
+
+  if (pb) {
+    const check = () => {
+      const r = pb.authStore.record?.Rank;
+      setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
+    };
+    check();
+    const unsub = pb.authStore.onChange(() => check());
+    // cleanup non nécessaire ici (component persistent) — acceptable for small app
+  }
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
@@ -54,7 +71,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
       
       <div class="relative z-10 p-8 md:p-10">
         {/* En-tête avec tags et date */}
-        <div class="flex flex-wrap justify-between items-start gap-3 mb-6">
+        <div class="flex flex-wrap justify-between items-start gap-3 mb-6 relative">
           <Show when={props.news.tags && props.news.tags.length > 0}>
             <div class="flex flex-wrap gap-2">
               {props.news.tags.map((tag) => (
@@ -70,71 +87,102 @@ const NewsItem: Component<NewsItemProps> = (props) => {
             </svg>
             {formatDate(props.news.created)}
           </time>
+
+          {/* Admin menu button (only for Admin/Dev) */}
+          <Show when={isAdminOrDev}>
+            <div class="ml-2 relative">
+              <button
+                onClick={() => setMenuOpen(!menuOpen())}
+                aria-label="Actions"
+                class="p-2 rounded-md bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v.01M12 12v.01M12 18v.01" />
+                </svg>
+              </button>
+
+              <Show when={menuOpen()}>
+                <div class="absolute right-full top-0 mr-2 w-40 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
+                  <button
+                    onClick={() => {
+                      // Dispatch custom event to let parent handle edit
+                      window.dispatchEvent(new CustomEvent('news:edit', { detail: { id: props.news.id } }));
+                      setMenuOpen(false);
+                    }}
+                    class="w-full text-left px-4 py-2 hover:bg-gray-700"
+                  >
+                    Modifier
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Dispatch custom event to let parent handle delete
+                      window.dispatchEvent(new CustomEvent('news:delete', { detail: { id: props.news.id } }));
+                      setMenuOpen(false);
+                    }}
+                    class="w-full text-left px-4 py-2 hover:bg-red-700 hover:text-white"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </Show>
+            </div>
+          </Show>
         </div>
 
         {/* Titre avec gradient */}
-        <h2 class="text-3xl sm:text-5xl font-black mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent group-hover:from-yellow-400 group-hover:via-yellow-200 group-hover:to-white transition-all duration-500">
+        <h2 class={`text-3xl sm:text-5xl font-black mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent group-hover:from-yellow-400 group-hover:via-yellow-200 group-hover:to-white transition-all duration-500 ${props.centerTitle ? 'text-center' : ''}`}>
           {props.news.title}
         </h2>
 
-        {/* Phrase courte (headlines) avec design amélioré */}
-        <Show when={props.news.headlines}>
-          <div class="relative mb-8">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
-              <p class="text-xl md:text-2xl text-gray-200 font-medium leading-relaxed pl-6 italic">
-              "{props.news.headlines}"
-            </p>
-          </div>
-        </Show>
+        {/* Layout responsive : image sous le titre (mobile) et à droite du texte (desktop) */}
+        <div class="mb-10">
+          <div class="flex flex-col md:flex-row md:items-start gap-6">
+            {/* Media box: DOM-first so it appears under title on mobile, moved to right on md+ */}
+            <Show when={hasMedia}>
+              <div class="w-full md:w-1/3 order-first md:order-2">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-700/50 group-hover:ring-yellow-400/50 transition-all duration-500">
+                  <Show when={imageUrl}>
+                    <img
+                      src={imageUrl!}
+                      alt={props.news.title}
+                      class="w-full h-48 md:h-[220px] lg:h-[260px] object-cover block"
+                      loading="lazy"
+                    />
+                  </Show>
 
-        {/* Média (Image ou Vidéo) avec effets fancy */}
-        <Show when={hasMedia}>
-          <div class="relative w-full mb-10 group/media">
-            {/* Container avec effet de bordure animée */}
-            <div class="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-600 to-yellow-400 rounded-2xl opacity-0 group-hover/media:opacity-100 blur-lg transition-all duration-500"></div>
-            
-            <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-700/50 group-hover/media:ring-yellow-400/50 transition-all duration-500">
-              <Show when={imageUrl}>
-                {/* Overlay gradient sur hover */}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/media:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-                
-                <img
-                  src={imageUrl!}
-                  alt={props.news.title}
-                  class="w-full h-auto object-cover transform group-hover/media:scale-105 transition-transform duration-700 ease-out"
-                  loading="lazy"
-                />
-                
-                {/* Icône zoom sur hover */}
-                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-md rounded-full p-3 opacity-0 group-hover/media:opacity-100 transition-all duration-300 z-20">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                  </svg>
+                  <Show when={videoUrl}>
+                    <video controls class="w-full h-48 md:h-[220px] lg:h-[260px] object-cover block" preload="metadata">
+                      <source src={videoUrl!} type="video/mp4" />
+                      Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                  </Show>
+                </div>
+              </div>
+            </Show>
+
+            {/* Texte (headlines + content) */}
+            <div class="flex-1 order-last md:order-1">
+              {/* Phrase courte (headlines) avec design amélioré */}
+              <Show when={props.news.headlines}>
+                <div class="relative mb-6">
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
+                  <p class="text-xl md:text-2xl text-gray-200 font-medium leading-relaxed pl-6 italic">
+                    "{props.news.headlines}"
+                  </p>
                 </div>
               </Show>
-              
-              <Show when={videoUrl}>
-                <video
-                  controls
-                  class="w-full h-auto"
-                  preload="metadata"
-                >
-                  <source src={videoUrl!} type="video/mp4" />
-                  Votre navigateur ne supporte pas la lecture de vidéos.
-                </video>
+
+              {/* Contenu complet avec meilleure typographie */}
+              <Show when={props.news.content}>
+                <div class="prose prose-lg prose-invert max-w-none">
+                  <div class="text-gray-200 text-lg leading-relaxed whitespace-pre-line [&>p]:mb-4">
+                    {props.news.content}
+                  </div>
+                </div>
               </Show>
             </div>
           </div>
-        </Show>
-
-        {/* Contenu complet avec meilleure typographie */}
-        <Show when={props.news.content}>
-          <div class="prose prose-lg prose-invert max-w-none mb-8">
-            <div class="text-gray-200 text-lg leading-relaxed whitespace-pre-line [&>p]:mb-4">
-              {props.news.content}
-            </div>
-          </div>
-        </Show>
+        </div>
 
         {/* Footer : Auteur avec design amélioré */}
         <Show when={props.news.author}>

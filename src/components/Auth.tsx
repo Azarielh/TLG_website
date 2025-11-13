@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, Show, onMount } from "solid-js";
 import type { Component } from "solid-js";
 import { usePocketBase } from "../app";
 
@@ -17,6 +17,23 @@ const Auth: Component<AuthProps> = (props) => {
     const [accessPassword, setAccessPassword] = createSignal("");
     const [isAccessGranted, setIsAccessGranted] = createSignal(false);
     const [showPassword, setShowPassword] = createSignal(false);
+
+    // Bypass the password prompt when running inside the specified preview host
+    // (useful for your Codespaces/GitHub.dev preview). This only alters the
+    // client UI flow (shows the Google login directly) — it does NOT expose
+    // or change any server-side validation.
+    onMount(() => {
+        try {
+            const origin = window.location?.origin || "";
+            const PREVIEW_ORIGIN = "https://sturdy-guacamole-rr4jg494w4p3pjpq-3000.app.github.dev";
+            if (origin === PREVIEW_ORIGIN) {
+                console.log('🔁 Preview host detected — bypassing staff password prompt');
+                setIsAccessGranted(true);
+            }
+        } catch (e) {
+            // ignore (SSR or restricted env)
+        }
+    });
 
     const handlePasswordSubmit = async (e: Event) => {
         e.preventDefault();

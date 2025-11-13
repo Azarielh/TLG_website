@@ -1,10 +1,14 @@
 import { Component, createSignal, Show, For, createEffect, onMount } from "solid-js";
 import { usePocketBase } from "../app";
+import type { NewsItemData } from "./NewsItem";
 
 interface AddNewsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNewsAdded?: () => void;
+  // When provided, modal will act in edit mode for this news
+  existingNews?: NewsItemData | null;
+  onNewsUpdated?: () => void;
 }
 
 const AddNewsModal: Component<AddNewsModalProps> = (props) => {
@@ -20,6 +24,42 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [error, setError] = createSignal("");
   const [isLoadingTags, setIsLoadingTags] = createSignal(true);
+
+  // If editing, when the modal opens prefill the fields from existingNews
+  createEffect(() => {
+    if (props.isOpen && props.existingNews) {
+      const n = props.existingNews;
+      setTitle(n.title || "");
+      setHeadlines(n.headlines || "");
+      setContent(n.content || "");
+      setSelectedTags(n.tags || []);
+
+      if (n.Video_Url) {
+        setMediaType('video');
+        setMediaUrl(n.Video_Url);
+        setMediaFile(null);
+      } else if (n.image) {
+        setMediaType('image');
+        // We don't have the actual File for existing image, keep mediaFile null and rely on image URL
+        setMediaUrl("");
+        setMediaFile(null);
+      } else {
+        setMediaType('none');
+        setMediaUrl("");
+        setMediaFile(null);
+      }
+    }
+    // If modal closed, clear temporary upload file to avoid stale state
+    if (!props.isOpen && !props.existingNews) {
+      setTitle("");
+      setHeadlines("");
+      setContent("");
+      setSelectedTags([]);
+      setMediaType('none');
+      setMediaUrl("");
+      setMediaFile(null);
+    }
+  });
 
   // Récupérer les tags depuis la collection tags
   onMount(async () => {
@@ -133,23 +173,33 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         console.log('  - Impossible de lister FormData entries (environnement restreint)');
       }
       
-      // Créer la news dans PocketBase
-      const result = await pb.collection("news").create(formData);
-      
-      console.log('✅ News created successfully:', result);
+      let result;
+      if (props.existingNews && props.existingNews.id) {
+        // Update existing record
+        result = await pb.collection("news").update(props.existingNews.id, formData);
+        console.log('✅ News updated successfully:', result);
 
-      // Réinitialiser le formulaire
-      setTitle("");
-      setHeadlines("");
-      setContent("");
-      setSelectedTags([]);
-      setMediaType('none');
-      setMediaUrl("");
-      setMediaFile(null);
+        // Callback et fermeture
+        props.onNewsUpdated?.();
+        props.onClose();
+      } else {
+        // Créer la news dans PocketBase
+        result = await pb.collection("news").create(formData);
+        console.log('✅ News created successfully:', result);
 
-      // Callback et fermeture
-      props.onNewsAdded?.();
-      props.onClose();
+        // Réinitialiser le formulaire
+        setTitle("");
+        setHeadlines("");
+        setContent("");
+        setSelectedTags([]);
+        setMediaType('none');
+        setMediaUrl("");
+        setMediaFile(null);
+
+        // Callback et fermeture
+        props.onNewsAdded?.();
+        props.onClose();
+      }
     } catch (err: any) {
       console.error('❌ Error creating news:', err);
       console.error('❌ Error response:', err?.response);

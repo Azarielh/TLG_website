@@ -1,9 +1,8 @@
 import { Title } from "@solidjs/meta";
-import { Component, createSignal, createMemo, For, Show } from "solid-js";
+import { Component, createSignal, createMemo, For, Show, createEffect, onMount, onCleanup } from "solid-js";
 import NewsItem, { type NewsItemData } from "../components/NewsItem";
 import AddNewsModal from "../components/AddNewsModal";
 import { usePocketBase } from "../app";
-import { createEffect } from "solid-js";
 
 type SortOption = "recent" | "oldest";
 type FilterTag = string | "all";
@@ -15,6 +14,7 @@ export default function News() {
   const [sortBy, setSortBy] = createSignal<SortOption>("recent");
   const [selectedTag, setSelectedTag] = createSignal<FilterTag>("all");
   const [isModalOpen, setIsModalOpen] = createSignal(false);
+  const [editNews, setEditNews] = createSignal<NewsItemData | null>(null);
   const [canAddNews, setCanAddNews] = createSignal(false); // Client-only pour éviter hydration mismatch
 
   // Fonction pour charger/recharger les news
@@ -78,6 +78,49 @@ export default function News() {
         unsubscribe();
       };
     }
+  });
+
+  // Écouter les events dispatchés par les NewsItem (edit/delete)
+  onMount(() => {
+    const onEdit = (e: any) => {
+      const id = e?.detail?.id;
+      if (!id) return;
+      const found = newsItems().find((n) => n.id === id);
+      if (found) {
+        setEditNews(found);
+        setIsModalOpen(true);
+      } else {
+        // reload then try to find
+        loadNews().then(() => {
+          const f2 = newsItems().find((n) => n.id === id);
+          if (f2) {
+            setEditNews(f2);
+            setIsModalOpen(true);
+          }
+        });
+      }
+    };
+
+    const onDelete = async (e: any) => {
+      const id = e?.detail?.id;
+      if (!id || !pb) return;
+      if (!confirm('Confirmez la suppression de cette news ?')) return;
+      try {
+        await pb.collection('news').delete(id);
+        await loadNews();
+      } catch (err) {
+        console.error('❌ Error deleting news:', err);
+        alert('Erreur lors de la suppression. Voir console.');
+      }
+    };
+
+    window.addEventListener('news:edit', onEdit as EventListener);
+    window.addEventListener('news:delete', onDelete as EventListener);
+
+    onCleanup(() => {
+      window.removeEventListener('news:edit', onEdit as EventListener);
+      window.removeEventListener('news:delete', onDelete as EventListener);
+    });
   });
 
   // Extraire tous les tags uniques
@@ -244,7 +287,7 @@ export default function News() {
             {/* Format blog : liste verticale avec espacement */}
             <div class="flex flex-col gap-12">
               <For each={filteredAndSortedNews()}>
-                {(news) => <NewsItem news={news} />}
+                {(news) => <NewsItem news={news} centerTitle={true} />}
               </For>
             </div>
           </Show>
@@ -254,8 +297,18 @@ export default function News() {
       {/* Modal d'ajout de news */}
       <AddNewsModal
         isOpen={isModalOpen()}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditNews(null);
+        }}
         onNewsAdded={handleNewsAdded}
+        existingNews={editNews()}
+        onNewsUpdated={() => {
+          // after update, reload and close
+          loadNews();
+          setIsModalOpen(false);
+          setEditNews(null);
+        }}
       />
     </main>
   );

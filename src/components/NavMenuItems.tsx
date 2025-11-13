@@ -62,6 +62,12 @@ export const menuItems = [
     label: "Académie",
     status: "Section à venir",
   },
+  {
+    id: "faq",
+    href: "/",
+    label: "FAQ",
+    status: "Section à venir",
+  }
 ];
 
 // Desktop Menu Component
