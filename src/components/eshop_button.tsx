@@ -21,7 +21,7 @@ export default function EshopButton(props: EshopButtonProps) {
       aria-label={ariaLabel}
       class={`${!isInline ? "fixed bottom-2 left-2 z-50" : ""}
               hover:scale-110 transform transition-transform duration-150
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+              focus:outline-none
               ${extraClass}`}
       style={{ width: `${sizePx}px`, height: `${sizePx}px` }}
     >
