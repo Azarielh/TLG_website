@@ -87,20 +87,7 @@ export default function Nav() {
       <nav class="fixed top-0 left-0 w-full min-h-[56px] z-[60] bg-gradient-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
         <div class="w-[min(1200px,96%)] mx-auto flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4">
 
-          {/* Logo */}
-          <a
-            href="/"
-            class="flex-shrink-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
-            style="font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6)) drop-shadow(0 0 20px rgba(147,51,234,0.4));"
-          >
-            <span class="hidden sm:inline">The Legion</span>
-            <span class="sm:hidden">TLG</span>
-          </a>
-
-          {/* Desktop menu */}
-          <DesktopMenu />
-
-          {/* Right side elements container */}
+          {/* Left side: Mobile menu button + Logo */}
           <div class="flex items-center gap-2 md:gap-3">
             {/* Mobile menu button */}
             <button
@@ -110,6 +97,23 @@ export default function Nav() {
             >
               {showMobileMenu() ? "✕" : "☰"}
             </button>
+
+            {/* Logo */}
+            <a
+              href="/"
+              class="flex-shrink-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
+              style="font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6)) drop-shadow(0 0 20px rgba(147,51,234,0.4));"
+            >
+              <span class="hidden sm:inline">The Legion</span>
+              <span class="sm:hidden">TLG</span>
+            </a>
+          </div>
+
+          {/* Desktop menu */}
+          <DesktopMenu />
+
+          {/* Right side elements container */}
+          <div class="flex items-center gap-2 md:gap-3">
 
             {/* Eshop button - hidden on mobile when compact */}
             <Show when={isCompact()}>

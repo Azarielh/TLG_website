@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { Component, createSignal, createMemo, For, Show, createEffect, onMount, onCleanup } from "solid-js";
+import { createSignal, createMemo, For, Show, createEffect, onMount, onCleanup } from "solid-js";
 import NewsItem, { type NewsItemData } from "../components/NewsItem";
 import AddNewsModal from "../components/AddNewsModal";
 import { usePocketBase } from "../app";
@@ -65,18 +65,31 @@ export default function News() {
       // Vérifier immédiatement
       const checkPermissions = () => {
         const isValid = pb.authStore.isValid;
-        const userRank = pb.authStore.record?.Rank;
+        const record = pb.authStore.record;
+        const userRank = record?.Rank;
         const allowedRanks = ['Dev', 'Admin', 'Staff']; // Ranks autorisés
-        const hasAuthorizedRank = userRank && allowedRanks.includes(userRank);
         
+        // Log détaillé pour debug
         console.log('🔐 Checking permissions:', { 
           isValid, 
-          userRank, 
-          hasAuthorizedRank,
-          allowedRanks 
+          record,
+          'record.Rank': record?.Rank,
+          'record.rank': record?.rank,
+          userRank,
+          userRankType: typeof userRank,
+          'userRank value': `"${userRank}"`,
+          'userRank length': userRank?.length,
+          allowedRanks,
+          'includes Dev': allowedRanks.includes('Dev'),
+          'includes userRank': userRank ? allowedRanks.includes(userRank) : false,
+          'strict comparison': userRank === 'Dev' || userRank === 'Admin' || userRank === 'Staff'
         });
         
-        setCanAddNews(isValid && hasAuthorizedRank);
+        const hasAuthorizedRank = isValid && userRank && allowedRanks.includes(userRank);
+        
+        console.log('✅ hasAuthorizedRank:', hasAuthorizedRank);
+        
+        setCanAddNews(!!hasAuthorizedRank);
       };
       
       checkPermissions();
@@ -301,7 +314,7 @@ export default function News() {
             {/* Format blog : liste verticale avec espacement */}
             <div class="flex flex-col gap-12">
               <For each={filteredAndSortedNews()}>
-                {(news) => <NewsItem news={news} centerTitle={true} availableTags={allTagsList()} />}
+                {(news) => <NewsItem news={news} centerTitle={true} />}
               </For>
             </div>
           </Show>

@@ -4,17 +4,14 @@ import { usePocketBase } from "../app";
 export interface NewsItemData {
   id: string;
   title: string;
-  excerpt?: string; // Phrase courte (optionnel) - ancien nom
   headlines?: string; // Phrase courte (nouveau nom)
   content: string;
   tags: string[];
   created: string;
   updated: string;
   author?: string;
-  // Image uploadée via PocketBase (nom du fichier)
   image?: string;
-  // OU vidéo via URL externe
-  Video_Url?: string;
+  video_url?: string;
   collectionId?: string; // Pour construire l'URL du fichier PocketBase
   collectionName?: string;
 }
@@ -62,7 +59,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
   };
 
   const imageUrl = getImageUrl();
-  const videoUrl = props.news.Video_Url || null;
+  const videoUrl = props.news.video_url || null;
   const hasMedia = imageUrl || videoUrl;
 
   return (
