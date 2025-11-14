@@ -34,9 +34,9 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       setContent(n.content || "");
       setSelectedTags(n.tags || []);
 
-      if (n.Video_Url) {
+      if (n.video_url) {
         setMediaType('video');
-        setMediaUrl(n.Video_Url);
+        setMediaUrl(n.video_url);
         setMediaFile(null);
       } else if (n.image) {
         setMediaType('image');
@@ -76,14 +76,14 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       console.log('🔐 User Rank:', pb.authStore.record?.Rank);
       
       // Récupérer les tags depuis la collection dédiée (sans sort pour tester)
-      const tagsRecords = await pb.collection("tags").getFullList();
+      const tagsRecords = await pb.collection("Tags").getFullList();
       
       console.log('✅ Tags loaded from collection:', tagsRecords);
       
       // Extraire les noms des tags et trier côté client
       // Le champ s'appelle "Tags_name" dans votre collection
       const tagNames = tagsRecords
-        .map((record: any) => record.Tags_name)
+        .map((record: any) => record.name)
         .filter(name => name) // Filtrer les valeurs nulles/undefined
         .sort((a, b) => a.localeCompare(b));
       

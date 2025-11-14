@@ -4,7 +4,7 @@ import { usePocketBase } from "../app";
 export interface NewsItemData {
   id: string;
   title: string;
-  headlines?: string; // Phrase courte (nouveau nom)
+  headlines?: string;
   content: string;
   tags: string[];
   created: string;
@@ -52,6 +52,12 @@ const NewsItem: Component<NewsItemProps> = (props) => {
     }).format(date);
   };
 
+  const normalizedTags = (() => {
+    const raw = (props.news as any).tags ?? (props.news as any).expand?.tags ?? [];
+    if (!raw) return [] as string[];
+    return (raw as any[]).map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? '')).filter(Boolean);
+  })();
+
   // Construire l'URL du média (fichier PocketBase ou URL vidéo)
   const getImageUrl = () => {
     if (props.news.image && props.news.collectionName && props.news.id) {
@@ -74,9 +80,9 @@ const NewsItem: Component<NewsItemProps> = (props) => {
       <div class="relative z-10 p-8 md:p-10">
         {/* En-tête avec tags et date */}
         <div class="flex flex-wrap justify-between items-start gap-3 mb-6 relative">
-          <Show when={props.news.tags && props.news.tags.length > 0}>
+          <Show when={normalizedTags && normalizedTags.length > 0}>
             <div class="flex flex-wrap gap-2">
-              {props.news.tags.map((tag) => (
+              {normalizedTags.map((tag) => (
                 <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/40 backdrop-blur-sm hover:bg-yellow-400/25 hover:scale-105 transition-all duration-300 cursor-default">
                   {tag}
                 </span>
@@ -185,10 +191,10 @@ const NewsItem: Component<NewsItemProps> = (props) => {
         </div>
 
         {/* Tags en bas de l'article (uniquement les tags associés à cet article) */}
-        <Show when={props.news.tags && props.news.tags.length > 0}>
+        <Show when={normalizedTags && normalizedTags.length > 0}>
           <div class="mt-8 pt-6 border-t border-gray-700/50">
             <div class="flex flex-wrap gap-2">
-              {props.news.tags.map((tag) => (
+              {normalizedTags.map((tag) => (
                 <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/40 backdrop-blur-sm">
                   {tag}
                 </span>

@@ -30,6 +30,7 @@ export default function News() {
     try {
       const records = await pb.collection("News").getFullList({
         sort: "-created",
+        expand: 'tags',
       });
       
       setNewsItems(records as unknown as NewsItemData[]);
@@ -158,8 +159,14 @@ export default function News() {
   // Extraire tous les tags uniques
   const allTags = createMemo(() => {
     const tagSet = new Set<string>();
+    const normalizeTags = (news: any): string[] => {
+      const raw = (news?.tags ?? (news?.expand && news.expand.tags) ?? []) as any[];
+      if (!raw) return [];
+      return raw.map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? '')).filter(Boolean);
+    };
+
     newsItems().forEach((news) => {
-      news.tags?.forEach((tag) => tagSet.add(tag));
+      normalizeTags(news).forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet).sort();
   });
@@ -170,7 +177,13 @@ export default function News() {
 
     // Filtrage par tag
     if (selectedTag() !== "all") {
-      result = result.filter((news) => news.tags?.includes(selectedTag() as string));
+      const normalizeTags = (news: any): string[] => {
+        const raw = (news?.tags ?? (news?.expand && news.expand.tags) ?? []) as any[];
+        if (!raw) return [];
+        return raw.map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? '')).filter(Boolean);
+      };
+
+      result = result.filter((news) => normalizeTags(news).includes(selectedTag() as string));
     }
 
     // Tri chronologique

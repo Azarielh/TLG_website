@@ -36,6 +36,7 @@ export default function Home() {
       const records = await pb.collection("News").getList(1, 3, {
         sort: "-created",
         filter: 'content != ""',
+        expand: 'tags',
       });
       setLatestNews(records.items as unknown as NewsItemData[]);
     } catch (error) {
@@ -60,6 +61,14 @@ export default function Home() {
       month: 'short',
       year: 'numeric'
     }).format(new Date(dateString));
+  };
+
+  const normalizeTags = (news: any): string[] => {
+    const raw = (news?.tags ?? (news?.expand && news.expand.tags) ?? []) as any[];
+    if (!raw) return [];
+    return raw
+      .map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? ''))
+      .filter(Boolean);
   };
 
   // Composant Stats Cards réutilisable
@@ -125,9 +134,9 @@ export default function Home() {
                 opacity: currentNewsIndex() === index() ? 1 : 0
               }}>
                 <div class={props.compact ? "p-6" : "p-8 md:p-12"}>
-                  <Show when={news.tags && news.tags.length > 0}>
+                  <Show when={normalizeTags(news).length > 0}>
                     <div class="flex flex-wrap gap-2 mb-4">
-                      <For each={news.tags.slice(0, 3)}>
+                      <For each={normalizeTags(news).slice(0, 3)}>
                         {(tag) => (
                           <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">{tag}</span>
                         )}
