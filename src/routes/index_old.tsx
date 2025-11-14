@@ -33,7 +33,7 @@ export default function Home() {
   createEffect(async () => {
     if (!pb) return;
     try {
-      const records = await pb.collection("news").getList(1, 3, {
+      const records = await pb.collection("News").getList(1, 3, {
         sort: "-created",
         filter: 'content != ""',
       });
@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   return (
-    <main id="home" class="pt-20 pb-16 px-4">
+    <main id="home" class="pt-20 pb-32 px-4">
       <Title>TLG: The Legion - E-sport Excellence</Title>
 
       {/* Boutons de switch de layout */}

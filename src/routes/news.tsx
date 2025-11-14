@@ -28,7 +28,7 @@ export default function News() {
     
     setIsLoading(true);
     try {
-      const records = await pb.collection("news").getFullList({
+      const records = await pb.collection("News").getFullList({
         sort: "-created",
       });
       
@@ -46,9 +46,9 @@ export default function News() {
     if (!pb) return;
     
     try {
-      const tagsRecords: any[] = await pb.collection('tags').getFullList();
+      const tagsRecords: any[] = await pb.collection('Tags').getFullList();
       const tagNames = tagsRecords
-        .map((r) => r.Tags_name ?? r.name ?? null)
+        .map((r) => r.name ?? null)
         .filter(Boolean)
         .sort((a: string, b: string) => a.localeCompare(b));
       setAllTagsList(tagNames as string[]);
@@ -72,26 +72,25 @@ export default function News() {
       const checkPermissions = () => {
         const isValid = pb.authStore.isValid;
         const record = pb.authStore.record;
-        const userRank = record?.Rank;
-        const allowedRanks = ['Dev', 'Admin', 'Staff']; // Ranks autorisés
+        const userRole = record?.role;
+        const allowedRoles = ['Dev', 'Admin', 'Staff']; // Rôles autorisés
         
         // Log détaillé pour debug
         console.log('🔐 Checking permissions:', { 
           isValid, 
           record,
-          'record.Rank': record?.Rank,
-          'record.rank': record?.rank,
-          userRank,
-          userRankType: typeof userRank,
-          'userRank value': `"${userRank}"`,
-          'userRank length': userRank?.length,
-          allowedRanks,
-          'includes Dev': allowedRanks.includes('Dev'),
-          'includes userRank': userRank ? allowedRanks.includes(userRank) : false,
-          'strict comparison': userRank === 'Dev' || userRank === 'Admin' || userRank === 'Staff'
+          'record.role': record?.role,
+          userRole,
+          userRoleType: typeof userRole,
+          'userRole value': `"${userRole}"`,
+          'userRole length': userRole?.length,
+          allowedRoles,
+          'includes Dev': allowedRoles.includes('Dev'),
+          'includes userRole': userRole ? allowedRoles.includes(userRole) : false,
+          'strict comparison': userRole === 'Dev' || userRole === 'Admin' || userRole === 'Staff'
         });
         
-        const hasAuthorizedRank = isValid && userRank && allowedRanks.includes(userRank);
+        const hasAuthorizedRank = isValid && userRole && allowedRoles.includes(userRole);
         
         console.log('✅ hasAuthorizedRank:', hasAuthorizedRank);
         
@@ -189,7 +188,7 @@ export default function News() {
   };
 
   return (
-    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-20 px-4 sm:px-6 min-h-screen">
+    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
       <Title>News - TLG</Title>
 
       {/* En-tête amélioré avec gradient */}

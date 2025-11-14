@@ -1,11 +1,94 @@
 import { Title } from "@solidjs/meta";
-import { createSignal } from "solid-js";
+import { createSignal, Show, onMount, For } from "solid-js";
+import { Portal } from "solid-js/web";
 import RoleDescription from "../components/RoleDescription";
+import { usePocketBase } from "../app";
+
+interface RankRecord {
+  id: string;
+  name: string;
+  icon?: string;
+}
 
 export default function academy() {
+  const pb = usePocketBase();
   const [isRoleModalOpen, setIsRoleModalOpen] = createSignal(false);
   const [selectedRole, setSelectedRole] = createSignal("");
   const [hoveredRole, setHoveredRole] = createSignal<string | null>(null);
+
+  // Vérifier si l'utilisateur a le rôle Admin/Dev pour afficher les boutons
+  const [isAdminOrDev, setIsAdminOrDev] = createSignal(false);
+  const [mounted, setMounted] = createSignal(false);
+  const [isAddMenuOpen, setIsAddMenuOpen] = createSignal(false);
+
+  // Tous les rôles disponibles depuis PocketBase
+  const [allRoles, setAllRoles] = createSignal<RankRecord[]>([]);
+  
+  // Rôles actuellement affichés (stocke les IDs des rôles)
+  const [displayedRoleIds, setDisplayedRoleIds] = createSignal<string[]>([]);
+
+  const displayedRoles = () => allRoles().filter(role => displayedRoleIds().includes(role.id));
+
+  const removeRole = (roleId: string, roleName: string) => {
+    if (confirm(`Voulez-vous vraiment retirer le rôle "${roleName}" de l'affichage ?`)) {
+      setDisplayedRoleIds(displayedRoleIds().filter(id => id !== roleId));
+    }
+  };
+
+  const addRole = (roleId: string) => {
+    if (!displayedRoleIds().includes(roleId)) {
+      setDisplayedRoleIds([...displayedRoleIds(), roleId]);
+      setIsAddMenuOpen(false);
+    }
+  };
+
+  const availableRoles = () => allRoles().filter(role => !displayedRoleIds().includes(role.id));
+  const hasMoreRoles = () => availableRoles().length > 0;
+
+  const getRoleIcon = (roleName: string) => {
+    const iconMap: Record<string, string> = {
+      "Artiste": "🎨",
+      "Créateur de contenu": "🎥",
+      "Coach": "🎓",
+      "Community Manager": "💬",
+      "Analyste": "📊",
+      "Développeur": "💻"
+    };
+    return iconMap[roleName] || "📋";
+  };
+
+  onMount(async () => {
+    setMounted(true);
+    if (pb) {
+      // Vérifier le rôle admin/dev
+      const check = () => {
+        const r = pb.authStore.record?.role;
+        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
+      };
+      check();
+      pb.authStore.onChange(() => check());
+
+      // Récupérer tous les rôles depuis PocketBase (sauf follower, student, player)
+      try {
+        const records = await pb.collection('Rôle').getFullList<RankRecord>({
+          sort: 'name'
+        });
+        // Filtrer les rôles qui ne sont pas recrutables
+        const recruitableRoles = records.filter(r => 
+          !['follower', 'student', 'player'].includes(r.name.toLowerCase())
+        );
+        setAllRoles(recruitableRoles);
+        
+        // Par défaut, afficher les 3 premiers rôles (ou moins si moins disponibles)
+        if (recruitableRoles.length > 0) {
+          const defaultIds = recruitableRoles.slice(0, Math.min(3, recruitableRoles.length)).map(r => r.id);
+          setDisplayedRoleIds(defaultIds);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des rôles:', error);
+      }
+    }
+  });
 
   const handleRoleClick = (roleName: string) => {
     setSelectedRole(roleName);
@@ -13,7 +96,7 @@ export default function academy() {
   };
 
   return (
-    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-20 px-4 sm:px-6 min-h-screen">
+    <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
       <Title>Recrutement - TLG</Title>
 
       {/* En-tête */}
@@ -100,7 +183,7 @@ export default function academy() {
 
         {/* Message d'invitation */}
         <div class="mt-12 text-center">
-          <div class="max-w-3xl mx-auto bg-gradient-to-r from-yellow-400/10 via-yellow-500/10 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-8 backdrop-blur-sm">
+          <div class="max-w-3xl mx-auto bg-gradient-to-r from-yellow-400/10 via-yellow-500/10 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-8 backdrop-blur-sm relative">
             <h2 class="text-3xl font-black text-white mb-4">
               Vous souhaitez vous investir pour la team ?
             </h2>
@@ -108,45 +191,79 @@ export default function academy() {
               Nous recherchons des personnes motivées pour nous aider à grandir et à créer du contenu de qualité
             </p>
             <div class="flex flex-wrap justify-center gap-3 mb-6">
-              <button
-                type="button"
-                onClick={() => handleRoleClick("Artiste")}
-                onMouseEnter={() => setHoveredRole("Artiste")}
-                onMouseLeave={() => setHoveredRole(null)}
-                class="px-4 py-2 bg-yellow-400/20 text-yellow-400 rounded-lg border border-yellow-400/30 font-semibold hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer"
-                classList={{
-                  "scale-110 z-10": hoveredRole() === "Artiste",
-                  "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== "Artiste"
-                }}
-              >
-                🎨 Artiste
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleClick("Créateur de contenu")}
-                onMouseEnter={() => setHoveredRole("Créateur de contenu")}
-                onMouseLeave={() => setHoveredRole(null)}
-                class="px-4 py-2 bg-yellow-400/20 text-yellow-400 rounded-lg border border-yellow-400/30 font-semibold hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer"
-                classList={{
-                  "scale-110 z-10": hoveredRole() === "Créateur de contenu",
-                  "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== "Créateur de contenu"
-                }}
-              >
-                🎥 Créateur de contenu
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleClick("Coach")}
-                onMouseEnter={() => setHoveredRole("Coach")}
-                onMouseLeave={() => setHoveredRole(null)}
-                class="px-4 py-2 bg-yellow-400/20 text-yellow-400 rounded-lg border border-yellow-400/30 font-semibold hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer"
-                classList={{
-                  "scale-110 z-10": hoveredRole() === "Coach",
-                  "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== "Coach"
-                }}
-              >
-                🎓 Coach
-              </button>
+              <For each={displayedRoles()}>
+                {(role) => (
+                  <div class="relative">
+                    <button
+                      type="button"
+                      onClick={() => handleRoleClick(role.name)}
+                      onMouseEnter={() => setHoveredRole(role.name)}
+                      onMouseLeave={() => setHoveredRole(null)}
+                      class="px-4 py-2 bg-yellow-400/20 text-yellow-400 rounded-lg border border-yellow-400/30 font-semibold hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer"
+                      classList={{
+                        "scale-110 z-10": hoveredRole() === role.name,
+                        "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== role.name
+                      }}
+                    >
+                      {getRoleIcon(role.name)} {role.name}
+                    </button>
+                    
+                    {/* Bouton de suppression pour admin/dev */}
+                    <Show when={mounted() && isAdminOrDev()}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeRole(role.id, role.name);
+                        }}
+                        class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-all duration-200 hover:scale-110"
+                        title="Retirer ce rôle"
+                      >
+                        ×
+                      </button>
+                    </Show>
+                  </div>
+                )}
+              </For>
+              
+              {/* Bouton + pour ajouter un rôle */}
+              <Show when={mounted() && isAdminOrDev() && hasMoreRoles()}>
+                <div class="relative">
+                  <button
+                    onClick={() => setIsAddMenuOpen(!isAddMenuOpen())}
+                    class="px-4 py-2 bg-green-400/20 text-green-400 rounded-lg border border-green-400/30 font-semibold hover:bg-green-400/30 hover:scale-105 transition-all duration-300 cursor-pointer"
+                    title="Ajouter un rôle"
+                  >
+                    <span class="hidden sm:inline">+ Ajouter</span>
+                    <span class="sm:hidden">+</span>
+                  </button>
+
+                  {/* Menu de sélection des rôles */}
+                  <Show when={isAddMenuOpen()}>
+                    <Portal>
+                      <div 
+                        class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div class="p-2 bg-gray-700/50 border-b border-gray-600">
+                          <p class="text-xs text-gray-400 font-semibold text-center">Sélectionner un rôle</p>
+                        </div>
+                        <div class="max-h-64 overflow-y-auto">
+                          <For each={availableRoles()}>
+                            {(role) => (
+                              <button
+                                onClick={() => addRole(role.id)}
+                                class="w-full text-left px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-gray-200 border-b border-gray-700/50 last:border-b-0"
+                              >
+                                {getRoleIcon(role.name)} {role.name}
+                              </button>
+                            )}
+                          </For>
+                        </div>
+                      </div>
+                    </Portal>
+                  </Show>
+                </div>
+              </Show>
             </div>
             <button class="px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
               Candidater au Staff

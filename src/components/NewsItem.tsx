@@ -1,4 +1,4 @@
-import { Component, Show, createSignal } from "solid-js";
+import { Component, Show, createSignal, onMount } from "solid-js";
 import { usePocketBase } from "../app";
 
 export interface NewsItemData {
@@ -27,16 +27,20 @@ const NewsItem: Component<NewsItemProps> = (props) => {
 
   // Vérifier si l'utilisateur a le rôle Admin/Dev pour afficher le bouton (reactif)
   const [isAdminOrDev, setIsAdminOrDev] = createSignal(false);
+  const [mounted, setMounted] = createSignal(false);
 
-  if (pb) {
-    const check = () => {
-      const r = pb.authStore.record?.Rank;
-      setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
-    };
-    check();
-    const unsub = pb.authStore.onChange(() => check());
-    // cleanup non nécessaire ici (component persistent) — acceptable for small app
-  }
+  onMount(() => {
+    setMounted(true);
+    if (pb) {
+      const check = () => {
+        const r = pb.authStore.record?.role;
+        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
+      };
+      check();
+      const unsub = pb.authStore.onChange(() => check());
+      // cleanup non nécessaire ici (component persistent) — acceptable for small app
+    }
+  });
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
@@ -87,7 +91,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
           </time>
 
           {/* Admin menu button (only for Admin/Dev) */}
-          <Show when={isAdminOrDev}>
+          <Show when={mounted() && isAdminOrDev()}>
             <div class="ml-2 relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen())}
@@ -103,7 +107,6 @@ const NewsItem: Component<NewsItemProps> = (props) => {
                 <div class="absolute right-full top-0 mr-2 w-40 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
                   <button
                     onClick={() => {
-                      // Dispatch custom event to let parent handle edit
                       window.dispatchEvent(new CustomEvent('news:edit', { detail: { id: props.news.id } }));
                       setMenuOpen(false);
                     }}
@@ -113,7 +116,6 @@ const NewsItem: Component<NewsItemProps> = (props) => {
                   </button>
                   <button
                     onClick={() => {
-                      // Dispatch custom event to let parent handle delete
                       window.dispatchEvent(new CustomEvent('news:delete', { detail: { id: props.news.id } }));
                       setMenuOpen(false);
                     }}

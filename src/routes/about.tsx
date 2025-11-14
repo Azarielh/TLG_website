@@ -2,7 +2,7 @@ import { Title } from "@solidjs/meta";
 
 export default function About() {
   return (
-      <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-20 px-4 sm:px-6 min-h-screen">
+      <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
         <Title>A propos - TLG</Title>
         
         {/* En-tête avec gradient */}
