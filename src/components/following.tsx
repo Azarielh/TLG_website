@@ -29,29 +29,29 @@ const Following: Component<Props> = (props) => {
   const facebook = props.facebookUrl ?? "https://www.facebook.com/share/19tHcfLs1t";
 
   return (
-    <div class={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2 rounded-full bg-[rgba(6,6,8,0.6)] backdrop-blur-sm shadow-[0_0_30px_rgba(168,85,247,0.6)] animate-pulse ${props.class ?? ""}`}>
+    <div class={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2 rounded-full bg-[rgba(6,6,8,0.6)] backdrop-blur-sm shadow-[0_0_30px_rgba(168,85,247,0.6)] animate-pulse has-[a:hover]:animate-none has-[a:hover]:shadow-[0_0_5px_rgba(168,85,247,0.2)] transition-all duration-700 ease-in-out group ${props.class ?? ""}`}>
       <span class="text-sm text-gray-400">Suivez-nous !</span>
 
-      <a href={discord} class="social-icon" aria-label="Discord">
-          <img src="social_media/discordLogo.png" alt="Discord Icon" width="20" height="20"/>
+      <a href={discord} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="Discord">
+          <img src="/social_media/discordLogo.png" alt="Discord Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={youtube} class="social-icon" aria-label="Youtube">
-          <img src="social_media/youtube_logo.png" alt="Youtube Icon" width="20" height="20"/>
+      <a href={youtube} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="Youtube">
+          <img src="/social_media/youtube_logo.png" alt="Youtube Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={twitch} class="social-icon" aria-label="Twitch">
-          <img src="social_media/twitch_logo.png" alt="Twitch Icon" width="20" height="20"/>
+      <a href={twitch} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="Twitch">
+          <img src="/social_media/twitch_logo.png" alt="Twitch Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={x} class="social-icon" aria-label="X">
-          <img src="social_media/x_logo.png" alt="X Icon" width="20" height="20"/>
+      <a href={x} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="X">
+          <img src="/social_media/x_logo.png" alt="X Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={tiktok} class="social-icon" aria-label="TikTok">
-          <img src="social_media/tiktok_logo.png" alt="TikTok Icon" width="20" height="20"/>
+      <a href={tiktok} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="TikTok">
+          <img src="/social_media/tiktok_logo.png" alt="TikTok Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={instagram} class="social-icon" aria-label="Instagram">
-          <img src="social_media/instagram_logo.png" alt="Instagram Icon" width="20" height="20"/>
+      <a href={instagram} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="Instagram">
+          <img src="/social_media/instagram_logo.png" alt="Instagram Icon" width="20" height="20" class="relative z-10"/>
       </a>
-      <a href={facebook} class="social-icon" aria-label="Facebook">
-          <img src="social_media/facebook_logo.svg" alt="Facebook Icon" width="20" height="20"/>
+      <a href={facebook} class="social-icon relative transition-all duration-700 ease-in-out hover:scale-125 hover:shadow-[0_8px_25px_rgba(168,85,247,0.9)]" aria-label="Facebook">
+          <img src="/social_media/facebook_logo.svg" alt="Facebook Icon" width="20" height="20" class="relative z-10"/>
       </a>
     </div>
   );

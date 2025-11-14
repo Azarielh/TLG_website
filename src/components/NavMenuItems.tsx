@@ -51,8 +51,8 @@ export const menuItems = [
     status: "Section à venir",
   },
   {
-    id: "recruitment",
-    href: "/",
+    id: "recrutement",
+    href: "/recrutement",
     label: "Recrutement",
     status: "Section à venir",
   },
