@@ -33,12 +33,13 @@ const NewsItem: Component<NewsItemProps> = (props) => {
     setMounted(true);
     if (pb) {
       const check = () => {
-        const r = pb.authStore.record?.role;
+        const rec = pb.authStore.record;
+        const r = rec?.role ?? rec?.Rank ?? rec?.rank;
         setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
       };
       check();
       const unsub = pb.authStore.onChange(() => check());
-      // cleanup non nécessaire ici (component persistent) — acceptable for small app
+      // cleanup non nécessaire ici (component persistent) — acceptable pour small app
     }
   });
   const formatDate = (dateString: string) => {

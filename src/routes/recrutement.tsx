@@ -62,7 +62,8 @@ export default function academy() {
     if (pb) {
       // Vérifier le rôle admin/dev
       const check = () => {
-        const r = pb.authStore.record?.role;
+        const rec = pb.authStore.record;
+        const r = rec?.role ?? rec?.Rank ?? rec?.rank;
         setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
       };
       check();

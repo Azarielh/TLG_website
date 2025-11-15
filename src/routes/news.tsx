@@ -73,14 +73,17 @@ export default function News() {
       const checkPermissions = () => {
         const isValid = pb.authStore.isValid;
         const record = pb.authStore.record;
-        const userRole = record?.role;
+        // Le champ Rank/role peut être nommé différemment selon l'instance PocketBase
+        const userRole = (record?.role ?? record?.Rank ?? record?.rank) as string | undefined;
         const allowedRoles = ['Dev', 'Admin', 'Staff']; // Rôles autorisés
-        
+
         // Log détaillé pour debug
-        console.log('🔐 Checking permissions:', { 
-          isValid, 
+        console.log('🔐 Checking permissions:', {
+          isValid,
           record,
           'record.role': record?.role,
+          'record.Rank': record?.Rank,
+          'record.rank': record?.rank,
           userRole,
           userRoleType: typeof userRole,
           'userRole value': `"${userRole}"`,
@@ -90,8 +93,8 @@ export default function News() {
           'includes userRole': userRole ? allowedRoles.includes(userRole) : false,
           'strict comparison': userRole === 'Dev' || userRole === 'Admin' || userRole === 'Staff'
         });
-        
-        const hasAuthorizedRank = isValid && userRole && allowedRoles.includes(userRole);
+
+        const hasAuthorizedRank = isValid && userRole && allowedRoles.includes(String(userRole));
         
         console.log('✅ hasAuthorizedRank:', hasAuthorizedRank);
         
