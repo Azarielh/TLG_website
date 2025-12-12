@@ -126,7 +126,7 @@ export default function Home() {
       </div>
     }>
       <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6">
+        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6">
           <For each={latestNews()}>
             {(news, index) => (
               <A href="/news" class="block transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{

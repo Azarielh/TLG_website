@@ -74,9 +74,9 @@ const NewsItem: Component<NewsItemProps> = (props) => {
   const hasMedia = imageUrl || videoUrl;
 
   return (
-    <article class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm hover:border-yellow-400/50 transition-all duration-500">
+    <article class="group relative bg-linear-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm hover:border-yellow-400/50 transition-all duration-500">
       {/* Glow effect sur hover */}
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-400/0 to-yellow-600/0 group-hover:from-yellow-400/5 group-hover:to-yellow-600/5 transition-all duration-500 pointer-events-none"></div>
+      <div class="absolute inset-0 bg-linear-to-br from-yellow-400/0 to-yellow-600/0 group-hover:from-yellow-400/5 group-hover:to-yellow-600/5 transition-all duration-500 pointer-events-none"></div>
       
       <div class="relative z-10 p-8 md:p-10">
         {/* En-tête avec tags et date */}
@@ -146,7 +146,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
           <div class="flex flex-col md:flex-row md:items-start gap-6">
             {/* Media box: DOM-first so it appears under title on mobile, moved to right on md+ */}
             <Show when={hasMedia}>
-              <div class="w-full md:w-1/3 order-first md:order-2">
+              <div class="w-full md:w-1/3 md:min-w-[260px] shrink-0 ...">
                 <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-700/50 group-hover:ring-yellow-400/50 transition-all duration-500">
                   <Show when={imageUrl}>
                     <img
@@ -172,7 +172,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
               {/* Phrase courte (headlines) avec design amélioré */}
               <Show when={props.news.headlines}>
                 <div class="relative mb-6">
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-yellow-400 to-yellow-600 rounded-full"></div>
                   <p class="text-xl md:text-2xl text-gray-200 font-medium leading-relaxed pl-6 italic">
                     "{props.news.headlines}"
                   </p>
