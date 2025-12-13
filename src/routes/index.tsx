@@ -126,14 +126,14 @@ export default function Home() {
       </div>
     }>
       <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6">
+        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex">
           <For each={latestNews()}>
             {(news, index) => (
-              <A href="/news" class="block transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{
+              <A href="/news" class="block h-full transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{
                 display: currentNewsIndex() === index() ? 'block' : 'none',
                 opacity: currentNewsIndex() === index() ? 1 : 0
               }}>
-                <div class={props.compact ? "p-6" : "p-8 md:p-12"}>
+                <div class={`${props.compact ? "p-6" : "p-8 md:p-12"} h-full flex flex-col`}>
                   <Show when={normalizeTags(news).length > 0}>
                     <div class="flex flex-wrap gap-2 mb-4">
                       <For each={normalizeTags(news).slice(0, 3)}>
@@ -151,8 +151,25 @@ export default function Home() {
                   }>
                     <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed" : "text-xl text-gray-300 mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
                   </Show>
-                  <div class="py-auto border-t border-gray-700/50 flex items-center justify-center">
+                  <div class="py-auto border-t border-gray-700/50 flex flex-col items-center justify-center gap-2 mt-auto">
                     <time class="text-sm text-gray-400">{formatDate(news.created)}</time>
+
+                    {/* Indicateurs intégrés au bloc pour la version compact (layout split) */}
+                    <Show when={props.compact && latestNews().length > 1}>
+                      <div class="flex justify-center gap-2">
+                        <For each={latestNews()}>
+                          {(_, idx) => (
+                            <button
+                              onClick={() => setCurrentNewsIndex(idx())}
+                              class="transition-all duration-300"
+                              aria-label={`Aller à la news ${idx() + 1}`}
+                            >
+                              <div class={`h-2 rounded-full transition-all duration-300 ${currentNewsIndex() === idx() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-600 hover:bg-gray-500'}`} />
+                            </button>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
                   </div>
                 </div>
               </A>
@@ -160,7 +177,7 @@ export default function Home() {
           </For>
         </div>
 
-        <Show when={latestNews().length > 1}>
+        <Show when={!props.compact && latestNews().length > 1}>
           <div class="flex justify-center gap-2">
             <For each={latestNews()}>
               {(_, index) => (
@@ -259,7 +276,7 @@ export default function Home() {
             </div>
 
             {/* Colonne droite - Carrousel */}
-            <div>
+            <div class="mt-2 md:mt-4">
               <NewsCarousel compact={true} />
             </div>
           </div>
