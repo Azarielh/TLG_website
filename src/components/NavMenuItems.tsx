@@ -36,7 +36,7 @@ export const menuItems = [
     id: "about",
     href: "/about",
     label: "À propos",
-    status: "🚧 En production",
+    status: "Qui sommes-nous ?",
   },
   {
     id: "news",
@@ -44,12 +44,12 @@ export const menuItems = [
     label: "Actualités",
     status: "🚧 En production",
   },
-  {
-    id: "agenda",
-    href: "/",
-    label: "Agenda",
-    status: "Section à venir",
-  },
+  // {
+  //   id: "agenda",
+  //   href: "/",
+  //   label: "Agenda",
+  //   status: "Section à venir",
+  // },
   {
     id: "recrutement",
     href: "/recrutement",
@@ -62,12 +62,12 @@ export const menuItems = [
     label: "Académie",
     status: "Section à venir",
   },
-  {
-    id: "faq",
-    href: "/",
-    label: "FAQ",
-    status: "Section à venir",
-  }
+  // {
+  //   id: "faq",
+  //   href: "/",
+  //   label: "FAQ",
+  //   status: "Section à venir",
+  // }
 ];
 
 // Desktop Menu Component
@@ -89,7 +89,7 @@ export function DesktopMenu() {
 export function MobileMenu(props: { onClose: () => void }) {
   return (
     <div
-      class="fixed top-14 md:top-16 left-0 right-0 z-[75] bg-gradient-to-b from-gray-900/98 to-gray-950/98 backdrop-blur-lg p-4 flex flex-col gap-2 lg:hidden border-b border-cyan-400/20 shadow-[0_4px_20px_rgba(34,211,238,0.3)] max-h-[calc(100vh-4rem)] overflow-y-auto"
+      class="fixed top-14 md:top-16 left-0 right-0 z-75 bg-linear-to-b from-gray-900/98 to-gray-950/98 backdrop-blur-lg p-4 flex flex-col gap-2 lg:hidden border-b border-cyan-400/20 shadow-[0_4px_20px_rgba(34,211,238,0.3)] max-h-[calc(100vh-4rem)] overflow-y-auto"
       onClick={(e) => e.stopPropagation()}
     >
       {menuItems
@@ -99,7 +99,7 @@ export function MobileMenu(props: { onClose: () => void }) {
               href={item.href}
               label={item.label}
               status={item.status}
-              class="text-gray-200 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/15 hover:to-purple-600/15 border border-transparent hover:border-cyan-400/40 block w-full text-base py-3"
+              class="text-gray-200 hover:text-white hover:bg-linear-to-r hover:from-cyan-500/15 hover:to-purple-600/15 border border-transparent hover:border-cyan-400/40 block w-full text-base py-3"
             />
           </div>
         ))}

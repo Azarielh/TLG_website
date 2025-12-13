@@ -84,14 +84,14 @@ export default function Nav() {
 
   return (
     <>
-      <nav class="fixed top-0 left-0 w-full min-h-[56px] z-[60] bg-gradient-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
+      <nav class="fixed top-0 left-0 w-full min-h-14 z-60 bg-linear-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
         <div class="w-[min(1200px,96%)] mx-auto flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4">
 
           {/* Left side: Mobile menu button + Logo */}
           <div class="flex items-center gap-2 md:gap-3">
             {/* Mobile menu button */}
             <button
-              class="lg:hidden text-cyan-400 px-3 py-2 rounded-lg bg-gradient-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 font-semibold transition-all shadow-[0_0_10px_rgba(34,211,238,0.3)] text-xl"
+              class="lg:hidden text-cyan-400 px-3 py-2 rounded-lg bg-linear-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 font-semibold transition-all shadow-[0_0_10px_rgba(34,211,238,0.3)] text-xl"
               onClick={() => setShowMobileMenu(!showMobileMenu())}
               aria-label="Menu"
             >
@@ -101,7 +101,7 @@ export default function Nav() {
             {/* Logo */}
             <a
               href="/"
-              class="flex-shrink-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
+              class="shrink-0 text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
               style="font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6)) drop-shadow(0 0 20px rgba(147,51,234,0.4));"
             >
               <span class="hidden sm:inline">The Legion</span>
@@ -118,7 +118,7 @@ export default function Nav() {
             {/* Eshop button - hidden on mobile when compact */}
             <Show when={isCompact()}>
               <div class="hidden xs:block">
-                <EshopButton logoSrc="eshop_logo.svg" sizePx={80} class="flex-shrink-0" />
+                <EshopButton logoSrc="eshop_logo.svg" sizePx={80} class="shrink-0" />
               </div>
             </Show>
             
@@ -127,7 +127,7 @@ export default function Nav() {
               when={user()}
               fallback={
                 <button
-                  class="flex-shrink-0 text-cyan-300 px-3 md:px-4 py-2 rounded-lg bg-gradient-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all font-semibold shadow-[0_0_10px_rgba(34,211,238,0.2)] hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] text-sm md:text-base"
+                  class="shrink-0 text-cyan-300 px-3 md:px-4 py-2 rounded-lg bg-linear-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all font-semibold shadow-[0_0_10px_rgba(34,211,238,0.2)] hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] text-sm md:text-base"
                   onClick={() => setShowAuth(!showAuth())}
                   aria-label="Connexion"
                 >
@@ -137,7 +137,7 @@ export default function Nav() {
             >
               <button
                 onClick={() => setShowAuth(!showAuth())}
-                class="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
+                class="shrink-0 cursor-pointer bg-transparent border-none p-0 hover:opacity-80 transition-opacity"
                 title={user()?.name || user()?.email || "Utilisateur"}
                 aria-label="Profil utilisateur"
               >
@@ -145,7 +145,7 @@ export default function Nav() {
                   <Show 
                     when={avatarUrl()}
                     fallback={
-                      <div class="w-full h-full bg-gradient-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-base md:text-lg">
+                      <div class="w-full h-full bg-linear-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-base md:text-lg">
                         {(user()?.name || user()?.email || "?").charAt(0).toUpperCase()}
                       </div>
                     }
@@ -166,7 +166,7 @@ export default function Nav() {
       {/* Overlay global pour popups */}
       <Show when={showAuth() || showMobileMenu()}>
         <div
-          class="fixed inset-0 z-[70] bg-black/20 backdrop-blur-sm"
+          class="fixed inset-0 z-70 bg-black/20 backdrop-blur-sm"
           onClick={() => {
             setShowAuth(false);
             setShowMobileMenu(false);
@@ -182,7 +182,7 @@ export default function Nav() {
       {/* Auth Popup / User Menu */}
       <Show when={showAuth()}>
         <div
-          class="fixed top-16 right-8 z-[80] bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
+          class="fixed top-16 right-8 z-80 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-[90%]"
           onClick={(e) => e.stopPropagation()}
         >
           <Show 
@@ -196,7 +196,7 @@ export default function Nav() {
                   <Show 
                     when={avatarUrl()}
                     fallback={
-                      <div class="w-full h-full bg-gradient-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-2xl">
+                      <div class="w-full h-full bg-linear-to-br from-purple-500 to-yellow-400 flex items-center justify-center text-white font-bold text-2xl">
                         {(user()?.name || user()?.email || "?").charAt(0).toUpperCase()}
                       </div>
                     }

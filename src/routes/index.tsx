@@ -178,8 +178,8 @@ export default function Home() {
   // Composant CTA réutilisable
   const CTASection = () => (
     <section class="max-w-4xl mx-auto">
-      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-400/20 via-yellow-600/10 to-transparent border border-yellow-400/30 p-12 text-center backdrop-blur-sm">
-        <div class="absolute inset-0 bg-gradient-to-r from-yellow-400/10 to-transparent blur-3xl"></div>
+      <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-yellow-400/20 via-yellow-600/10 to-transparent border border-yellow-400/30 p-12 text-center backdrop-blur-sm">
+        <div class="absolute inset-0 bg-linear-to-r from-yellow-400/10 to-transparent blur-3xl"></div>
         <div class="relative z-10">
           <h2 class="text-3xl md:text-5xl font-black text-white mb-4">
             Prêt à rejoindre la <span class="text-yellow-400">Légion</span> ?
