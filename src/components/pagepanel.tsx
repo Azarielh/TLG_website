@@ -12,7 +12,7 @@ const PagePanel: Component<Props> = (props) => {
 
   return (
     <div
-      class={`relative mx-auto w-[90%] md:w-[85%] lg:w-[65vw] max-w-[1600px] min-h-[65vh] z-0 ${props.class ?? ""}`}
+      class={`relative mx-auto w-[90%] md:w-[85%] lg:w-[90vw] max-w-[1600px] min-h-[65vh] z-0 ${props.class ?? ""}`}
     >
       {/* image de fond optionnelle */}
       <div

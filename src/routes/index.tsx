@@ -126,7 +126,7 @@ export default function Home() {
       </div>
     }>
       <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex">
+        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex items-center justify-center">
           <For each={latestNews()}>
             {(news, index) => (
               <A href="/news" class="block h-full transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{
@@ -290,7 +290,7 @@ export default function Home() {
               <Taglines />
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center mb-12">
               {/* Colonne gauche - Logo plus gros et centré verticalement */}
               <div class="text-center flex items-center justify-center">
                 <div class="scale-[1.75]">

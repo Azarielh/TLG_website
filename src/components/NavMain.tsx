@@ -127,11 +127,12 @@ export default function Nav() {
               when={user()}
               fallback={
                 <button
-                  class="shrink-0 text-cyan-300 px-3 md:px-4 py-2 rounded-lg bg-linear-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all font-semibold shadow-[0_0_10px_rgba(34,211,238,0.2)] hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] text-sm md:text-base"
+                  class="shrink-0 px-4 sm:px-6 py-2 bg-linear-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-lg hover:shadow-lg hover:shadow-cyan-400/50 transition-all text-sm sm:text-base whitespace-nowrap font-semibold flex items-center justify-center gap-2 text-black"
                   onClick={() => setShowAuth(!showAuth())}
                   aria-label="Connexion"
                 >
-                  {showAuth() ? "✕" : "👤"}
+                  <span class="hidden sm:inline">{showAuth() ? "✕ Fermer" : "Rejoindre"}</span>
+                  <span class="sm:hidden">{showAuth() ? "✕" : "👤"}</span>
                 </button>
               }
             >

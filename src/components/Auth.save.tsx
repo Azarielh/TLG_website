@@ -6,6 +6,10 @@ type AuthProps = {
     class?: string;
 };
 
+// Vérification du mot de passe staff via la collection `temp_safety` (PocketBase)
+// Record unique fourni : id = "7xj9zyt43u77hvf"
+const TEMP_SAFETY_RECORD_ID = "7xj9zyt43u77hvf";
+
 const Auth: Component<AuthProps> = (props) => {
     const pb = usePocketBase();
     const [loading, setLoading] = createSignal(false);
@@ -14,13 +18,16 @@ const Auth: Component<AuthProps> = (props) => {
     const [isAccessGranted, setIsAccessGranted] = createSignal(false);
     const [showPassword, setShowPassword] = createSignal(false);
 
-    // Bypass en développement (preview/codespace)
+    // Bypass the password prompt when running inside the specified preview host
+    // (useful for your Codespaces/GitHub.dev preview). This only alters the
+    // client UI flow (shows the Google login directly) — it does NOT expose
+    // or change any server-side validation.
     onMount(() => {
         try {
             const origin = window.location?.origin || "";
-            // Bypass si l'URL contient 'github.dev' ou 'localhost'
-            if (origin.includes('github.dev') || origin.includes('localhost')) {
-                console.log('🔁 Dev environment detected — bypassing staff password');
+            const PREVIEW_ORIGIN = "https://sturdy-guacamole-rr4jg494w4p3pjpq-3000.app.github.dev";
+            if (origin === PREVIEW_ORIGIN) {
+                console.log('🔁 Preview host detected — bypassing staff password prompt');
                 setIsAccessGranted(true);
             }
         } catch (e) {
@@ -297,49 +304,14 @@ const Auth: Component<AuthProps> = (props) => {
                     <span>{loading() ? "Connexion en cours..." : "Continuer avec Google"}</span>
                 </button>
 
-                {/* Bouton Discord - Bientôt disponible */}
-                <button
-                    type="button"
-                    disabled
-                    style={{
-                        padding: "12px 16px",
-                        "border-radius": "8px",
-                        border: "1px solid #5865F2",
-                        cursor: "not-allowed",
-                        "background-color": "#5865F2",
-                        color: "white",
-                        "font-weight": "600",
-                        display: "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                        gap: "12px",
-                        opacity: "0.5",
-                        position: "relative"
-                    }}
-                    title="Discord OAuth sera bientôt disponible"
-                >
-                    <img 
-                        src="/social_media/discordLogo.png" 
-                        alt="Discord" 
-                        width="20" 
-                        height="20"
-                        style={{ filter: "brightness(0) invert(1)" }}
-                    />
-                    <span>Continuer avec Discord</span>
-                    <span style={{
-                        position: "absolute",
-                        top: "-8px",
-                        right: "-8px",
-                        "background-color": "#fbbf24",
-                        color: "black",
-                        "font-size": "10px",
-                        padding: "2px 6px",
-                        "border-radius": "4px",
-                        "font-weight": "700"
-                    }}>
-                        Bientôt
-                    </span>
-                </button>
+                <p style={{ 
+                    "text-align": "center", 
+                    "font-size": "12px", 
+                    color: "#6b7280",
+                    "margin-top": "8px"
+                }}>
+                    Discord sera bientôt disponible
+                </p>
             </Show>
 
             <style>{`
