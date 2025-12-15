@@ -74,8 +74,10 @@ export default function News() {
         const isValid = pb.authStore.isValid;
         const record = pb.authStore.record;
         // Le champ Rank/role peut être nommé différemment selon l'instance PocketBase
-        const userRole = (record?.role ?? record?.Rank ?? record?.rank) as string | undefined;
-        const allowedRoles = ['Dev', 'Admin', 'Staff']; // Rôles autorisés
+        const userRoleRaw = (record?.role ?? record?.Rank ?? record?.rank) as string | undefined;
+        const userRole = userRoleRaw ? String(userRoleRaw).trim() : undefined;
+        const userRoleLc = userRole ? userRole.toLowerCase() : undefined;
+        const allowedRoles = ['dev', 'admin', 'staff']; // Rôles autorisés (comparaison case-insensitive)
 
         // Log détaillé pour debug
         console.log('🔐 Checking permissions:', {
@@ -85,16 +87,18 @@ export default function News() {
           'record.Rank': record?.Rank,
           'record.rank': record?.rank,
           userRole,
+          userRoleLc,
           userRoleType: typeof userRole,
           'userRole value': `"${userRole}"`,
           'userRole length': userRole?.length,
           allowedRoles,
-          'includes Dev': allowedRoles.includes('Dev'),
-          'includes userRole': userRole ? allowedRoles.includes(userRole) : false,
-          'strict comparison': userRole === 'Dev' || userRole === 'Admin' || userRole === 'Staff'
+          'includes userRoleLc': userRoleLc ? allowedRoles.includes(userRoleLc) : false,
+          'strict comparison (lc)': userRoleLc === 'dev' || userRoleLc === 'admin' || userRoleLc === 'staff'
         });
 
-        const hasAuthorizedRank = isValid && userRole && allowedRoles.includes(String(userRole));
+        // Certains tokens peuvent être invalidés mais le record est toujours présent (cas codespaces / prévisualisation) : on autorise si record présent et rôle ok
+        const isAuthed = isValid || !!record;
+        const hasAuthorizedRank = isAuthed && userRoleLc ? allowedRoles.includes(userRoleLc) : false;
         
         console.log('✅ hasAuthorizedRank:', hasAuthorizedRank);
         
@@ -142,7 +146,7 @@ export default function News() {
       if (!id || !pb) return;
       if (!confirm('Confirmez la suppression de cette news ?')) return;
       try {
-        await pb.collection('news').delete(id);
+        await pb.collection('News').delete(id);
         await loadNews();
       } catch (err) {
         console.error('❌ Error deleting news:', err);

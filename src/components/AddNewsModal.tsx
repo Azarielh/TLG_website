@@ -11,13 +11,18 @@ interface AddNewsModalProps {
   onNewsUpdated?: () => void;
 }
 
+type Tag = {
+  id: string;
+  name: string;
+};
+
 const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const pb = usePocketBase();
   const [title, setTitle] = createSignal("");
   const [headlines, setHeadlines] = createSignal(""); // Phrase courte
   const [content, setContent] = createSignal("");
+  const [availableTags, setAvailableTags] = createSignal<Tag[]>([]);
   const [selectedTags, setSelectedTags] = createSignal<string[]>([]);
-  const [availableTags, setAvailableTags] = createSignal<string[]>([]);
   const [mediaType, setMediaType] = createSignal<'none' | 'image' | 'video'>('none');
   const [mediaUrl, setMediaUrl] = createSignal(""); // URL externe
   const [mediaFile, setMediaFile] = createSignal<File | null>(null); // Fichier uploadé
@@ -92,7 +97,12 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         setError("Aucun tag disponible. Créez des tags dans PocketBase.");
       }
       
-      setAvailableTags(tagNames);
+      const tags = tagsRecords.map((record: any) => ({
+          id: record.id,
+          name: record.name,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name))
+      setAvailableTags(tags);
     } catch (err: any) {
       console.error('❌ Error fetching tags:', err);
       console.error('❌ Error details:', err.data);
@@ -115,7 +125,12 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
           "Classement",
           "Staff"
         ];
-        setAvailableTags(defaultTags);
+        setAvailableTags(
+          defaultTags.map((tagName, index) => ({
+            id: `default-${index}`,
+            name: tagName
+          }))
+        );
         setError("Collection 'tags' non trouvée. Tags par défaut utilisés.");
       } else {
         setError(`Erreur lors du chargement des tags: ${err.message}`);
@@ -136,12 +151,16 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
     setIsSubmitting(true);
 
     try {
+      console.log("CONTENT RAW >>>", JSON.stringify(content()));
       // Préparer les données du formulaire
       const formData = new FormData();
       formData.append('title', title());
       formData.append('headlines', headlines());
       formData.append('content', content());
-      formData.append('tags', JSON.stringify(selectedTags()));
+      // Envoyer les tags uniquement s'ils existent, un par un
+      if (selectedTags().length > 0) {
+        formData.append('tags', JSON.stringify(selectedTags()));
+      }
       formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
       
       // Ajouter le média selon le type
@@ -150,8 +169,8 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         // Fournir explicitement le nom du fichier au FormData (plus robuste)
         formData.append('image', mediaFile()!, mediaFile()!.name);
       } else if (mediaType() === 'video' && mediaUrl()) {
-        // URL vidéo - utiliser le champ 'Video_Url' de PocketBase
-        formData.append('Video_Url', mediaUrl());
+        // URL vidéo - utiliser le champ 'video_Url' de PocketBase
+        formData.append('video_Url', mediaUrl());
       }
       
       console.log('📝 Creating news with data:');
@@ -176,7 +195,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       let result;
       if (props.existingNews && props.existingNews.id) {
         // Update existing record
-        result = await pb.collection("news").update(props.existingNews.id, formData);
+        result = await pb.collection("News").update(props.existingNews.id, formData);
         console.log('✅ News updated successfully:', result);
 
         // Callback et fermeture
@@ -184,7 +203,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         props.onClose();
       } else {
         // Créer la news dans PocketBase
-        result = await pb.collection("news").create(formData);
+        result = await pb.collection("News").create(formData);
         console.log('✅ News created successfully:', result);
 
         // Réinitialiser le formulaire
@@ -303,17 +322,17 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                   <div class="flex flex-wrap gap-2">
                     <For each={availableTags()}>
                       {(tag) => {
-                        const isSelected = () => selectedTags().includes(tag);
+                        const isSelected = () => selectedTags().includes(tag.id);
                         return (
                           <button
                             type="button"
                             onClick={() => {
                               if (isSelected()) {
                                 // Désélectionner
-                                setSelectedTags(selectedTags().filter(t => t !== tag));
+                                setSelectedTags(selectedTags().filter(t => t !== tag.id));
                               } else {
                                 // Sélectionner
-                                setSelectedTags([...selectedTags(), tag]);
+                                setSelectedTags([...selectedTags(), tag.id]);
                               }
                             }}
                             class={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -322,7 +341,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                                 : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white hover:scale-105'
                             }`}
                           >
-                            {tag}
+                            {tag.name}
                           </button>
                         );
                       }}
