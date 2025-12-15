@@ -62,12 +62,12 @@ export const menuItems = [
     label: "Académie",
     status: "Section à venir",
   },
-  // {
-  //   id: "faq",
-  //   href: "/",
-  //   label: "FAQ",
-  //   status: "Section à venir",
-  // }
+  {
+    id: "games",
+    href: "/games",
+    label: "Nos Jeux",
+    status: "🚧 En production",
+  }
 ];
 
 // Desktop Menu Component
