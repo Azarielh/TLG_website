@@ -241,12 +241,24 @@ export default function Home() {
 
       {/* Layout Classique - Vertical classique */}
       <Show when={layout() === 'classic'}>
-        <section class="max-w-7xl mx-auto text-center mb-[2.5rem]">
-          <div class="scale-125 mb-6">
-            <MainLogo />
+        <section class="max-w-7xl mx-auto text-center mb-10 relative">
+          {/* Image de fond */}
+          <div class="absolute inset-0 overflow-hidden rounded-2xl">
+            <img 
+              src="/pexels-yankrukov-9072394.jpg" 
+              alt="Background" 
+              class="w-full h-full object-cover opacity-20"
+            />
           </div>
-          <Taglines />
-          <StatsCards />
+          
+          {/* Contenu */}
+          <div class="relative z-10">
+            <div class="scale-125 mb-6">
+              <MainLogo />
+            </div>
+            <Taglines />
+            <StatsCards />
+          </div>
         </section>
 
         <section class="max-w-6xl mx-auto mb-20">
@@ -261,34 +273,48 @@ export default function Home() {
 
       {/* Layout Split - Logo à gauche, Carrousel à droite */}
       <Show when={layout() === 'split'}>
-        <section class="max-w-7xl mx-auto mb-12">
-          {/* Taglines en haut centrées */}
-          <div class="mb-8 text-center">
-            <Taglines />
+        <section class="max-w-7xl mx-auto mb-12 relative">
+          {/* Image de fond */}
+          <div class="absolute inset-0 overflow-hidden rounded-2xl">
+            <img 
+              src="/pexels-yankrukov-9072394.jpg" 
+              alt="Background" 
+              class="w-full h-full object-cover opacity-20"
+            />
           </div>
 
-          <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
-            {/* Colonne gauche - Logo plus gros et centré verticalement */}
-            <div class="text-center flex items-center justify-center">
-              <div class="scale-[1.75]">
-                <MainLogo />
+          {/* Contenu */}
+          <div class="relative z-10">
+            {/* Taglines en haut centrées */}
+            <div class="mb-8 text-center">
+              <Taglines />
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
+              {/* Colonne gauche - Logo plus gros et centré verticalement */}
+              <div class="text-center flex items-center justify-center">
+                <div class="scale-[1.75]">
+                  <MainLogo />
+                </div>
+              </div>
+
+              {/* Colonne droite - Carrousel */}
+              <div class="mt-2 md:mt-4">
+                <NewsCarousel compact={true} />
               </div>
             </div>
 
-            {/* Colonne droite - Carrousel */}
-            <div class="mt-2 md:mt-4">
-              <NewsCarousel compact={true} />
+            {/* Stats sous les actualités */}
+            <div>
+              <StatsCards />
             </div>
-          </div>
-
-          {/* Stats sous les actualités */}
-          <div>
-            <StatsCards />
           </div>
         </section>
 
         <CTASection />
       </Show>
+
+
     </main>
   );
 }
