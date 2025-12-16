@@ -60,7 +60,7 @@ export const menuItems = [
     id: "recrutement",
     href: "/recrutement",
     label: "Recrutement",
-    status: "Section à venir",
+    status: "🚧 En production",
   },
   {
     id: "academy",
