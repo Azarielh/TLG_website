@@ -132,7 +132,7 @@ export default function Nav() {
                   onClick={() => setShowAuth(!showAuth())}
                   aria-label="Connexion"
                 >
-                  <span class="hidden sm:inline">{showAuth() ? "✕ Fermer" : "Rejoindre"}</span>
+                  <span class="hidden sm:inline">{showAuth() ? "✕ Fermer" : "Staff"}</span>
                   <span class="sm:hidden">{showAuth() ? "✕" : "👤"}</span>
                 </button>
               }
