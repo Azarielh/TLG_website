@@ -44,6 +44,12 @@ export const menuItems = [
     label: "Actualités",
     status: "🚧 En production",
   },
+  {
+    id: "games",
+    href: "/games",
+    label: "Nos Jeux",
+    status: "🚧 En production",
+  },
   // {
   //   id: "agenda",
   //   href: "/",
@@ -62,12 +68,6 @@ export const menuItems = [
     label: "Académie",
     status: "Section à venir",
   },
-  {
-    id: "games",
-    href: "/games",
-    label: "Nos Jeux",
-    status: "🚧 En production",
-  }
 ];
 
 // Desktop Menu Component

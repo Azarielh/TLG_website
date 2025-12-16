@@ -7,7 +7,7 @@ export default function About() {
         
         {/* En-tête avec gradient */}
         <div class="text-center mb-16 max-w-4xl">
-          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-gradient-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
             À propos de TLG
           </h1>
           <p class="text-gray-400 text-lg sm:text-xl">
@@ -19,9 +19,9 @@ export default function About() {
         <div class="flex flex-col md:flex-row flex-wrap justify-center items-stretch gap-8 w-full max-w-7xl">
           
           {/* Card 1 - Esprit d'équipe */}
-          <article class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:translate-y-[-8px] hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
+          <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:-translate-y-2 hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
             <div class="flex items-center gap-4 mb-4">
-              <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-14 h-14 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -49,9 +49,9 @@ export default function About() {
           </article>
 
           {/* Card 2 - Compétitif */}
-          <article class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:translate-y-[-8px] hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
+          <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:translate-y-[-8px] hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
             <div class="flex items-center gap-4 mb-4">
-              <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-14 h-14 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
@@ -79,9 +79,9 @@ export default function About() {
           </article>
 
           {/* Card 3 - Ambiance */}
-          <article class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:translate-y-[-8px] hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
+          <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:-translate-y-2 hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
             <div class="flex items-center gap-4 mb-4">
-              <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-14 h-14 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

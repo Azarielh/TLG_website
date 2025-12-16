@@ -1,0 +1,221 @@
+import { Title } from "@solidjs/meta";
+import { createSignal, For, Show, onMount } from "solid-js";
+import { usePocketBase } from "../app";
+
+type GameRecord = {
+  id: string;
+  name: string;
+  status?: string;
+  how_many_roster?: number;
+  winrate?: number;
+};
+
+// Mapping des couleurs par nom de jeu (basé sur la liste React fournie)
+const GAME_COLORS: Record<string, { gradient: string; bg: string; border: string }> = {
+  "valorant": {
+    gradient: "from-red-500 to-pink-500",
+    bg: "bg-red-500/10",
+    border: "border-red-500/30"
+  },
+  "cs:go": {
+    gradient: "from-orange-500 to-yellow-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/30"
+  },
+  "rocket league": {
+    gradient: "from-blue-500 to-cyan-500",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/30"
+  },
+  "delta force": {
+    gradient: "from-green-500 to-emerald-500",
+    bg: "bg-green-500/10",
+    border: "border-green-500/30"
+  },
+  "among us": {
+    gradient: "from-purple-500 to-pink-500",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/30"
+  },
+  "fc25": {
+    gradient: "from-indigo-500 to-blue-500",
+    bg: "bg-indigo-500/10",
+    border: "border-indigo-500/30"
+  },
+  "fortnite": {
+    gradient: "from-violet-500 to-purple-500",
+    bg: "bg-violet-500/10",
+    border: "border-violet-500/30"
+  },
+  "league of legends": {
+    gradient: "from-teal-500 to-cyan-500",
+    bg: "bg-teal-500/10",
+    border: "border-teal-500/30"
+  },
+  "roblox": {
+    gradient: "from-pink-500 to-rose-500",
+    bg: "bg-pink-500/10",
+    border: "border-pink-500/30"
+  },
+  "teamfight tactics": {
+    gradient: "from-amber-500 to-orange-500",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/30"
+  },
+  // Fallback par défaut
+  "default": {
+    gradient: "from-gray-500 to-slate-500",
+    bg: "bg-gray-500/10",
+    border: "border-gray-500/30"
+  }
+};
+
+export default function Games() {
+  const pb = usePocketBase();
+  const [games, setGames] = createSignal<GameRecord[]>([]);
+  const [isLoading, setIsLoading] = createSignal(true);
+  const [error, setError] = createSignal<string | null>(null);
+
+  onMount(async () => {
+    if (!pb) {
+      setError("PocketBase non disponible (SSR)");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const records = await pb.collection("Games").getFullList({ sort: "name" });
+      setGames(records as unknown as GameRecord[]);
+    } catch (err) {
+      console.error("❌ Error loading Games:", err);
+      setError("Impossible de charger les jeux");
+      setGames([]);
+    } finally {
+      setIsLoading(false);
+    }
+  });
+
+  return (
+    <section id="games" class="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <Title>Jeux - TLG</Title>
+
+      {/* Background Effect */}
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#a855f7]/5 to-transparent" />
+
+      <div class="relative max-w-7xl mx-auto">
+        {/* Header */}
+        <div class="text-center mb-16">
+          <div class="inline-block px-4 py-2 bg-[#00e5ff]/10 border border-[#00e5ff]/30 rounded-full mb-4">
+            <span class="text-[#00e5ff] tracking-wider">NOS DISCIPLINES</span>
+          </div>
+          <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-gradient-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent">
+            10 Jeux, Une Ambition
+          </h2>
+          <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Nous construisons notre présence sur les principales scènes compétitives. Chaque match nous rapproche de la grandeur.
+          </p>
+        </div>
+
+        {/* Error State */}
+        <Show when={error()}>
+          <div class="w-full mb-6 px-4 py-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-200 text-center">
+            {error()}
+          </div>
+        </Show>
+
+        {/* Loading State */}
+        <Show
+          when={!isLoading()}
+          fallback={
+            <div class="flex items-center justify-center py-16">
+              <div class="flex items-center gap-3 text-gray-300">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#00e5ff]" />
+                <span class="text-lg">Chargement des jeux...</span>
+              </div>
+            </div>
+          }
+        >
+          {/* Games Grid */}
+          <Show
+            when={games().length > 0}
+            fallback={
+              <div class="text-center text-gray-400 py-12">
+                Aucun jeu trouvé pour le moment.
+              </div>
+            }
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <For each={games()}>
+                {(game) => {
+                  const themeKey = (game.name || "").trim().toLowerCase();
+                  const colors = GAME_COLORS[themeKey] ?? GAME_COLORS.default;
+
+                  return (
+                    <div
+                      class={`group relative p-8 ${colors.bg} border ${colors.border} rounded-2xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all hover:scale-[1.02] hover:-translate-y-1`}
+                    >
+                      {/* Hover Gradient Effect */}
+                      <div class={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
+
+                      <div class="relative z-10">
+                        {/* Header with icons */}
+                        <div class="flex items-start justify-between mb-6">
+                          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                          </svg>
+                          <div class={`px-3 py-1 bg-gradient-to-r ${colors.gradient} rounded-full`}>
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        {/* Game Title and Status */}
+                        <h3 class="text-2xl font-black mb-2 text-white">{game.name}</h3>
+                        <p class="text-gray-400 mb-6">{game.status || "En développement"}</p>
+
+                        {/* Stats */}
+                        <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                          <div>
+                            <div class="text-sm text-gray-400">Roster</div>
+                            <div class={`text-xl font-black bg-gradient-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                              {game.how_many_roster ?? "Bientôt"}
+                            </div>
+                          </div>
+                          <div>
+                            <div class="text-sm text-gray-400">Winrate</div>
+                            <div class={`text-xl font-black bg-gradient-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                              {game.winrate != null ? `${game.winrate}%` : "Bientôt"}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Decorative Corner */}
+                      <div class={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${colors.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
+                    </div>
+                  );
+                }}
+              </For>
+            </div>
+          </Show>
+        </Show>
+
+        {/* CTA Section */}
+        <div class="mt-16 p-8 bg-gradient-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
+          <h3 class="text-2xl font-black mb-3">Rejoins l'Aventure</h3>
+          <p class="text-gray-400 mb-6">
+            Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
+          </p>
+          <a
+            href="/recrutement"
+            class="inline-block px-8 py-3 bg-gradient-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
+          >
+            Postuler Maintenant
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}

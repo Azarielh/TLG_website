@@ -74,19 +74,19 @@ export default function Home() {
   // Composant Stats Cards réutilisable
   const StatsCards = () => (
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto relative z-10">
-      <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
         <div class="text-3xl font-black text-yellow-400 mb-1">100%</div>
         <div class="text-sm text-gray-400 font-medium">Engagement</div>
       </div>
-      <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
         <div class="text-3xl font-black text-yellow-400 mb-1">24/7</div>
         <div class="text-sm text-gray-400 font-medium">Actif</div>
       </div>
-      <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
         <div class="text-3xl font-black text-yellow-400 mb-1">∞</div>
         <div class="text-sm text-gray-400 font-medium">Potentiel</div>
       </div>
-      <div class="bg-gradient-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
         <div class="text-3xl font-black text-yellow-400 mb-1">1</div>
         <div class="text-sm text-gray-400 font-medium">Membre</div>
       </div>
@@ -95,11 +95,11 @@ export default function Home() {
 
   // Composant Taglines réutilisable
   const Taglines = () => (
-    <div class="relative mb-[2.5rem] overflow-visible z-[99] min-h-[4rem]">
+    <div class="relative mb-10 overflow-visible z-99 min-h-16">
       <For each={taglines}>
         {(tagline, index) => (
           <p 
-            class="absolute inset-x-0 flex items-center justify-center text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 transition-all duration-1000 z-[99] py-2"
+            class="absolute inset-x-0 flex items-center justify-center text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-yellow-400 via-yellow-200 to-yellow-400 transition-all duration-1000 z-99 py-2"
             style={{
               opacity: currentTagline() === index() ? 1 : 0,
               transform: currentTagline() === index() ? 'translateY(0)' : 'translateY(20px)'
