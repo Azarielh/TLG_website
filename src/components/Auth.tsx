@@ -132,8 +132,11 @@ const Auth: Component<AuthProps> = (props) => {
                         <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px" }}>
                             Accès Staff
                         </h2>
-                        <p style={{ color: "#9ca3af", "font-size": "14px" }}>
+                        <p style={{ color: "#9ca3af", "font-size": "14px", "margin-bottom": "10px" }}>
                             Entrez le mot de passe d'accès pour continuer
+                        </p>
+                        <p style={{ color: "#6b7280", "font-size": "13px" }}>
+                            Pour les autres utilisateurs : aucun compte n'est nécessaire pour le moment.
                         </p>
                     </div>
 
