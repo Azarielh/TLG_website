@@ -182,7 +182,9 @@ export default function Games() {
                             </span>
                           </div>
                           <a
-                            href="/recrutement"
+                            href="https://discord.gg/3SP3kdu3gJ"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class={`px-5 py-1.5 bg-linear-to-r ${colors.gradient} rounded-lg text-white text-sm font-semibold hover:shadow-lg transition-all hover:scale-[1.05]`}
                           >
                             Rejoindre
@@ -223,7 +225,9 @@ export default function Games() {
             Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
           </p>
           <a
-            href="/recrutement"
+            href="https://discord.gg/3SP3kdu3gJ"
+            target="_blank"
+            rel="noopener noreferrer"
             class="inline-block px-8 py-3 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
           >
             Postuler Maintenant

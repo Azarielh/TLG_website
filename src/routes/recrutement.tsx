@@ -172,9 +172,9 @@ export default function academy() {
               </div>
             </div>
 
-            <button class="mt-8 w-full px-6 py-3 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
+            <a href="https://discord.gg/3SP3kdu3gJ" target="_blank" rel="noopener noreferrer" class="mt-8 w-full block px-6 py-3 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50 text-center">
               Postuler au Roaster
-            </button>
+            </a>
           </div>
 
           {/* Section Académie */}
@@ -203,9 +203,9 @@ export default function academy() {
               </div>
             </div>
 
-            <button class="mt-8 w-full px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
+            <a href="https://discord.gg/3SP3kdu3gJ" target="_blank" rel="noopener noreferrer" class="mt-8 w-full block px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50 text-center">
               Rejoindre l'Académie
-            </button>
+            </a>
           </div>
 
         </div>
