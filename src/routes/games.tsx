@@ -166,14 +166,28 @@ export default function Games() {
                           </svg>
                           <div class={`px-3 py-1 bg-linear-to-r ${colors.gradient} rounded-full`}>
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                              <path d="M20 2H4c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h1v1c0 2.97 2.16 5.43 5 5.91V19H8c-1.1 0-2 .9-2 2h12c0-1.1-.9-2-2-2h-2v-3.09c2.84-.48 5-2.94 5-5.91v-1h1c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 7c0 2.21-1.79 4-4 4s-4-1.79-4-4V5h8v4z"/>
                             </svg>
                           </div>
                         </div>
 
-                        {/* Game Title and Status */}
-                        <h3 class="text-2xl font-black mb-2 text-white">{game.name}</h3>
-                        <p class="text-gray-400 mb-6">{game.status || "En développement"}</p>
+                        {/* Game Title */}
+                        <h3 class="text-2xl font-black mb-4 text-white">{game.name}</h3>
+
+                        {/* Status Badge and CTA Button */}
+                        <div class="flex items-center justify-between mb-6">
+                          <div class={`flex items-center px-3 py-1 rounded-full ${colors.bg} ${colors.border} border`}>
+                            <span class={`text-xs font-semibold bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                              {game.status === 'open' ? 'Roster en formation' : game.status || 'En développement'}
+                            </span>
+                          </div>
+                          <a
+                            href="/recrutement"
+                            class={`px-5 py-1.5 bg-linear-to-r ${colors.gradient} rounded-lg text-white text-sm font-semibold hover:shadow-lg transition-all hover:scale-[1.05]`}
+                          >
+                            Rejoindre
+                          </a>
+                        </div>
 
                         {/* Stats */}
                         <div class="flex items-center justify-between pt-4 border-t border-white/10">
