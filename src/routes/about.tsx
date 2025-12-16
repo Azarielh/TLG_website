@@ -49,7 +49,7 @@ export default function About() {
           </article>
 
           {/* Card 2 - Compétitif */}
-          <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:translate-y-[-8px] hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
+          <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 min-w-[18rem] md:max-w-[30%] hover:-translate-y-2 hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
             <div class="flex items-center gap-4 mb-4">
               <div class="w-14 h-14 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">

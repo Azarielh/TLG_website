@@ -215,7 +215,7 @@ export default function News() {
       <div class="w-full max-w-4xl mb-12">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
           <div class="text-center sm:text-left">
-            <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-gradient-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+            <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
               Actualités
             </h1>
             <p class="text-gray-400 text-lg">
@@ -227,7 +227,7 @@ export default function News() {
           <Show when={canAddNews()}>
             <button
               onClick={() => setIsModalOpen(true)}
-              class="group relative w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-full text-black font-black transition-all duration-300 hover:scale-110 shadow-xl shadow-yellow-400/30 hover:shadow-2xl hover:shadow-yellow-400/50"
+              class="group relative w-12 h-12 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-full text-black font-black transition-all duration-300 hover:scale-110 shadow-xl shadow-yellow-400/30 hover:shadow-2xl hover:shadow-yellow-400/50"
               aria-label="Ajouter une News"
             >
               <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
@@ -238,7 +238,7 @@ export default function News() {
         </div>
 
         {/* Filtres et tri améliorés */}
-        <div class="flex flex-wrap items-center gap-3 bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-5 backdrop-blur-sm shadow-xl">
+        <div class="flex flex-wrap items-center gap-3 bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-5 backdrop-blur-sm shadow-xl">
           {/* Label avec icône */}
           <span class="flex items-center gap-2 text-gray-400 text-sm font-bold">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

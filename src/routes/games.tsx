@@ -101,7 +101,7 @@ export default function Games() {
       <Title>Jeux - TLG</Title>
 
       {/* Background Effect */}
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#a855f7]/5 to-transparent" />
+      <div class="absolute inset-0 bg-linear-to-b from-transparent via-[#a855f7]/5 to-transparent" />
 
       <div class="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -109,7 +109,7 @@ export default function Games() {
           <div class="inline-block px-4 py-2 bg-[#00e5ff]/10 border border-[#00e5ff]/30 rounded-full mb-4">
             <span class="text-[#00e5ff] tracking-wider">NOS DISCIPLINES</span>
           </div>
-          <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-gradient-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent">
+          <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent">
             10 Jeux, Une Ambition
           </h2>
           <p class="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -156,7 +156,7 @@ export default function Games() {
                       class={`group relative p-8 ${colors.bg} border ${colors.border} rounded-2xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all hover:scale-[1.02] hover:-translate-y-1`}
                     >
                       {/* Hover Gradient Effect */}
-                      <div class={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
+                      <div class={`absolute inset-0 bg-linear-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
 
                       <div class="relative z-10">
                         {/* Header with icons */}
@@ -164,7 +164,7 @@ export default function Games() {
                           <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
                           </svg>
-                          <div class={`px-3 py-1 bg-gradient-to-r ${colors.gradient} rounded-full`}>
+                          <div class={`px-3 py-1 bg-linear-to-r ${colors.gradient} rounded-full`}>
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                             </svg>
@@ -179,13 +179,13 @@ export default function Games() {
                         <div class="flex items-center justify-between pt-4 border-t border-white/10">
                           <div>
                             <div class="text-sm text-gray-400">Roster</div>
-                            <div class={`text-xl font-black bg-gradient-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                            <div class={`text-xl font-black bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
                               {game.how_many_roster ?? "Bientôt"}
                             </div>
                           </div>
                           <div>
                             <div class="text-sm text-gray-400">Winrate</div>
-                            <div class={`text-xl font-black bg-gradient-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                            <div class={`text-xl font-black bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
                               {game.winrate != null ? `${game.winrate}%` : "Bientôt"}
                             </div>
                           </div>
@@ -193,7 +193,7 @@ export default function Games() {
                       </div>
 
                       {/* Decorative Corner */}
-                      <div class={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${colors.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
+                      <div class={`absolute -bottom-8 -right-8 w-32 h-32 bg-linear-to-br ${colors.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
                     </div>
                   );
                 }}
@@ -203,14 +203,14 @@ export default function Games() {
         </Show>
 
         {/* CTA Section */}
-        <div class="mt-16 p-8 bg-gradient-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
+        <div class="mt-16 p-8 bg-linear-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
           <h3 class="text-2xl font-black mb-3">Rejoins l'Aventure</h3>
           <p class="text-gray-400 mb-6">
             Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
           </p>
           <a
             href="/recrutement"
-            class="inline-block px-8 py-3 bg-gradient-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
+            class="inline-block px-8 py-3 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
           >
             Postuler Maintenant
           </a>

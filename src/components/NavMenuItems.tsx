@@ -12,7 +12,7 @@ export function MenuItem(props: MenuItemProps) {
   const wrapper = props.status ? (
     <SessionStatus text={props.status} placement="bottom">
       <a
-        class={`px-2 lg:px-3 xl:px-4 py-2 rounded-lg font-semibold transition-all whitespace-nowrap text-sm lg:text-base ${props.class || "text-gray-300 hover:text-cyan-300 hover:bg-gradient-to-br hover:from-cyan-500/10 hover:to-purple-600/10 border border-transparent hover:border-cyan-400/30 hover:shadow-[0_0_8px_rgba(34,211,238,0.2)]"}`}
+        class={`px-2 lg:px-3 xl:px-4 py-2 rounded-lg font-semibold transition-all whitespace-nowrap text-sm lg:text-base ${props.class || "text-gray-300 hover:text-cyan-300 hover:bg-linear-to-br hover:from-cyan-500/10 hover:to-purple-600/10 border border-transparent hover:border-cyan-400/30 hover:shadow-[0_0_8px_rgba(34,211,238,0.2)]"}`}
         href={props.href}
       >
         {props.label}
@@ -20,7 +20,7 @@ export function MenuItem(props: MenuItemProps) {
     </SessionStatus>
   ) : (
     <a
-      class={`px-2 lg:px-3 xl:px-4 py-2 rounded-lg font-semibold transition-all whitespace-nowrap text-sm lg:text-base ${props.class || "text-gray-300 hover:text-cyan-300 hover:bg-gradient-to-br hover:from-cyan-500/10 hover:to-purple-600/10 border border-transparent hover:border-cyan-400/30 hover:shadow-[0_0_8px_rgba(34,211,238,0.2)]"}`}
+      class={`px-2 lg:px-3 xl:px-4 py-2 rounded-lg font-semibold transition-all whitespace-nowrap text-sm lg:text-base ${props.class || "text-gray-300 hover:text-cyan-300 hover:bg-linear-to-br hover:from-cyan-500/10 hover:to-purple-600/10 border border-transparent hover:border-cyan-400/30 hover:shadow-[0_0_8px_rgba(34,211,238,0.2)]"}`}
       href={props.href}
     >
       {props.label}
