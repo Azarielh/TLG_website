@@ -93,6 +93,7 @@ export default function Nav() {
             <button
               class="lg:hidden text-cyan-400 px-3 py-2 rounded-lg bg-linear-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 font-semibold transition-all shadow-[0_0_10px_rgba(34,211,238,0.3)] text-xl"
               onClick={() => setShowMobileMenu(!showMobileMenu())}
+              onMouseEnter={() => setShowMobileMenu(true)}
               aria-label="Menu"
             >
               {showMobileMenu() ? "✕" : "☰"}
@@ -177,7 +178,9 @@ export default function Nav() {
 
       {/* Mobile Menu */}
       <Show when={showMobileMenu()}>
-        <MobileMenu onClose={() => setShowMobileMenu(false)} />
+        <div onMouseLeave={() => setShowMobileMenu(false)}>
+          <MobileMenu onClose={() => setShowMobileMenu(false)} />
+        </div>
       </Show>
 
       {/* Auth Popup / User Menu */}
