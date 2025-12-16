@@ -40,7 +40,7 @@ const SessionStatus: Component<Props> = (props) => {
       {props.children}
 
       <div
-        class={`absolute ${placementMap[placement]} z-50 opacity-0 pointer-events-none group-hover:opacity-100 transform transition-all duration-150 ease-out`}
+        class={`absolute ${placementMap[placement]} z-80 opacity-0 pointer-events-none group-hover:opacity-100 transform transition-all duration-150 ease-out`}
         aria-hidden="true"
       >
         <div class="flex items-center gap-2 bg-[#16862ed9] mt-4 text-white text-sm px-3 py-1 rounded-full shadow-md backdrop-blur-sm">

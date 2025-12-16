@@ -89,20 +89,22 @@ export function DesktopMenu() {
 export function MobileMenu(props: { onClose: () => void }) {
   return (
     <div
-      class="fixed top-14 md:top-16 left-0 right-0 z-75 bg-linear-to-b from-gray-900/98 to-gray-950/98 backdrop-blur-lg p-4 flex flex-col gap-2 lg:hidden border-b border-cyan-400/20 shadow-[0_4px_20px_rgba(34,211,238,0.3)] max-h-[calc(100vh-4rem)] overflow-y-auto"
+      class="fixed top-14 md:top-16 left-0 right-0 z-75 bg-linear-to-b from-gray-900/98 to-gray-950/98 backdrop-blur-lg lg:hidden border-b border-cyan-400/20 shadow-[0_4px_20px_rgba(34,211,238,0.3)] overflow-visible"
       onClick={(e) => e.stopPropagation()}
     >
-      {menuItems
-        .map((item) => (
-          <div onClick={props.onClose}>
-            <MenuItem
-              href={item.href}
-              label={item.label}
-              status={item.status}
-              class="text-gray-200 hover:text-white hover:bg-linear-to-r hover:from-cyan-500/15 hover:to-purple-600/15 border border-transparent hover:border-cyan-400/40 block w-full text-base py-3"
-            />
-          </div>
-        ))}
+      <div class="p-4 flex flex-col gap-2 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        {menuItems
+          .map((item) => (
+            <div onClick={props.onClose}>
+              <MenuItem
+                href={item.href}
+                label={item.label}
+                status={item.status}
+                class="text-gray-200 hover:text-white hover:bg-linear-to-r hover:from-cyan-500/15 hover:to-purple-600/15 border border-transparent hover:border-cyan-400/40 block w-full text-base py-3"
+              />
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

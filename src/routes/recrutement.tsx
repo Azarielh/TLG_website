@@ -6,8 +6,12 @@ import { usePocketBase } from "../app";
 
 interface RankRecord {
   id: string;
-  name: string;
+  name: string | { id: string; name: string; [key: string]: any };
   icon?: string;
+  expand?: {
+    name?: { id: string; name: string; [key: string]: any } | { id: string; name: string; [key: string]: any }[];
+    [key: string]: any;
+  };
 }
 
 export default function academy() {
@@ -64,20 +68,34 @@ export default function academy() {
       const check = () => {
         const rec = pb.authStore.record;
         const r = rec?.role ?? rec?.Rank ?? rec?.rank;
-        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
+        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'dev'));
       };
       check();
       pb.authStore.onChange(() => check());
 
       // Récupérer tous les rôles depuis PocketBase (sauf follower, student, player)
       try {
-        const records = await pb.collection('Rôle').getFullList<RankRecord>({
-          sort: 'name'
+        const records = await pb.collection('recrutement').getFullList<RankRecord>({
+          sort: 'name',
+          expand: 'name' // Expand la relation name pour obtenir les vraies données
         });
+        
         // Filtrer les rôles qui ne sont pas recrutables
-        const recruitableRoles = records.filter(r => 
-          !['follower', 'student', 'player'].includes(r.name.toLowerCase())
-        );
+        // Si name est une relation, on accède à expand.name[0].name ou expand.name.name selon la structure
+        const recruitableRoles = records.filter(r => {
+          let roleName = '';
+          if (r.expand?.name) {
+            if (Array.isArray(r.expand.name)) {
+              roleName = r.expand.name[0]?.name || '';
+            } else {
+              roleName = (r.expand.name as any).name || '';
+            }
+          } else if (typeof r.name === 'string') {
+            roleName = r.name;
+          }
+          return !['follower', 'student', 'player'].includes(roleName.toLowerCase());
+        });
+        
         setAllRoles(recruitableRoles);
         
         // Par défaut, afficher les 3 premiers rôles (ou moins si moins disponibles)
@@ -95,6 +113,16 @@ export default function academy() {
     setSelectedRole(roleName);
     setIsRoleModalOpen(true);
   };
+  const getRoleName = (role: RankRecord):string => {
+    if (role.expand?.name) {
+      const expanded = role.expand.name;
+      if (Array.isArray(expanded)) {
+        return expanded[0]?.name || '';
+      }
+      return (expanded as any).name || '';
+    }
+    return typeof role.name === 'string' ? role.name : role.name?.name || '';
+  }
 
   return (
     <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
@@ -103,7 +131,7 @@ export default function academy() {
       {/* En-tête */}
       <div class="w-full max-w-6xl mb-16">
         <div class="text-center mb-12">
-          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-gradient-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
             Rejoignez-nous
           </h1>
           <p class="text-gray-400 text-lg sm:text-xl max-w-3xl mx-auto">
@@ -115,9 +143,9 @@ export default function academy() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Section Roster */}
-          <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group">
+          <div class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group">
             <div class="flex items-center gap-4 mb-6">
-              <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-16 h-16 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -144,7 +172,7 @@ export default function academy() {
               </div>
             </div>
 
-            <button class="mt-8 w-full px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
+            <button class="mt-8 w-full px-6 py-3 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
               Postuler au Roaster
             </button>
           </div>
@@ -197,16 +225,16 @@ export default function academy() {
                   <div class="relative">
                     <button
                       type="button"
-                      onClick={() => handleRoleClick(role.name)}
-                      onMouseEnter={() => setHoveredRole(role.name)}
+                      onClick={() => handleRoleClick(getRoleName(role))}
+                      onMouseEnter={() => setHoveredRole(getRoleName(role))}
                       onMouseLeave={() => setHoveredRole(null)}
                       class="px-4 py-2 bg-yellow-400/20 text-yellow-400 rounded-lg border border-yellow-400/30 font-semibold hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer"
                       classList={{
-                        "scale-110 z-10": hoveredRole() === role.name,
-                        "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== role.name
+                        "scale-110 z-10": hoveredRole() === getRoleName(role),
+                        "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== getRoleName(role)
                       }}
                     >
-                      {getRoleIcon(role.name)} {role.name}
+                      {getRoleIcon(getRoleName(role))} {getRoleName(role)}
                     </button>
                     
                     {/* Bouton de suppression pour admin/dev */}
@@ -214,7 +242,7 @@ export default function academy() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          removeRole(role.id, role.name);
+                          removeRole(role.id, getRoleName(role));
                         }}
                         class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-all duration-200 hover:scale-110"
                         title="Retirer ce rôle"
@@ -255,7 +283,7 @@ export default function academy() {
                                 onClick={() => addRole(role.id)}
                                 class="w-full text-left px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-gray-200 border-b border-gray-700/50 last:border-b-0"
                               >
-                                {getRoleIcon(role.name)} {role.name}
+                                {getRoleIcon(getRoleName)} {getRoleName}
                               </button>
                             )}
                           </For>
