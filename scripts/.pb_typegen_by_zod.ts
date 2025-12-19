@@ -1,5 +1,6 @@
 // scripts/pb_typegen_by_zod.ts
 import { writeFile } from "fs/promises";
+import path from 'path';
 import PocketBase from "pocketbase";
 
 const pbUrl = process.env.VITE_PB_URL;
@@ -20,7 +21,7 @@ type CollectionWithSample = {
 /* ------------------ FETCH ------------------ */
 
 async function fetchCollectionsWithSample(): Promise<CollectionWithSample[]> {
-  await PB.admins.authWithPassword(pbAdminEmail, pbAdminPassword);
+  await PB.admins.authWithPassword(pbAdminEmail as string, pbAdminPassword as string);
 
   const collections = await PB.collections.getFullList();
   const result: CollectionWithSample[] = [];
@@ -151,8 +152,10 @@ import { z } from "zod";
 ${baseSchemas.join("\n")}
 ${expandSchemas.join("\n")}
 `;
-
-  await writeFile("pb-zod.ts", content.trim());
+const Root= process.cwd();
+const OutputDir = 'src/PB';
+const outPath = path.join(Root, OutputDir, "pb-zod.ts");
+  await writeFile(outPath, content.trim());
   console.log("✅ pb-zod.ts generated");
 }
 
