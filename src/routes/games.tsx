@@ -203,23 +203,39 @@ export default function Games() {
                               {game.status === 'open' ? 'Roster en formation' : game.status || 'En développement'}
                             </span>
                           </div>
-                          <a
-                            href="https://discord.gg/3SP3kdu3gJ"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class={`px-5 py-1.5 bg-linear-to-r ${colors.gradient} rounded-lg text-white text-sm font-semibold hover:shadow-lg transition-all hover:scale-[1.05]`}
-                          >
-                            Rejoindre
-                          </a>
+                          <Show when={(game.how_many_roster ?? 0) > 0}>
+                            <a
+                              href="https://discord.gg/3SP3kdu3gJ"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class={`px-5 py-1.5 bg-linear-to-r ${colors.gradient} rounded-lg text-white text-sm font-semibold hover:shadow-lg transition-all hover:scale-[1.05]`}
+                            >
+                              Rejoindre
+                            </a>
+                          </Show>
                         </div>
 
                         {/* Stats */}
                         <div class="flex items-center justify-between pt-4 border-t border-white/10">
                           <div>
                             <div class="text-sm text-gray-400">Roster</div>
-                            <div class={`text-xl font-black bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
-                              {game.how_many_roster ?? "Bientôt"}
-                            </div>
+                            <Show
+                              when={(game.how_many_roster ?? 0) === 0}
+                              fallback={
+                                <div class={`text-xl font-black bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
+                                  {game.how_many_roster ?? "Bientôt"}
+                                </div>
+                              }
+                            >
+                              <a
+                                href="https://discord.gg/3SP3kdu3gJ"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class={`inline-block px-4 py-1.5 bg-linear-to-r ${colors.gradient} rounded-lg text-white text-sm font-semibold hover:shadow-lg transition-all hover:scale-[1.05]`}
+                              >
+                                Rejoindre
+                              </a>
+                            </Show>
                           </div>
                           <div>
                             <div class="text-sm text-gray-400">Winrate</div>
