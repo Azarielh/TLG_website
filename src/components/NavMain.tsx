@@ -102,14 +102,16 @@ export default function Nav() {
 
             {/* Logo */}
             <div class="flex items-center gap-3 cursor-pointer">
-              <img src="/public/logo.svg" alt="The Legion Esports Logo" class="w-15 h-15 object-contain" />
               <a
                 href="/"
-                class="shrink-0 text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
+                class="flex items-center gap-3 shrink-0 text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-blue-500 to-purple-600 font-black text-lg sm:text-xl md:text-2xl tracking-wide sm:tracking-wider md:tracking-widest whitespace-nowrap uppercase transition-all hover:scale-105"
                 style="font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6)) drop-shadow(0 0 20px rgba(147,51,234,0.4));"
               >
-                <div class="text-xl font-black tracking-tight">THE LEGION</div>
-                <div class="text-xs text-[#00e5ff] tracking-widest">ESPORTS</div>
+                <img src="/public/logo.svg" alt="The Legion Esports Logo" class="w-12 h-12 object-contain" />
+                <div class="flex flex-col">
+                  <div class="text-xl font-black tracking-tight" style="font-family: 'College Block', serif; letter-spacing: -0.02em;">THE LEGION</div>
+                  <div class="text-xs text-[#00e5ff] tracking-widest">ESPORTS</div>
+                </div>
               </a>
               </div>
           </div>

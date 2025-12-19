@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@600;700&family=Audiowide&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'College Block';
+  src: url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/collegeblock/CollegeBlock-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @layer base {
   body {
     background-color: theme('colors.black');

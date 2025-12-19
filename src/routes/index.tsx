@@ -112,6 +112,15 @@ export default function Home() {
     </div>
   );
 
+  // Helper pour construire URL image PocketBase
+  const getCarouselImageUrl = (news: any) => {
+    if (news.image && news.collectionName && news.id) {
+      const pbUrl = 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
+      return `${pbUrl}/api/files/${news.collectionName}/${news.id}/${news.image}`;
+    }
+    return null;
+  };
+
   // Composant Carrousel News réutilisable
   const NewsCarousel = (props: { compact?: boolean }) => (
     <Show when={!isLoadingNews() && latestNews().length > 0} fallback={
@@ -126,14 +135,30 @@ export default function Home() {
       </div>
     }>
       <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex items-center justify-center">
+        <div class="relative overflow-hidden rounded-2xl border border-gray-700/50 shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex items-center justify-center">
           <For each={latestNews()}>
-            {(news, index) => (
-              <A href="/news" class="block h-full transition-all duration-700 ease-in-out cursor-pointer hover:bg-gray-800/80" style={{
+            {(news, index) => {
+              const imageUrl = getCarouselImageUrl(news);
+              return (
+              <A href="/news" class="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out cursor-pointer" style={{
                 display: currentNewsIndex() === index() ? 'block' : 'none',
                 opacity: currentNewsIndex() === index() ? 1 : 0
               }}>
-                <div class={`${props.compact ? "p-6" : "p-8 md:p-12"} h-full flex flex-col`}>
+                {/* Background image */}
+                <Show when={imageUrl}>
+                  <img 
+                    src={imageUrl!} 
+                    alt={news.title}
+                    class="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </Show>
+
+                {/* Overlay gradient pour la lisibilité */}
+                <div class="absolute inset-0 bg-linear-to-t from-gray-900/95 via-gray-900/70 to-gray-900/40"></div>
+                
+                {/* Contenu avec positioning au-dessus du background */}
+                <div class={`absolute inset-0 ${props.compact ? "p-6" : "p-8 md:p-12"} flex flex-col justify-end`}>
                   <Show when={normalizeTags(news).length > 0}>
                     <div class="flex flex-wrap gap-2 mb-4">
                       <For each={normalizeTags(news).slice(0, 3)}>
@@ -151,8 +176,8 @@ export default function Home() {
                   }>
                     <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed" : "text-xl text-gray-300 mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
                   </Show>
-                  <div class="py-auto border-t border-gray-700/50 flex flex-col items-center justify-center gap-2 mt-auto">
-                    <time class="text-sm text-gray-400">{formatDate(news.created)}</time>
+                  <div class="flex flex-col items-center justify-center gap-2">
+                    <time class="text-sm text-gray-300">{formatDate(news.created)}</time>
 
                     {/* Indicateurs intégrés au bloc pour la version compact (layout split) */}
                     <Show when={props.compact && latestNews().length > 1}>
@@ -164,7 +189,7 @@ export default function Home() {
                               class="transition-all duration-300"
                               aria-label={`Aller à la news ${idx() + 1}`}
                             >
-                              <div class={`h-2 rounded-full transition-all duration-300 ${currentNewsIndex() === idx() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-600 hover:bg-gray-500'}`} />
+                              <div class={`h-2 rounded-full transition-all duration-300 ${currentNewsIndex() === idx() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-400 hover:bg-gray-300'}`} />
                             </button>
                           )}
                         </For>
@@ -173,7 +198,8 @@ export default function Home() {
                   </div>
                 </div>
               </A>
-            )}
+            );
+            }}
           </For>
         </div>
 
