@@ -167,6 +167,17 @@ export default function Games() {
                     <div
                       class={`group relative p-8 ${colors.bg} border ${colors.border} rounded-2xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all hover:scale-[1.02] hover:-translate-y-1`}
                     >
+                      <Show when={logoSrc}>
+                        <div
+                          class="absolute inset-0 pointer-events-none opacity-10"
+                          style={{
+                            "background-image": `url(${logoSrc})`,
+                            "background-repeat": "no-repeat",
+                            "background-size": "110%",
+                            "background-position": "center",
+                          }}
+                        />
+                      </Show>
                       {/* Hover Gradient Effect */}
                       <div class={`absolute inset-0 bg-linear-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
 
