@@ -131,7 +131,7 @@ export default function academy() {
       {/* En-tête */}
       <div class="w-full max-w-6xl mb-16">
         <div class="text-center mb-12">
-          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
             Rejoignez-nous
           </h1>
           <p class="text-gray-400 text-lg sm:text-xl max-w-3xl mx-auto">
@@ -150,7 +150,7 @@ export default function academy() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h2 class="text-3xl font-black text-white">Roster</h2>
+              <h2 class="text-3xl font-black text-white" style="font-family: 'Varsity', serif;">Roster</h2>
             </div>
             
             <div class="space-y-4">
@@ -185,7 +185,7 @@ export default function academy() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h2 class="text-3xl font-black text-white">Académie</h2>
+              <h2 class="text-3xl font-black text-white" style="font-family: 'Varsity', serif;">Académie</h2>
             </div>
             
             <div class="space-y-4">
@@ -213,7 +213,7 @@ export default function academy() {
         {/* Message d'invitation */}
         <div class="mt-12 text-center">
           <div class="max-w-3xl mx-auto bg-gradient-to-r from-yellow-400/10 via-yellow-500/10 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-8 backdrop-blur-sm relative">
-            <h2 class="text-3xl font-black text-white mb-4">
+            <h2 class="text-3xl font-black text-white mb-4" style="font-family: 'Varsity', serif;">
               Vous souhaitez vous investir pour la team ?
             </h2>
             <p class="text-gray-300 text-lg mb-6">

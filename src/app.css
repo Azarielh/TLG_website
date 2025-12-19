@@ -8,6 +8,27 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Varsity';
+  src: url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/varsityteam/VarsityTeam-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Freshman';
+  src: url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/freshman/Freshman-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Big Noodle Titling';
+  src: url('https://db.onlinewebfonts.com/t/8e22783d707ad140bcc18b050f73f2ca.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @layer base {
   body {
     background-color: theme('colors.black');

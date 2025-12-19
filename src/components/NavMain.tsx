@@ -109,8 +109,8 @@ export default function Nav() {
               >
                 <img src="/public/logo.svg" alt="The Legion Esports Logo" class="w-12 h-12 object-contain" />
                 <div class="flex flex-col">
-                  <div class="text-xl font-black tracking-tight" style="font-family: 'College Block', serif; letter-spacing: -0.02em;">THE LEGION</div>
-                  <div class="text-xs text-[#00e5ff] tracking-widest">ESPORTS</div>
+                  <div class="text-xl font-black tracking-tight" style="font-family: 'Varsity', serif; letter-spacing: -0.05em;">THE LEGION</div>
+                  <div class="text-xs text-[#00e5ff] tracking-widest" style="font-family: 'Varsity', serif;">ESPORTS</div>
                 </div>
               </a>
               </div>
@@ -219,7 +219,7 @@ export default function Nav() {
                   </Show>
                 </div>
                 <div class="flex-1">
-                  <h3 class="text-white font-bold text-lg">
+                  <h3 class="text-white font-bold text-lg" style="font-family: 'Varsity', serif;">
                     {user()?.name || user()?.username || "Utilisateur"}
                   </h3>
                   <p class="text-gray-400 text-sm">{user()?.email}</p>

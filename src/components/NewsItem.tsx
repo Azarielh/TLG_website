@@ -137,7 +137,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
         </div>
 
         {/* Titre avec gradient */}
-        <h2 class={`text-3xl sm:text-5xl font-black mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent group-hover:from-yellow-400 group-hover:via-yellow-200 group-hover:to-white transition-all duration-500 ${props.centerTitle ? 'text-center' : ''}`}>
+        <h2 class={`text-3xl sm:text-5xl font-black mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent group-hover:from-yellow-400 group-hover:via-yellow-200 group-hover:to-white transition-all duration-500 ${props.centerTitle ? 'text-center' : ''}`} style="font-family: 'Varsity', serif;">
           {props.news.title}
         </h2>
 

@@ -215,7 +215,7 @@ export default function News() {
       <div class="w-full max-w-4xl mb-12">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
           <div class="text-center sm:text-left">
-            <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+            <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
               Actualités
             </h1>
             <p class="text-gray-400 text-lg">

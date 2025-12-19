@@ -234,7 +234,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <div class="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-white">Ajouter une News</h2>
+            <h2 class="text-2xl font-bold text-white" style="font-family: 'Varsity', serif;">Ajouter une News</h2>
             <button
               onClick={props.onClose}
               class="text-gray-400 hover:text-white transition-colors text-2xl leading-none"

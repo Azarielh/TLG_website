@@ -129,7 +129,7 @@ const Auth: Component<AuthProps> = (props) => {
                 {/* Formulaire de mot de passe d'accès */}
                 <form onSubmit={handlePasswordSubmit} style={{ display: "flex", "flex-direction": "column", gap: "20px" }}>
                     <div class="text-center mb-4">
-                        <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px" }}>
+                        <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px", "font-family": "'Varsity', serif" }}>
                             Accès Staff
                         </h2>
                         <p style={{ color: "#9ca3af", "font-size": "14px", "margin-bottom": "10px" }}>
@@ -222,7 +222,7 @@ const Auth: Component<AuthProps> = (props) => {
             <Show when={isAccessGranted()}>
                 {/* Connexion Google */}
                 <div class="text-center mb-4">
-                    <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px" }}>
+                    <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px", "font-family": "'Varsity', serif" }}>
                         Connexion
                     </h2>
                     <p style={{ color: "#9ca3af", "font-size": "14px" }}>

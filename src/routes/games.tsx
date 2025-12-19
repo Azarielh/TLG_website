@@ -109,7 +109,7 @@ export default function Games() {
           <div class="inline-block px-4 py-2 bg-[#00e5ff]/10 border border-[#00e5ff]/30 rounded-full mb-4">
             <span class="text-[#00e5ff] tracking-wider">NOS DISCIPLINES</span>
           </div>
-          <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent">
+          <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
             10 Jeux, Une Ambition
           </h2>
           <p class="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -172,7 +172,7 @@ export default function Games() {
                         </div>
 
                         {/* Game Title */}
-                        <h3 class="text-2xl font-black mb-4 text-white">{game.name}</h3>
+                        <h3 class="text-2xl font-black mb-4 text-white" style="font-family: 'Varsity', serif;">{game.name}</h3>
 
                         {/* Status Badge and CTA Button */}
                         <div class="flex items-center justify-between mb-6">
@@ -220,7 +220,7 @@ export default function Games() {
 
         {/* CTA Section */}
         <div class="mt-16 p-8 bg-linear-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
-          <h3 class="text-2xl font-black mb-3">Rejoins l'Aventure</h3>
+          <h3 class="text-2xl font-black mb-3" style="font-family: 'Varsity', serif;">Rejoins l'Aventure</h3>
           <p class="text-gray-400 mb-6">
             Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
           </p>

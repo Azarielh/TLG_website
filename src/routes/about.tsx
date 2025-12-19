@@ -7,7 +7,7 @@ export default function About() {
         
         {/* En-tête avec gradient */}
         <div class="text-center mb-16 max-w-4xl">
-          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent">
+          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
             À propos de TLG
           </h1>
           <p class="text-gray-400 text-lg sm:text-xl">
@@ -26,7 +26,7 @@ export default function About() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3 class="text-2xl font-black text-white">Esprit d'équipe</h3>
+              <h3 class="text-2xl font-black text-white" style="font-family: 'Varsity', serif;">Esprit d'équipe</h3>
             </div>
             <p class="mt-4 text-gray-300 text-lg leading-relaxed">
               Une organisation en squads, un encadrement attentif et une
@@ -56,7 +56,7 @@ export default function About() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
               </div>
-              <h3 class="text-2xl font-black text-white">Compétitif</h3>
+              <h3 class="text-2xl font-black text-white" style="font-family: 'Varsity', serif;">Compétitif</h3>
             </div>
             <p class="mt-4 text-gray-300 text-lg leading-relaxed">
               Des entraînements réguliers, des tournois encadrés et un
@@ -86,7 +86,7 @@ export default function About() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 class="text-2xl font-black text-white">Ambiance</h3>
+              <h3 class="text-2xl font-black text-white" style="font-family: 'Varsity', serif;">Ambiance</h3>
             </div>
             <p class="mt-4 text-gray-300 text-lg leading-relaxed">
               Des événements conviviaux, des récompenses et une communauté active

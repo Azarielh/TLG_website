@@ -168,7 +168,7 @@ export default function Home() {
                       </For>
                     </div>
                   </Show>
-                  <h3 class={props.compact ? "text-2xl md:text-3xl font-black text-white mb-3 leading-tight" : "text-3xl md:text-5xl font-black text-white mb-4 leading-tight"}>{news.title}</h3>
+                  <h3 class={props.compact ? "text-2xl md:text-3xl font-black text-white mb-3 leading-tight" : "text-3xl md:text-5xl font-black text-white mb-4 leading-tight"} style="font-family: 'Varsity', serif;">{news.title}</h3>
                   <Show when={news.headlines || news.excerpt} fallback={
                     <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed italic" : "text-xl text-gray-300 mb-6 leading-relaxed italic"}>
                       [Aucun résumé disponible]
@@ -224,7 +224,7 @@ export default function Home() {
       <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-yellow-400/20 via-yellow-600/10 to-transparent border border-yellow-400/30 p-12 text-center backdrop-blur-sm">
         <div class="absolute inset-0 bg-linear-to-r from-yellow-400/10 to-transparent blur-3xl"></div>
         <div class="relative z-10">
-          <h2 class="text-3xl md:text-5xl font-black text-white mb-4">
+          <h2 class="text-3xl md:text-5xl font-black text-white mb-4" style="font-family: 'Varsity', serif;">
             Prêt à rejoindre la <span class="text-yellow-400">Légion</span> ?
           </h2>
           <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -288,7 +288,7 @@ export default function Home() {
         </section>
 
         <section class="max-w-6xl mx-auto mb-20">
-          <h2 class="text-3xl md:text-4xl font-black text-white mb-8">
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-8" style="font-family: 'Varsity', serif;">
             <span class="text-yellow-400">⚡</span> Dernières Actualités
           </h2>
           <NewsCarousel />
