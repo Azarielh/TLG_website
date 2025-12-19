@@ -70,6 +70,12 @@ const GAME_COLORS: Record<string, { gradient: string; bg: string; border: string
   }
 };
 
+const GAME_LOGOS: Record<string, string> = {
+  "valorant": "/V_Logomark_Red.png",
+  "league of legends": "/lol-logo-rendered-hi-res.png",
+  "teamfight tactics": "/TFT_Logomark_Black.png",
+};
+
 export default function Games() {
   const pb = usePocketBase();
   const [games, setGames] = createSignal<GameRecord[]>([]);
@@ -150,6 +156,12 @@ export default function Games() {
                 {(game) => {
                   const themeKey = (game.name || "").trim().toLowerCase();
                   const colors = GAME_COLORS[themeKey] ?? GAME_COLORS.default;
+                  const logoSrc = GAME_LOGOS[themeKey];
+                  const logoSize = themeKey === 'teamfight tactics'
+                    ? 'w-[92px] h-[92px]'
+                    : themeKey === 'valorant'
+                      ? 'w-[76px] h-[76px]'
+                      : 'w-[64px] h-[64px]';
 
                   return (
                     <div
@@ -161,9 +173,19 @@ export default function Games() {
                       <div class="relative z-10">
                         {/* Header with icons */}
                         <div class="flex items-start justify-between mb-6">
-                          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-                          </svg>
+                          {logoSrc ? (
+                            <img
+                              src={logoSrc}
+                              alt={`${game.name} logo`}
+                              class={`${logoSize} object-contain`}
+                              loading="lazy"
+                              style={themeKey === 'valorant' ? { filter: 'grayscale(1) brightness(0)' } : undefined}
+                            />
+                          ) : (
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                            </svg>
+                          )}
                           <div class={`px-3 py-1 bg-linear-to-r ${colors.gradient} rounded-full`}>
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M20 2H4c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h1v1c0 2.97 2.16 5.43 5 5.91V19H8c-1.1 0-2 .9-2 2h12c0-1.1-.9-2-2-2h-2v-3.09c2.84-.48 5-2.94 5-5.91v-1h1c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 7c0 2.21-1.79 4-4 4s-4-1.79-4-4V5h8v4z"/>
