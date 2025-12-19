@@ -251,7 +251,7 @@ export default function Games() {
                           <div>
                             <div class="text-sm text-gray-400">Winrate</div>
                             <div class={`text-xl font-black bg-linear-to-r ${colors.gradient} bg-clip-text text-transparent`}>
-                              {game.winrate != null ? `${game.winrate}%` : "Bientôt"}
+                              {game.winrate == null ? "Bientôt" : game.winrate === 0 ? "à venir" : `${game.winrate}%`}
                             </div>
                           </div>
                         </div>
