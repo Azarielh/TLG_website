@@ -116,7 +116,7 @@ export default function Games() {
             <span class="text-[#00e5ff] tracking-wider">NOS DISCIPLINES</span>
           </div>
           <h2 class="text-5xl sm:text-6xl font-black mb-4 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
-            10 Jeux, Une Ambition
+            {games().length} Jeux, Une Ambition
           </h2>
           <p class="text-xl text-gray-400 max-w-2xl mx-auto">
             Nous construisons notre présence sur les principales scènes compétitives. Chaque match nous rapproche de la grandeur.
