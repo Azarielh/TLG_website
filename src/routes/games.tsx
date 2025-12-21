@@ -42,6 +42,11 @@ const GAME_COLORS: Record<string, { gradient: string; bg: string; border: string
     bg: "bg-indigo-500/10",
     border: "border-indigo-500/30"
   },
+  "fc 25": {
+    gradient: "from-indigo-500 to-blue-500",
+    bg: "bg-indigo-500/10",
+    border: "border-indigo-500/30"
+  },
   "fortnite": {
     gradient: "from-violet-500 to-purple-500",
     bg: "bg-violet-500/10",
@@ -75,6 +80,19 @@ const GAME_LOGOS: Record<string, string> = {
   "league of legends": "/lol-logo-rendered-hi-res.png",
   "teamfight tactics": "/TFT_Logomark_Black.png",
   "cs:go": "/Counter-Strike_Global_Offensive.svg.png",
+};
+
+const GAME_BACKGROUNDS: Record<string, { src: string; position?: string; size?: string }> = {
+  "cs:go": { src: "/cs:go_bg.jpg" },
+  "delta force": { src: "/deltaforce.jpg" },
+  "fc25": { src: "/fc25.jpg", position: "60% center" },
+  "fc 25": { src: "/fc25.jpg", position: "60% center" },
+  "valorant": { src: "/valorant.jpg" },
+  "league of legends": { src: "/lol.webp" },
+  "teamfight tactics": { src: "/tft.avif" },
+  "rocket league": { src: "/rocketleague.jpg" },
+  "fortnite": { src: "/fortnite.webp" },
+  "roblox": { src: "/roblox.jpg" },
 };
 
 export default function Games() {
@@ -159,6 +177,7 @@ export default function Games() {
                   const colors = GAME_COLORS[themeKey] ?? GAME_COLORS.default;
                   const logoSrc = GAME_LOGOS[themeKey];
                   const isCounterStrike = themeKey === 'cs:go';
+                  const background = GAME_BACKGROUNDS[themeKey];
                   const logoSize = themeKey === 'teamfight tactics'
                     ? 'w-[92px] h-[92px]'
                     : themeKey === 'valorant'
@@ -170,6 +189,12 @@ export default function Games() {
                   return (
                     <div
                       class={`group relative p-8 h-full flex flex-col ${colors.bg} border ${colors.border} rounded-2xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all hover:scale-[1.02] hover:-translate-y-1`}
+                      style={background ? {
+                        "background-image": `url(${background.src})`,
+                        "background-size": background.size ?? "cover",
+                        "background-position": background.position ?? "center",
+                        "background-repeat": "no-repeat",
+                      } : undefined}
                     >
                       <Show when={logoSrc}>
                         <div
@@ -233,7 +258,7 @@ export default function Games() {
                         </div>
 
                         {/* Stats */}
-                        <div class="flex items-center justify-between pt-4 border-t border-white/10 mt-auto">
+                        <div class="flex items-center justify-between pt-4 border-t border-white/10 mt-auto relative z-20">
                           <div>
                             <div class="text-sm text-gray-400">Roster</div>
                             <Show
@@ -262,6 +287,9 @@ export default function Games() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Bottom Blur Effect */}
+                      <div class="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black/25 to-transparent pointer-events-none" style={{ "backdrop-filter": "blur(4px)" }} />
 
                       {/* Decorative Corner */}
                       <div class={`absolute -bottom-8 -right-8 w-32 h-32 bg-linear-to-br ${colors.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
