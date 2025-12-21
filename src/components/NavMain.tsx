@@ -43,30 +43,36 @@ export default function Nav() {
       setUser(record);
     });
 
-    // Récupérer l'avatar de Google OAuth2
+    // Récupérer l'avatar OAuth (Discord prioritaire, sinon fallback Google/file/avatarUrl)
     if (pb.authStore.record) {
-      const userData = pb.authStore.record;
-      console.log('👤 User data:', userData);
-      console.log('👤 User avatar field:', userData.avatar);
-      console.log('👤 User avatarUrl field:', userData.avatarUrl);
-      
-      // L'avatar Google est stocké dans le champ avatar
-      if (userData.avatar) {
-        // Construire l'URL complète pour le fichier avatar
-        const url = `${pb.baseUrl}/api/files/${userData.collectionName}/${userData.id}/${userData.avatar}`;
-        console.log('🖼️ Avatar URL constructed:', url);
+      const userData = pb.authStore.record as any;
+      const meta = userData?.rawUserMetaData ?? userData?.meta ?? {};
+
+      // Discord: construire l'URL CDN si id + avatar hash présents
+      const discordId = meta?.id;
+      const discordAvatar = meta?.avatar;
+      if (discordId && discordAvatar) {
+        const url = `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.png?size=256`;
         setAvatarUrl(url);
-      } else if (userData.avatarUrl) {
-        // Parfois l'URL de l'avatar Google est directement disponible
-        console.log('🖼️ Avatar URL direct:', userData.avatarUrl);
-        setAvatarUrl(userData.avatarUrl);
-      } else {
-        // Fallback : initiales de l'utilisateur
-        console.log('⚠️ No avatar found, using fallback');
-        setAvatarUrl("");
+        return;
       }
+
+      // Si PocketBase a déjà une avatarUrl (Google/Discord)
+      if (userData.avatarUrl) {
+        setAvatarUrl(userData.avatarUrl);
+        return;
+      }
+
+      // Avatar stocké en fichier dans PocketBase (Google ou upload)
+      if (userData.avatar) {
+        const url = `${pb.baseUrl}/api/files/${userData.collectionName}/${userData.id}/${userData.avatar}`;
+        setAvatarUrl(url);
+        return;
+      }
+
+      // Fallback : pas d'avatar
+      setAvatarUrl("");
     } else {
-      console.log('❌ No user authenticated');
       setAvatarUrl("");
     }
     

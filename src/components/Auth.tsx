@@ -63,6 +63,49 @@ const Auth: Component<AuthProps> = (props) => {
         }
     };
 
+    const handleDiscordLogin = async () => {
+        if (!pb) {
+            console.error('❌ PocketBase not initialized');
+            setError("PocketBase not initialized");
+            return;
+        }
+
+        console.log('🚀 Starting Discord OAuth2 login...');
+        console.log('🔗 PocketBase URL:', pb.baseUrl);
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            console.log('📝 Calling authWithOAuth2 (discord)...');
+            const authData = await pb.collection('users').authWithOAuth2({
+                provider: 'discord',
+                urlCallback: (url: string) => {
+                    console.log('🌐 OAuth2 URL received (discord):', url);
+                    const width = 500;
+                    const height = 600;
+                    const left = window.screenX + (window.outerWidth - width) / 2;
+                    const top = window.screenY + (window.outerHeight - height) / 2;
+
+                    window.open(
+                        url,
+                        'OAuth2 Login',
+                        `width=${width},height=${height},left=${left},top=${top},toolbar=0,scrollbars=1,status=1,resizable=1,location=1,menuBar=0`
+                    );
+                }
+            });
+            console.log('✅ Discord auth successful!');
+            console.log('👤 Auth data:', authData);
+        } catch (err: any) {
+            console.error('❌ Discord auth error:', err);
+            if (err?.message && !err.message.includes('autocancelled')) {
+                setError(err.message || "Échec de l'authentification Discord.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleGoogleLogin = async () => {
         if (!pb) {
             console.error('❌ PocketBase not initialized');
@@ -220,13 +263,13 @@ const Auth: Component<AuthProps> = (props) => {
             </Show>
 
             <Show when={isAccessGranted()}>
-                {/* Connexion Google */}
+                {/* Connexion OAuth */}
                 <div class="text-center mb-4">
                     <h2 style={{ color: "white", "font-size": "24px", "font-weight": "700", "margin-bottom": "8px", "font-family": "'Varsity', serif" }}>
                         Connexion
                     </h2>
                     <p style={{ color: "#9ca3af", "font-size": "14px" }}>
-                        Connectez-vous avec votre compte Google
+                        Connectez-vous avec votre compte Google ou Discord
                     </p>
                 </div>
 
@@ -300,15 +343,16 @@ const Auth: Component<AuthProps> = (props) => {
                     <span>{loading() ? "Connexion en cours..." : "Continuer avec Google"}</span>
                 </button>
 
-                {/* Bouton Discord - Bientôt disponible */}
+                {/* Bouton Discord */}
                 <button
                     type="button"
-                    disabled
+                    onClick={handleDiscordLogin}
+                    disabled={loading()}
                     style={{
                         padding: "12px 16px",
                         "border-radius": "8px",
                         border: "1px solid #5865F2",
-                        cursor: "not-allowed",
+                        cursor: loading() ? "wait" : "pointer",
                         "background-color": "#5865F2",
                         color: "white",
                         "font-weight": "600",
@@ -316,10 +360,17 @@ const Auth: Component<AuthProps> = (props) => {
                         "align-items": "center",
                         "justify-content": "center",
                         gap: "12px",
-                        opacity: "0.5",
-                        position: "relative"
+                        opacity: loading() ? "0.7" : "1",
+                        transition: "all 0.2s"
                     }}
-                    title="Discord OAuth sera bientôt disponible"
+                    onMouseEnter={(e) => {
+                        if (!loading()) {
+                            (e.target as HTMLElement).style.opacity = "0.9";
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.opacity = loading() ? "0.7" : "1";
+                    }}
                 >
                     <img 
                         src="/social_media/discordLogo.png" 
@@ -328,20 +379,7 @@ const Auth: Component<AuthProps> = (props) => {
                         height="20"
                         style={{ filter: "brightness(0) invert(1)" }}
                     />
-                    <span>Continuer avec Discord</span>
-                    <span style={{
-                        position: "absolute",
-                        top: "-8px",
-                        right: "-8px",
-                        "background-color": "#fbbf24",
-                        color: "black",
-                        "font-size": "10px",
-                        padding: "2px 6px",
-                        "border-radius": "4px",
-                        "font-weight": "700"
-                    }}>
-                        Bientôt
-                    </span>
+                    <span>{loading() ? "Connexion en cours..." : "Continuer avec Discord"}</span>
                 </button>
             </Show>
 
