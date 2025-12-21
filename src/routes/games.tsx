@@ -181,6 +181,22 @@ export default function Games() {
           </p>
         </div>
 
+        {/* CTA Section */}
+        <div class="mb-16 p-8 bg-linear-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
+          <h3 class="text-2xl font-black mb-3" style="font-family: 'Varsity', serif;">Rejoins l'Aventure</h3>
+          <p class="text-gray-400 mb-6">
+            Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
+          </p>
+          <a
+            href="https://discord.gg/3SP3kdu3gJ"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block px-8 py-3 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
+          >
+            Postuler Maintenant
+          </a>
+        </div>
+
         {/* Error State */}
         <Show when={error()}>
           <div class="w-full mb-6 px-4 py-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-200 text-center">
@@ -340,22 +356,6 @@ export default function Games() {
             </div>
           </Show>
         </Show>
-
-        {/* CTA Section */}
-        <div class="mt-16 p-8 bg-linear-to-r from-[#00e5ff]/10 via-[#a855f7]/10 to-[#ff006e]/10 border border-white/10 rounded-2xl text-center">
-          <h3 class="text-2xl font-black mb-3" style="font-family: 'Varsity', serif;">Rejoins l'Aventure</h3>
-          <p class="text-gray-400 mb-6">
-            Nous recrutons activement des talents exceptionnels sur tous nos titres compétitifs. Construis ta légende avec nous.
-          </p>
-          <a
-            href="https://discord.gg/3SP3kdu3gJ"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-block px-8 py-3 bg-linear-to-r from-[#00e5ff] via-[#a855f7] to-[#ff006e] rounded-xl hover:shadow-2xl hover:shadow-[#00e5ff]/50 transition-all font-semibold"
-          >
-            Postuler Maintenant
-          </a>
-        </div>
       </div>
     </section>
   );
