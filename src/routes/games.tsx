@@ -2,6 +2,29 @@ import { Title } from "@solidjs/meta";
 import { createSignal, For, Show, onMount } from "solid-js";
 import { usePocketBase } from "../app";
 
+const glowAnimation = `
+  @keyframes borderGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 0px currentColor);
+    }
+    50% {
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+  }
+  .glow-separator::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: inherit;
+    border-top: inherit;
+    animation: borderGlow 2s infinite;
+    pointer-events: none;
+  }
+`;
+
 type GameRecord = {
   id: string;
   name: string;
@@ -75,6 +98,21 @@ const GAME_COLORS: Record<string, { gradient: string; bg: string; border: string
   }
 };
 
+const GAME_BORDER_COLORS: Record<string, string> = {
+  "valorant": "border-red-500/50",
+  "cs:go": "border-orange-500/50",
+  "rocket league": "border-blue-500/50",
+  "delta force": "border-green-500/50",
+  "among us": "border-purple-500/50",
+  "fc25": "border-indigo-500/50",
+  "fc 25": "border-indigo-500/50",
+  "fortnite": "border-violet-500/50",
+  "league of legends": "border-teal-500/50",
+  "roblox": "border-pink-500/50",
+  "teamfight tactics": "border-amber-500/50",
+  "default": "border-gray-500/50"
+};
+
 const GAME_LOGOS: Record<string, string> = {
   "valorant": "/V_Logomark_Red.png",
   "league of legends": "/lol-logo-rendered-hi-res.png",
@@ -123,6 +161,7 @@ export default function Games() {
 
   return (
     <section id="games" class="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <style>{glowAnimation}</style>
       <Title>Jeux - TLG</Title>
 
       {/* Background Effect */}
@@ -175,6 +214,7 @@ export default function Games() {
                 {(game) => {
                   const themeKey = (game.name || "").trim().toLowerCase();
                   const colors = GAME_COLORS[themeKey] ?? GAME_COLORS.default;
+                  const borderColor = GAME_BORDER_COLORS[themeKey] ?? GAME_BORDER_COLORS.default;
                   const logoSrc = GAME_LOGOS[themeKey];
                   const isCounterStrike = themeKey === 'cs:go';
                   const background = GAME_BACKGROUNDS[themeKey];
@@ -258,7 +298,7 @@ export default function Games() {
                         </div>
 
                         {/* Stats */}
-                        <div class="flex items-center justify-between pt-4 border-t border-white/10 mt-auto relative z-20">
+                        <div class={`flex items-center justify-between pt-4 ${borderColor} border-t mt-auto relative z-20 glow-separator`}>
                           <div>
                             <div class="text-sm text-gray-400">Roster</div>
                             <Show
@@ -289,7 +329,7 @@ export default function Games() {
                       </div>
 
                       {/* Bottom Blur Effect */}
-                      <div class="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black/25 to-transparent pointer-events-none" style={{ "backdrop-filter": "blur(4px)" }} />
+                      <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/25 to-transparent pointer-events-none" style={{ "height": "6.25rem", "backdrop-filter": "blur(4px)" }} />
 
                       {/* Decorative Corner */}
                       <div class={`absolute -bottom-8 -right-8 w-32 h-32 bg-linear-to-br ${colors.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
