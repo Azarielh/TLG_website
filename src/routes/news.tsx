@@ -269,8 +269,8 @@ export default function News() {
                 class="appearance-none pl-4 pr-10 py-2 bg-gray-700/70 border border-gray-600/50 rounded-xl text-white text-sm font-bold hover:bg-gray-700 hover:border-yellow-400/50 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400 cursor-pointer transition-all"
               >
                 <option value="all">Tous les tags</option>
-                <For each={allTags()}>
-                  {(tag) => <option value={tag}>{tag}</option>}
+                <For each={allTagsList()}>
+                  {(tag) => <option value={tag.name}>{tag.name}</option>}
                 </For>
               </select>
               <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-yellow-400">
