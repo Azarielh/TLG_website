@@ -127,8 +127,8 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       if (selectedTags().length > 0) {
         selectedTags().forEach((tagId) => formData.append('tags', tagId));
       }
-      // Auteur: utiliser l'id utilisateur (souvent exigé par les règles PB)
-      formData.append('author', pb.authStore.record?.id || "");
+      // Auteur: utiliser le name de l'utilisateur connecté
+      formData.append('author', pb.authStore.model?.name || "");
       
       // Ajouter le média selon le type
       if (mediaType() === 'image' && mediaFile()) {
@@ -154,7 +154,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         event_date: normalizeDateString(parutionValue),
         do_publish: true,
         tags: selectedTags(),
-        author: pb.authStore.record?.id || "",
+        author: pb.authStore.model?.name || "",
       };
       if (imageUrlField()) basePayload.image_url = imageUrlField();
       if (mediaType() === 'video' && mediaUrl()) basePayload.video_url = mediaUrl();
