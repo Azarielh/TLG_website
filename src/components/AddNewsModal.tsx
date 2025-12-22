@@ -9,6 +9,7 @@ interface AddNewsModalProps {
   // When provided, modal will act in edit mode for this news
   existingNews?: NewsItemData | null;
   onNewsUpdated?: () => void;
+  availableTags?: { id: string; name: string }[];
 }
 
 type Tag = {
@@ -21,14 +22,26 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
   const [title, setTitle] = createSignal("");
   const [headlines, setHeadlines] = createSignal(""); // Phrase courte
   const [content, setContent] = createSignal("");
-  const [availableTags, setAvailableTags] = createSignal<Tag[]>([]);
   const [selectedTags, setSelectedTags] = createSignal<string[]>([]);
   const [mediaType, setMediaType] = createSignal<'none' | 'image' | 'video'>('none');
   const [mediaUrl, setMediaUrl] = createSignal(""); // URL externe
   const [mediaFile, setMediaFile] = createSignal<File | null>(null); // Fichier uploadé
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [error, setError] = createSignal("");
-  const [isLoadingTags, setIsLoadingTags] = createSignal(true);
+  const [parutionDate, setParutionDate] = createSignal<string>(new Date().toISOString());
+  const [doPublish, setDoPublish] = createSignal<boolean>(true);
+  const [imageUrlField, setImageUrlField] = createSignal<string>("");
+
+  // Use availableTags from props (passed from parent news.tsx)
+  const isLoadingTags = () => !props.availableTags;
+
+  const normalizeDateString = (value: string) => {
+    try {
+      return new Date(value).toISOString();
+    } catch {
+      return new Date().toISOString();
+    }
+  };
 
   // If editing, when the modal opens prefill the fields from existingNews
   createEffect(() => {
@@ -37,7 +50,17 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       setTitle(n.title || "");
       setHeadlines(n.headlines || "");
       setContent(n.content || "");
-      setSelectedTags(n.tags || []);
+      // Normalize tags to an array of ids
+      setSelectedTags(
+        Array.isArray((n as any).tags)
+          ? (n as any).tags
+              .map((t: any) => (typeof t === 'string' ? t : t?.id || t?.name || ''))
+              .filter(Boolean)
+          : []
+      );
+      setParutionDate((n as any).Parution_Date || new Date().toISOString());
+      setDoPublish((n as any).do_publish ?? true);
+      setImageUrlField((n as any).image_url || "");
 
       if (n.video_url) {
         setMediaType('video');
@@ -63,82 +86,14 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       setMediaType('none');
       setMediaUrl("");
       setMediaFile(null);
+      setParutionDate(new Date().toISOString());
+      setDoPublish(true);
+      setImageUrlField("");
     }
   });
 
-  // Récupérer les tags depuis la collection tags
-  onMount(async () => {
-    if (!pb) {
-      console.error('❌ PocketBase not available (SSR context)');
-      setError("PocketBase non disponible - Veuillez rafraîchir la page");
-      setIsLoadingTags(false);
-      return;
-    }
-
-    try {
-      console.log('🔍 Fetching tags from tags collection...');
-      console.log('🔐 Current user:', pb.authStore.record);
-      console.log('🔐 User Rank:', pb.authStore.record?.Rank);
-      
-      // Récupérer les tags depuis la collection dédiée (sans sort pour tester)
-      const tagsRecords = await pb.collection("Tags").getFullList();
-      
-      console.log('✅ Tags loaded from collection:', tagsRecords);
-      
-      // Extraire les noms des tags et trier côté client
-      // Le champ s'appelle "Tags_name" dans votre collection
-      const tagNames = tagsRecords
-        .map((record: any) => record.name)
-        .filter(name => name) // Filtrer les valeurs nulles/undefined
-        .sort((a, b) => a.localeCompare(b));
-      
-      if (tagNames.length === 0) {
-        console.warn('⚠️ No tags found in collection');
-        setError("Aucun tag disponible. Créez des tags dans PocketBase.");
-      }
-      
-      const tags = tagsRecords.map((record: any) => ({
-          id: record.id,
-          name: record.name,
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-      setAvailableTags(tags);
-    } catch (err: any) {
-      console.error('❌ Error fetching tags:', err);
-      console.error('❌ Error details:', err.data);
-      console.error('❌ Error status:', err.status);
-      console.error('❌ Error response:', err.response);
-      console.error('❌ Full error object:', JSON.stringify(err, null, 2));
-      
-      // Si la collection tags n'existe pas, utiliser des tags par défaut
-      if (err.status === 404 || err.message?.includes('not found')) {
-        console.warn('⚠️ Tags collection not found, using default tags');
-        const defaultTags = [
-          "Annonce",
-          "Événement", 
-          "Tournoi",
-          "Recrutement",
-          "Mise à jour",
-          "Communauté",
-          "Partenariat",
-          "Résultat",
-          "Classement",
-          "Staff"
-        ];
-        setAvailableTags(
-          defaultTags.map((tagName, index) => ({
-            id: `default-${index}`,
-            name: tagName
-          }))
-        );
-        setError("Collection 'tags' non trouvée. Tags par défaut utilisés.");
-      } else {
-        setError(`Erreur lors du chargement des tags: ${err.message}`);
-      }
-    } finally {
-      setIsLoadingTags(false);
-    }
-  });
+  // Tags are now provided via props from parent (news.tsx)
+  // No need to load them again here to avoid auto-cancellation
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
@@ -152,25 +107,44 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
 
     try {
       console.log("CONTENT RAW >>>", JSON.stringify(content()));
+
+      // Validation média: au moins une image (fichier ou URL) ou une vidéo
+      const hasImage = mediaType() === 'image' && (!!mediaFile() || !!imageUrlField());
+      const hasVideo = mediaType() === 'video' && !!mediaUrl();
+      if (!hasImage && !hasVideo) {
+        setError("Au moins une image (fichier ou URL) ou une vidéo est requise.");
+        setIsSubmitting(false);
+        return;
+      }
       // Préparer les données du formulaire
       const formData = new FormData();
       formData.append('title', title());
       formData.append('headlines', headlines());
       formData.append('content', content());
-      // Envoyer les tags uniquement s'ils existent, un par un
+      const parutionValue = props.existingNews ? parutionDate() : new Date().toISOString();
+      formData.append('Parution_Date', normalizeDateString(parutionValue));
+      formData.append('event_date', normalizeDateString(parutionValue));
+      formData.append('do_publish', 'true');
+      // PocketBase (multipart) : répéter le même nom de champ pour chaque relation
       if (selectedTags().length > 0) {
-        formData.append('tags', JSON.stringify(selectedTags()));
+        selectedTags().forEach((tagId) => formData.append('tags', tagId));
       }
-      formData.append('author', pb.authStore.record?.name || pb.authStore.record?.email || "Anonyme");
+      // Auteur: utiliser l'id utilisateur (souvent exigé par les règles PB)
+      formData.append('author', pb.authStore.record?.id || "");
       
       // Ajouter le média selon le type
       if (mediaType() === 'image' && mediaFile()) {
         // Upload d'image - utiliser le champ 'image' de PocketBase
         // Fournir explicitement le nom du fichier au FormData (plus robuste)
         formData.append('image', mediaFile()!, mediaFile()!.name);
+        if (imageUrlField()) formData.append('image_url', imageUrlField());
       } else if (mediaType() === 'video' && mediaUrl()) {
-        // URL vidéo - utiliser le champ 'video_Url' de PocketBase
-        formData.append('video_Url', mediaUrl());
+        // URL vidéo - champ video_url dans le schéma PB
+        formData.append('video_url', mediaUrl());
+        if (imageUrlField()) formData.append('image_url', imageUrlField());
+      } else {
+        // Pas de média : envoyer un champ vide pour respecter le schéma qui attend une string
+        if (imageUrlField()) formData.append('image_url', imageUrlField());
       }
       
       console.log('📝 Creating news with data:');
@@ -192,10 +166,29 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         console.log('  - Impossible de lister FormData entries (environnement restreint)');
       }
       
+      // Construire un payload JSON quand il n'y a pas de fichier image pour garantir les bons types
+      const basePayload: any = {
+        title: title(),
+        headlines: headlines(),
+        content: content(),
+        Parution_Date: normalizeDateString(parutionValue),
+        event_date: normalizeDateString(parutionValue),
+        do_publish: true,
+        tags: selectedTags(),
+        author: pb.authStore.record?.id || "",
+      };
+      if (imageUrlField()) basePayload.image_url = imageUrlField();
+      if (mediaType() === 'video' && mediaUrl()) basePayload.video_url = mediaUrl();
+
+      const useFormData = mediaType() === 'image' && !!mediaFile();
+
       let result;
       if (props.existingNews && props.existingNews.id) {
         // Update existing record
-        result = await pb.collection("News").update(props.existingNews.id, formData);
+        result = await pb.collection("News").update(
+          props.existingNews.id,
+          useFormData ? formData : basePayload
+        );
         console.log('✅ News updated successfully:', result);
 
         // Callback et fermeture
@@ -203,7 +196,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         props.onClose();
       } else {
         // Créer la news dans PocketBase
-        result = await pb.collection("News").create(formData);
+        result = await pb.collection("News").create(useFormData ? formData : basePayload);
         console.log('✅ News created successfully:', result);
 
         // Réinitialiser le formulaire
@@ -223,6 +216,8 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       console.error('❌ Error creating news:', err);
       console.error('❌ Error response:', err?.response);
       console.error('❌ Error data:', err?.data);
+      console.error('❌ Error data.details:', err?.data?.data);
+      console.error('❌ Error original:', err?.originalError);
       setError(err?.data?.message || err?.message || "Erreur lors de la création de la news");
     } finally {
       setIsSubmitting(false);
@@ -300,6 +295,17 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
               />
             </div>
 
+            <div class="flex items-center gap-3">
+              <input
+                id="do-publish"
+                type="checkbox"
+                checked={doPublish()}
+                disabled
+                class="h-4 w-4 text-yellow-400 focus:ring-yellow-400 border-gray-700 bg-gray-800 opacity-60 cursor-not-allowed"
+              />
+              <label for="do-publish" class="text-sm text-gray-300">Publier immédiatement (activé par défaut)</label>
+            </div>
+
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2">
                 Tags
@@ -314,13 +320,13 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                 }
               >
                 <Show
-                  when={availableTags().length > 0}
+                  when={props.availableTags && props.availableTags.length > 0}
                   fallback={
                     <p class="text-sm text-gray-500">Aucun tag disponible</p>
                   }
                 >
                   <div class="flex flex-wrap gap-2">
-                    <For each={availableTags()}>
+                    <For each={props.availableTags || []}>
                       {(tag) => {
                         const isSelected = () => selectedTags().includes(tag.id);
                         return (
@@ -367,24 +373,10 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setMediaType('none');
-                    setMediaUrl("");
-                    setMediaFile(null);
-                  }}
-                  class={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    mediaType() === 'none'
-                      ? 'bg-yellow-400 text-black'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  Aucun
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
                     setMediaType('image');
                     setMediaUrl("");
                     setMediaFile(null);
+                    setImageUrlField("");
                   }}
                   class={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     mediaType() === 'image'
@@ -400,6 +392,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                     setMediaType('video');
                     setMediaUrl("");
                     setMediaFile(null);
+                    setImageUrlField("");
                   }}
                   class={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     mediaType() === 'video'
@@ -412,53 +405,36 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
               </div>
 
               {/* Upload de fichier ou URL selon le type */}
-              <Show when={mediaType() !== 'none'}>
+              <Show when={mediaType() === 'image'}>
                 <div class="space-y-3">
                   <div>
                     <label for="mediaFile" class="block text-sm text-gray-400 mb-2">
-                      Uploader un fichier
+                      Uploader une image
                     </label>
                     <input
                       id="mediaFile"
                       type="file"
-                      accept={mediaType() === 'image' ? 'image/*' : 'video/*'}
+                      accept="image/*"
                       onChange={(e) => {
                         const file = e.currentTarget.files?.[0];
-                        if (file) {
-                          setMediaFile(file);
-                          setMediaUrl(""); // Reset URL si fichier uploadé
-                        }
+                        setMediaFile(file || null);
                       }}
                       class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-yellow-400 file:text-black file:font-medium hover:file:bg-yellow-500 file:cursor-pointer"
                     />
                   </div>
-
-                  <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                      <div class="w-full border-t border-gray-700"></div>
-                    </div>
-                    <div class="relative flex justify-center text-xs">
-                      <span class="px-2 bg-gray-900 text-gray-500">OU</span>
-                    </div>
-                  </div>
-
                   <div>
-                    <label for="mediaUrl" class="block text-sm text-gray-400 mb-2">
-                      URL externe
+                    <label class="block text-sm text-gray-400 mb-2">
+                      Ou URL d'image externe
                     </label>
                     <input
-                      id="mediaUrl"
                       type="url"
-                      value={mediaUrl()}
-                      onInput={(e) => {
-                        setMediaUrl(e.currentTarget.value);
-                        setMediaFile(null); // Reset fichier si URL ajoutée
-                      }}
-                      placeholder={mediaType() === 'image' ? 'https://exemple.com/image.jpg' : 'https://youtube.com/watch?v=...'}
+                      value={imageUrlField()}
+                      onInput={(e) => setImageUrlField(e.currentTarget.value)}
+                      placeholder="https://exemple.com/image.jpg"
                       class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
                     />
+                    <p class="text-xs text-gray-500 mt-1">Laissez vide si vous uploadez un fichier.</p>
                   </div>
-
                   <Show when={mediaFile()}>
                     <div class="flex items-center gap-2 text-sm text-green-400 bg-green-500/10 border border-green-500/30 rounded-lg p-3">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -467,6 +443,37 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
                       <span>Fichier sélectionné : {mediaFile()!.name}</span>
                     </div>
                   </Show>
+                </div>
+              </Show>
+
+              <Show when={mediaType() === 'video'}>
+                <div class="space-y-3">
+                  <div>
+                    <label for="mediaUrl" class="block text-sm text-gray-400 mb-2">
+                      URL de la vidéo (MP4 ou lien direct)
+                    </label>
+                    <input
+                      id="mediaUrl"
+                      type="url"
+                      value={mediaUrl()}
+                      onInput={(e) => {
+                        setMediaUrl(e.currentTarget.value);
+                        setMediaFile(null);
+                      }}
+                      placeholder="https://exemple.com/video.mp4"
+                      class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm text-gray-400 mb-2">(Optionnel) URL d'image d'aperçu</label>
+                    <input
+                      type="url"
+                      value={imageUrlField()}
+                      onInput={(e) => setImageUrlField(e.currentTarget.value)}
+                      placeholder="https://exemple.com/cover.jpg"
+                      class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400"
+                    />
+                  </div>
                 </div>
               </Show>
             </div>

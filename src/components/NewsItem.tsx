@@ -54,9 +54,36 @@ const NewsItem: Component<NewsItemProps> = (props) => {
   };
 
   const normalizedTags = (() => {
-    const raw = (props.news as any).tags ?? (props.news as any).expand?.tags ?? [];
-    if (!raw) return [] as string[];
-    return (raw as any[]).map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? '')).filter(Boolean);
+    // Priorité à expand.tags (objets complets), sinon fallback sur tags (IDs)
+    const expandedTags = (props.news as any).expand?.tags;
+    
+    // Debug: vérifier la structure des données
+    if (typeof window !== 'undefined') {
+      console.log('🏷️ Tags debug for news:', props.news.id, {
+        'expand.tags': expandedTags,
+        'tags': (props.news as any).tags
+      });
+    }
+    
+    if (expandedTags && Array.isArray(expandedTags)) {
+      // Tags expandés : extraire le nom
+      return expandedTags.map((t: any) => t?.name ?? t?.title ?? t?.id ?? '').filter(Boolean);
+    }
+    
+    // Fallback : si tags est un tableau d'IDs ou de strings
+    const rawTags = (props.news as any).tags;
+    if (Array.isArray(rawTags)) {
+      return rawTags.map((t: any) => {
+        if (typeof t === 'string') {
+          // Si c'est juste un ID, on ne peut pas afficher le nom sans expansion
+          // On pourrait faire un lookup, mais mieux vaut s'assurer que expand fonctionne
+          return '';
+        }
+        return t?.name ?? t?.title ?? t?.id ?? '';
+      }).filter(Boolean);
+    }
+    
+    return [] as string[];
   })();
 
   // Construire l'URL du média (fichier PocketBase ou URL vidéo)

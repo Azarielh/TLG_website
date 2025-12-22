@@ -121,7 +121,7 @@ export const GamesSchema = z.object({
   name: z.string(),
   status: z.string(),
   updated: z.string(),
-  winrate: z.string(),
+  winrate: z.number(),
 });
 
 

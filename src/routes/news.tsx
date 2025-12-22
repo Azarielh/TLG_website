@@ -10,7 +10,7 @@ type FilterTag = string | "all";
 export default function News() {
   const pb = usePocketBase();
   const [newsItems, setNewsItems] = createSignal<NewsItemData[]>([]);
-  const [allTagsList, setAllTagsList] = createSignal<string[]>([]);
+  const [allTagsList, setAllTagsList] = createSignal<{ id: string; name: string }[]>([]);
   const [isLoading, setIsLoading] = createSignal(true);
   const [sortBy, setSortBy] = createSignal<SortOption>("recent");
   const [selectedTag, setSelectedTag] = createSignal<FilterTag>("all");
@@ -48,12 +48,15 @@ export default function News() {
     
     try {
       const tagsRecords: any[] = await pb.collection('Tags').getFullList();
-      const tagNames = tagsRecords
-        .map((r) => r.name ?? null)
-        .filter(Boolean)
-        .sort((a: string, b: string) => a.localeCompare(b));
-      setAllTagsList(tagNames as string[]);
-      console.log('✅ Tags chargés:', tagNames);
+      const tags = tagsRecords
+        .map((r) => ({
+          id: r.id,
+          name: r.name ?? null
+        }))
+        .filter(t => t.name)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setAllTagsList(tags);
+      console.log('✅ Tags chargés:', tags);
     } catch (err) {
       console.error('❌ Erreur lors du chargement des tags:', err);
       setAllTagsList([]);
@@ -359,6 +362,7 @@ export default function News() {
           setIsModalOpen(false);
           setEditNews(null);
         }}
+        availableTags={allTagsList()}
       />
     </main>
   );
