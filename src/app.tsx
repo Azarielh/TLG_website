@@ -1,7 +1,7 @@
 import { MetaProvider, Title } from "@solidjs/meta";
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
-import { Suspense, createContext, useContext } from "solid-js";
+import { Suspense, createContext, useContext, createEffect } from "solid-js";
 import PocketBase from "pocketbase";
 import NavMain from "./components/NavMain";
 import Following from "./components/following";
@@ -47,6 +47,18 @@ export function usePocketBase() {
 }
 
 function PocketBaseProvider(props: { children?: any }) {
+  // Écouter les changements d'authentification et recharger la page
+  if (globalPocketBase && typeof window !== 'undefined') {
+    createEffect(() => {
+      const unsubscribe = globalPocketBase.authStore.onChange(() => {
+        // Recharger la page quand l'authentification change
+        window.location.reload();
+      });
+      
+      return () => unsubscribe();
+    });
+  }
+
   return <PocketBaseContext.Provider value={globalPocketBase}>{props.children}</PocketBaseContext.Provider>;
 }
 
