@@ -86,8 +86,14 @@ const NewsItem: Component<NewsItemProps> = (props) => {
 
   // Construire l'URL du média (fichier PocketBase ou URL vidéo)
   const getImageUrl = () => {
+    // Priorité : image_url (URL externe)
+    const imageUrl = (props.news as any).image_url;
+    if (imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '') {
+      return imageUrl;
+    }
+    
+    // Fallback : image (fichier uploadé sur PocketBase)
     if (props.news.image && props.news.collectionName && props.news.id) {
-      // Construire l'URL PocketBase pour l'image
       const pbUrl = 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
       return `${pbUrl}/api/files/${props.news.collectionName}/${props.news.id}/${props.news.image}`;
     }
