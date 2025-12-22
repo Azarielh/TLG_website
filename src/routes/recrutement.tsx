@@ -149,7 +149,7 @@ export default function academy() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Section Roster */}
-          <div class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group">
+          <div class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group flex flex-col">
             <div class="flex items-center gap-4 mb-6">
               <div class="w-16 h-16 bg-linear-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +159,11 @@ export default function academy() {
               <h2 class="text-3xl font-black text-white" style="font-family: 'Varsity', serif;">Roster</h2>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-4 flex-1">
+              <div class="flex items-start gap-3">
+                <span class="text-yellow-400 text-xl mt-1">🔸</span>
+                <p class="text-gray-300 text-lg">Joueurs sérieux avec expérience compétitive</p>
+              </div>
               <div class="flex items-start gap-3">
                 <span class="text-yellow-400 text-xl mt-1">🔸</span>
                 <p class="text-gray-300 text-lg">Engagement sérieux requis</p>
@@ -179,12 +183,12 @@ export default function academy() {
             </div>
 
             <a href="https://discord.gg/3SP3kdu3gJ" target="_blank" rel="noopener noreferrer" class="mt-8 w-full block px-6 py-3 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50 text-center">
-              Postuler au Roaster
+              Postuler au Roster
             </a>
           </div>
 
           {/* Section Académie */}
-          <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group">
+          <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:border-yellow-400/50 transition-all duration-300 group flex flex-col">
             <div class="flex items-center gap-4 mb-6">
               <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30 group-hover:scale-110 transition-transform duration-300">
                 <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +198,7 @@ export default function academy() {
               <h2 class="text-3xl font-black text-white" style="font-family: 'Varsity', serif;">Académie</h2>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-4 flex-1">
               <div class="flex items-start gap-3">
                 <span class="text-yellow-400 text-xl mt-1">🔸</span>
                 <p class="text-gray-300 text-lg">Ouverte à tous les niveaux</p>
@@ -205,7 +209,7 @@ export default function academy() {
               </div>
               <div class="flex items-start gap-3">
                 <span class="text-yellow-400 text-xl mt-1">🎯</span>
-                <p class="text-gray-300 text-lg font-semibold">Objectif : Progresser pour rivaliser avec les meilleurs et si le coeur t'en dit, intégrer un roaster plus tard.</p>
+                <p class="text-gray-300 text-lg font-semibold">Objectif : Progresser pour rivaliser avec les meilleurs et si le coeur t'en dit, intégrer un roster plus tard.</p>
               </div>
             </div>
 
