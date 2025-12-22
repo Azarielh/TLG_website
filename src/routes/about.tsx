@@ -1,6 +1,34 @@
 import { Title } from "@solidjs/meta";
+import { createSignal, onMount } from "solid-js";
+import { usePocketBase } from "../app";
 
 export default function About() {
+  const pb = usePocketBase();
+  const [isAuthorized, setIsAuthorized] = createSignal(false);
+
+  const checkAuthorization = () => {
+    if (!pb || !pb.authStore.isValid) return false;
+    
+    const record = pb.authStore.record;
+    if (!record) return false;
+
+    // Vérifier le rôle
+    const serverRank = (record.Rank as string | undefined) || undefined;
+    const canByServerRule = serverRank === 'Admin' || serverRank === 'Dev';
+    
+    // Fallback client
+    const userRoleRaw = (record.role ?? record.rank) as string | undefined;
+    const userRoleLc = userRoleRaw ? String(userRoleRaw).trim().toLowerCase() : undefined;
+    const canByClientRole = userRoleLc ? ['admin', 'dev', 'staff'].includes(userRoleLc) : false;
+
+    return canByServerRule || canByClientRole;
+  };
+
+  // Vérifier l'autorisation au montage côté client uniquement
+  onMount(() => {
+    setIsAuthorized(checkAuthorization());
+  });
+
   return (
       <main class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
         <Title>A propos - TLG</Title>
@@ -15,8 +43,8 @@ export default function About() {
           </p>
         </div>
 
-        {/* Première ligne : Histoire et Palmarès */}
-        <div class="flex flex-col md:flex-row gap-8 w-full max-w-7xl mb-8">
+        {/* Première ligne : Histoire et Palmarès (caché avec CSS si non autorisé) */}
+        <div class="flex flex-col md:flex-row gap-8 w-full max-w-7xl mb-8" style={{"display": isAuthorized() ? "flex" : "none"}}>
           {/* Card Histoire */}
           <article class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-8 shadow-xl hover:shadow-2xl flex-1 hover:-translate-y-2 hover:border-yellow-400/50 transition-all duration-300 backdrop-blur-sm group">
             <div class="flex items-center gap-4 mb-6">
