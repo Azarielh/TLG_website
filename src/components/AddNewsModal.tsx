@@ -106,8 +106,6 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
     setIsSubmitting(true);
 
     try {
-      console.log("CONTENT RAW >>>", JSON.stringify(content()));
-
       // Validation média: au moins une image (fichier ou URL) ou une vidéo
       const hasImage = mediaType() === 'image' && (!!mediaFile() || !!imageUrlField());
       const hasVideo = mediaType() === 'video' && !!mediaUrl();
@@ -147,25 +145,6 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         if (imageUrlField()) formData.append('image_url', imageUrlField());
       }
       
-      console.log('📝 Creating news with data:');
-      console.log('  - Title:', title());
-      console.log('  - Headlines:', headlines());
-      console.log('  - Content length:', content().length);
-      console.log('  - Tags:', selectedTags());
-      console.log('  - Media type:', mediaType());
-      console.log('  - Image file:', mediaFile()?.name);
-      console.log('  - Video URL:', mediaUrl());
-
-      // Debug: lister les entrées FormData (utile pour vérifier l'upload de fichiers)
-      try {
-        for (const pair of (formData as any).entries()) {
-          // Attention: les fichiers affichent un objet File
-          console.log('  - formData entry:', pair[0], pair[1]);
-        }
-      } catch (e) {
-        console.log('  - Impossible de lister FormData entries (environnement restreint)');
-      }
-      
       // Construire un payload JSON quand il n'y a pas de fichier image pour garantir les bons types
       const basePayload: any = {
         title: title(),
@@ -189,7 +168,6 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
           props.existingNews.id,
           useFormData ? formData : basePayload
         );
-        console.log('✅ News updated successfully:', result);
 
         // Callback et fermeture
         props.onNewsUpdated?.();
@@ -197,7 +175,6 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
       } else {
         // Créer la news dans PocketBase
         result = await pb.collection("News").create(useFormData ? formData : basePayload);
-        console.log('✅ News created successfully:', result);
 
         // Réinitialiser le formulaire
         setTitle("");
@@ -213,11 +190,7 @@ const AddNewsModal: Component<AddNewsModalProps> = (props) => {
         props.onClose();
       }
     } catch (err: any) {
-      console.error('❌ Error creating news:', err);
-      console.error('❌ Error response:', err?.response);
-      console.error('❌ Error data:', err?.data);
-      console.error('❌ Error data.details:', err?.data?.data);
-      console.error('❌ Error original:', err?.originalError);
+      console.error('Error creating/updating news:', err);
       setError(err?.data?.message || err?.message || "Erreur lors de la création de la news");
     } finally {
       setIsSubmitting(false);

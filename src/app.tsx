@@ -22,9 +22,6 @@ const createPocketBaseInstance = () => {
 
   const url = import.meta.env.VITE_PB_URL || 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
   
-  console.log('🔧 Creating PocketBase instance...');
-  console.log('🔧 PocketBase URL:', url);
-  
   if (!url) {
     console.error('❌ No PocketBase URL provided!');
     return null;
@@ -34,11 +31,8 @@ const createPocketBaseInstance = () => {
   
   // S'assurer que le baseUrl ne contient pas le préfixe /_/
   if (pb.baseUrl.includes('/_/')) {
-    console.log('⚠️ Removing /_/ from baseUrl');
     pb.baseUrl = pb.baseUrl.replace('/_/', '/');
   }
-  
-  console.log('✅ PocketBase instance created, baseUrl:', pb.baseUrl);
   
   return pb;
 };

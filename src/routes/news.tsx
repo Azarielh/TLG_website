@@ -56,7 +56,6 @@ export default function News() {
         .filter(t => t.name)
         .sort((a, b) => a.name.localeCompare(b.name));
       setAllTagsList(tags);
-      console.log('✅ Tags chargés:', tags);
     } catch (err) {
       console.error('❌ Erreur lors du chargement des tags:', err);
       setAllTagsList([]);
@@ -82,28 +81,9 @@ export default function News() {
         const userRoleLc = userRole ? userRole.toLowerCase() : undefined;
         const allowedRoles = ['dev', 'admin', 'staff']; // Rôles autorisés (comparaison case-insensitive)
 
-        // Log détaillé pour debug
-        console.log('🔐 Checking permissions:', {
-          isValid,
-          record,
-          'record.role': record?.role,
-          'record.Rank': record?.Rank,
-          'record.rank': record?.rank,
-          userRole,
-          userRoleLc,
-          userRoleType: typeof userRole,
-          'userRole value': `"${userRole}"`,
-          'userRole length': userRole?.length,
-          allowedRoles,
-          'includes userRoleLc': userRoleLc ? allowedRoles.includes(userRoleLc) : false,
-          'strict comparison (lc)': userRoleLc === 'dev' || userRoleLc === 'admin' || userRoleLc === 'staff'
-        });
-
         // Certains tokens peuvent être invalidés mais le record est toujours présent (cas codespaces / prévisualisation) : on autorise si record présent et rôle ok
         const isAuthed = isValid || !!record;
         const hasAuthorizedRank = isAuthed && userRoleLc ? allowedRoles.includes(userRoleLc) : false;
-        
-        console.log('✅ hasAuthorizedRank:', hasAuthorizedRank);
         
         setCanAddNews(!!hasAuthorizedRank);
       };
@@ -112,7 +92,6 @@ export default function News() {
       
       // Écouter les changements d'authentification
       const unsubscribe = pb.authStore.onChange(() => {
-        console.log('🔄 Auth state changed');
         checkPermissions();
       });
       

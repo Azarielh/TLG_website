@@ -57,14 +57,6 @@ const NewsItem: Component<NewsItemProps> = (props) => {
     // Priorité à expand.tags (objets complets), sinon fallback sur tags (IDs)
     const expandedTags = (props.news as any).expand?.tags;
     
-    // Debug: vérifier la structure des données
-    if (typeof window !== 'undefined') {
-      console.log('🏷️ Tags debug for news:', props.news.id, {
-        'expand.tags': expandedTags,
-        'tags': (props.news as any).tags
-      });
-    }
-    
     if (expandedTags && Array.isArray(expandedTags)) {
       // Tags expandés : extraire le nom
       return expandedTags.map((t: any) => t?.name ?? t?.title ?? t?.id ?? '').filter(Boolean);

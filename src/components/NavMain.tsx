@@ -26,13 +26,8 @@ export default function Nav() {
   // Observer l'état d'authentification
   createEffect(() => {
     if (!pb) {
-      console.log('⏳ Waiting for PocketBase...');
       return;
     }
-    
-    console.log('🔐 PocketBase authStore.record:', pb.authStore.record);
-    console.log('🔐 PocketBase authStore.isValid:', pb.authStore.isValid);
-    console.log('🔐 PocketBase authStore.token:', pb.authStore.token);
     
     setUser(pb.authStore.record);
     

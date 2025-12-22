@@ -70,9 +70,6 @@ const Auth: Component<AuthProps> = (props) => {
             return;
         }
 
-        console.log('🚀 Starting Discord OAuth2 login...');
-        console.log('🔗 PocketBase URL:', pb.baseUrl);
-
         setLoading(true);
         setError(null);
 
@@ -112,9 +109,6 @@ const Auth: Component<AuthProps> = (props) => {
             setError("PocketBase not initialized");
             return;
         }
-
-        console.log('🚀 Starting Google OAuth2 login...');
-        console.log('🔗 PocketBase URL:', pb.baseUrl);
 
         setLoading(true);
         setError(null);
