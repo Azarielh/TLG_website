@@ -33,16 +33,36 @@ export default function academy() {
 
   const displayedRoles = () => allRoles().filter(role => displayedRoleIds().includes(role.id));
 
-  const removeRole = (roleId: string, roleName: string) => {
+  const removeRole = async (roleId: string, roleName: string) => {
     if (confirm(`Voulez-vous vraiment retirer le rôle "${roleName}" de l'affichage ?`)) {
-      setDisplayedRoleIds(displayedRoleIds().filter(id => id !== roleId));
+      try {
+        // Supprimer le record de la collection 'recrutement'
+        await pb?.collection('recrutement').delete(roleId);
+        // Mettre à jour l'affichage local
+        setDisplayedRoleIds(displayedRoleIds().filter(id => id !== roleId));
+      } catch (error: any) {
+        console.error('Erreur complète:', error);
+        console.error('Message:', error?.message);
+        console.error('Data:', error?.data);
+        alert(`Erreur lors de la suppression du rôle: ${error?.message || error}`);
+      }
     }
   };
 
-  const addRole = (roleId: string) => {
+  const addRole = async (roleId: string) => {
     if (!displayedRoleIds().includes(roleId)) {
-      setDisplayedRoleIds([...displayedRoleIds(), roleId]);
-      setIsAddMenuOpen(false);
+      try {
+        // Créer le record avec l'ID identique à celui du rôle
+        await pb?.collection('recrutement').create({ id: roleId });
+        // Ajouter à l'affichage local
+        setDisplayedRoleIds([...displayedRoleIds(), roleId]);
+        setIsAddMenuOpen(false);
+      } catch (error: any) {
+        console.error('Erreur complète:', error);
+        console.error('Message:', error?.message);
+        console.error('Data:', error?.data);
+        alert(`Erreur lors de l'ajout du rôle: ${error?.message || error}`);
+      }
     }
   };
 
@@ -81,34 +101,28 @@ export default function academy() {
 
       // Récupérer tous les rôles depuis PocketBase (sauf follower, student, player)
       try {
-        const records = await pb.collection('recrutement').getFullList<RankRecord>({
-          sort: 'name',
-          expand: 'name' // Expand la relation name pour obtenir les vraies données
+        // 1. Récupérer tous les rôles disponibles depuis la collection 'Role'
+        const allRolesRecords = await pb?.collection('Role').getFullList<RankRecord>({
+          sort: 'name'
+        });
+        
+        // 2. Récupérer les rôles actuellement affichés (collection 'recrutement')
+        // Les IDs de ces records sont identiques aux IDs de la collection 'Role'
+        const displayedRecords = await pb?.collection('recrutement').getFullList<any>({
+          sort: 'name'
         });
         
         // Filtrer les rôles qui ne sont pas recrutables
-        // Si name est une relation, on accède à expand.name[0].name ou expand.name.name selon la structure
-        const recruitableRoles = records.filter(r => {
-          let roleName = '';
-          if (r.expand?.name) {
-            if (Array.isArray(r.expand.name)) {
-              roleName = r.expand.name[0]?.name || '';
-            } else {
-              roleName = (r.expand.name as any).name || '';
-            }
-          } else if (typeof r.name === 'string') {
-            roleName = r.name;
-          }
+        const recruitableRoles = (allRolesRecords || []).filter(r => {
+          const roleName = typeof r.name === 'string' ? r.name : r.name?.name || '';
           return !['follower', 'student', 'player'].includes(roleName.toLowerCase());
         });
         
         setAllRoles(recruitableRoles);
         
-        // Par défaut, afficher les 3 premiers rôles (ou moins si moins disponibles)
-        if (recruitableRoles.length > 0) {
-          const defaultIds = recruitableRoles.slice(0, Math.min(3, recruitableRoles.length)).map(r => r.id);
-          setDisplayedRoleIds(defaultIds);
-        }
+        // Extraire les IDs des rôles actuellement affichés (ids identiques à Role)
+        const displayedIds = (displayedRecords || []).map((r: any) => r.id);
+        setDisplayedRoleIds(displayedIds);
       } catch (error) {
         console.error('Erreur lors de la récupération des rôles:', error);
       }
@@ -279,6 +293,11 @@ export default function academy() {
                   {/* Menu de sélection des rôles */}
                   <Show when={isAddMenuOpen()}>
                     <Portal>
+                      {/* Backdrop pour fermer au clic extérieur */}
+                      <div
+                        class="fixed inset-0 z-[90]"
+                        onClick={() => setIsAddMenuOpen(false)}
+                      ></div>
                       <div 
                         class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
@@ -293,7 +312,7 @@ export default function academy() {
                                 onClick={() => addRole(role.id)}
                                 class="w-full text-left px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-gray-200 border-b border-gray-700/50 last:border-b-0"
                               >
-                                {getRoleIcon(getRoleName)} {getRoleName}
+                                {getRoleIcon(getRoleName(role))} {getRoleName(role)}
                               </button>
                             )}
                           </For>
@@ -304,9 +323,14 @@ export default function academy() {
                 </div>
               </Show>
             </div>
-            <button class="px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50">
+            <a
+              href="https://discord.gg/3SP3kdu3gJ"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50 text-center inline-block"
+            >
               Candidater au Staff
-            </button>
+            </a>
           </div>
         </div>
       </div>
