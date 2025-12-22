@@ -64,11 +64,17 @@ export default function academy() {
   onMount(async () => {
     setMounted(true);
     if (pb) {
-      // Vérifier le rôle admin/dev
+      // Vérifier le rôle Admin/Dev
       const check = () => {
-        const rec = pb.authStore.record;
-        const r = rec?.role ?? rec?.Rank ?? rec?.rank;
-        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'dev'));
+        const rec = pb.authStore.record as any;
+        // Priorité à Rank (règle serveur): 'Admin' ou 'Dev'
+        const serverRank = rec?.Rank as string | undefined;
+        const isAdminOrDevServer = serverRank === 'Admin' || serverRank === 'Dev';
+        // Fallback client (role/rank en minuscules)
+        const r = rec?.role ?? rec?.rank;
+        const roleLc = r ? String(r).toLowerCase() : '';
+        const isAdminOrDevClient = roleLc === 'admin' || roleLc === 'dev';
+        setIsAdminOrDev(!!rec && (isAdminOrDevServer || isAdminOrDevClient));
       };
       check();
       pb.authStore.onChange(() => check());

@@ -75,15 +75,17 @@ export default function News() {
       const checkPermissions = () => {
         const isValid = pb.authStore.isValid;
         const record = pb.authStore.record;
-        // Le champ Rank/role peut être nommé différemment selon l'instance PocketBase
-        const userRoleRaw = (record?.role ?? record?.Rank ?? record?.rank) as string | undefined;
-        const userRole = userRoleRaw ? String(userRoleRaw).trim() : undefined;
-        const userRoleLc = userRole ? userRole.toLowerCase() : undefined;
-        const allowedRoles = ['dev', 'admin', 'staff']; // Rôles autorisés (comparaison case-insensitive)
+        // Règle serveur: Rank doit être "Admin" ou "dev"
+        const serverRank = (record?.Rank as string | undefined) || undefined;
+        const canByServerRule = serverRank === 'Admin' || serverRank === 'Dev';
+        // Fallback client: role/rank (minuscules) pour prévisualisation/dev
+        const userRoleRaw = (record?.role ?? record?.rank) as string | undefined;
+        const userRoleLc = userRoleRaw ? String(userRoleRaw).trim().toLowerCase() : undefined;
+        const canByClientRole = userRoleLc ? ['admin', 'dev', 'staff'].includes(userRoleLc) : false;
 
-        // Certains tokens peuvent être invalidés mais le record est toujours présent (cas codespaces / prévisualisation) : on autorise si record présent et rôle ok
+        // Autorisé si authentifié ET (règle serveur satisfaite OU fallback client permis)
         const isAuthed = isValid || !!record;
-        const hasAuthorizedRank = isAuthed && userRoleLc ? allowedRoles.includes(userRoleLc) : false;
+        const hasAuthorizedRank = isAuthed && (canByServerRule || canByClientRole);
         
         setCanAddNews(!!hasAuthorizedRank);
       };

@@ -33,9 +33,15 @@ const NewsItem: Component<NewsItemProps> = (props) => {
     setMounted(true);
     if (pb) {
       const check = () => {
-        const rec = pb.authStore.record;
-        const r = rec?.role ?? rec?.Rank ?? rec?.rank;
-        setIsAdminOrDev(!!r && (r === 'Admin' || r === 'Dev'));
+        const rec = pb.authStore.record as any;
+        // Priorité à la règle serveur (Rank)
+        const serverRank = rec?.Rank as string | undefined;
+        const isAdminOrDevServer = serverRank === 'Admin' || serverRank === 'Dev';
+        // Fallback client pour dev/prévisualisation
+        const r = rec?.role ?? rec?.rank;
+        const roleLc = r ? String(r).toLowerCase() : '';
+        const isAdminOrDevClient = roleLc === 'admin' || roleLc === 'dev';
+        setIsAdminOrDev(!!rec && (isAdminOrDevServer || isAdminOrDevClient));
       };
       check();
       const unsub = pb.authStore.onChange(() => check());
