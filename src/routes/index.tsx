@@ -4,7 +4,9 @@ import { A } from "@solidjs/router";
 import MainLogo from "../components/MainLogo";
 import NewsCarousel from "../components/NewsCarousel";
 import Taglines from "../components/Taglines";
+import StatsCards from "../components/StatsCards";
 import { fetchLatestNews } from "../tools/fetchnews";
+import { fetchUserCount } from "../tools/fetchstats";
 import { usePocketBase } from "../app";
 import type { NewsItemData } from "../components/NewsItem";
 import "../app.css";
@@ -15,6 +17,7 @@ export default function Home() {
   const [isLoadingNews, setIsLoadingNews] = createSignal(true);
   const [currentNewsIndex, setCurrentNewsIndex] = createSignal(0);
   const [layout, setLayout] = createSignal<'classic' | 'split'>('classic');
+  const [userCount, setUserCount] = createSignal<number | undefined>(undefined);
 
   // Charger les dernières news via utilitaire (client-only)
   createEffect(async () => {
@@ -31,27 +34,17 @@ export default function Home() {
     }
   });
 
-  // Composant Stats Cards réutilisable
-  const StatsCards = () => (
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto relative z-10">
-      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-        <div class="text-3xl font-black text-yellow-400 mb-1">100%</div>
-        <div class="text-sm text-gray-400 font-medium">Engagement</div>
-      </div>
-      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-        <div class="text-3xl font-black text-yellow-400 mb-1">24/7</div>
-        <div class="text-sm text-gray-400 font-medium">Actif</div>
-      </div>
-      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-        <div class="text-3xl font-black text-yellow-400 mb-1">∞</div>
-        <div class="text-sm text-gray-400 font-medium">Potentiel</div>
-      </div>
-      <div class="bg-linear-to-br from-yellow-400/10 to-yellow-600/5 border border-yellow-400/30 rounded-xl p-4 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-        <div class="text-3xl font-black text-yellow-400 mb-1">1</div>
-        <div class="text-sm text-gray-400 font-medium">Membre</div>
-      </div>
-    </div>
-  );
+  // Charger le nombre d'utilisateurs (client-only)
+  createEffect(async () => {
+    const client = pb;
+    if (!client) return;
+    try {
+      const count = await fetchUserCount(client);
+      setUserCount(count);
+    } catch (error) {
+      console.error("Error loading user count:", error);
+    }
+  });
 
   // Composant CTA réutilisable
   const CTASection = () => (
@@ -119,7 +112,7 @@ export default function Home() {
               <MainLogo />
             </div>
             <Taglines />
-            <StatsCards />
+            <StatsCards memberCount={userCount()} />
           </div>
         </section>
 
@@ -179,7 +172,7 @@ export default function Home() {
 
             {/* Stats sous les actualités */}
             <div>
-              <StatsCards />
+              <StatsCards memberCount={userCount()} />
             </div>
           </div>
         </section>
