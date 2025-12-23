@@ -158,23 +158,14 @@ export default function Home() {
                 <div class="absolute inset-0 bg-linear-to-t from-gray-900/95 via-gray-900/70 to-gray-900/40"></div>
                 
                 {/* Contenu avec positioning au-dessus du background */}
-                <div class={`absolute inset-0 ${props.compact ? "p-6" : "p-8 md:p-12"} flex flex-col justify-end`}>
-                  <Show when={normalizeTags(news).length > 0}>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                      <For each={normalizeTags(news).slice(0, 3)}>
-                        {(tag) => (
-                          <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">{tag}</span>
-                        )}
-                      </For>
-                    </div>
-                  </Show>
-                  <h3 class={props.compact ? "text-2xl md:text-3xl font-black text-white mb-3 leading-tight" : "text-3xl md:text-5xl font-black text-white mb-4 leading-tight"} style="font-family: 'Varsity', serif;">{news.title}</h3>
+                <div class={`absolute inset-0 ${props.compact ? "p-4 sm:p-6" : "p-4 sm:p-6 md:p-10"} flex flex-col justify-end`}>
+                  <h3 class={props.compact ? "text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 sm:mb-3 leading-tight" : "text-2xl sm:text-3xl md:text-5xl font-black text-white mb-3 sm:mb-4 leading-tight"} style="font-family: 'Varsity', serif;">{news.title}</h3>
                   <Show when={news.headlines || news.excerpt} fallback={
                     <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed italic" : "text-xl text-gray-300 mb-6 leading-relaxed italic"}>
                       [Aucun résumé disponible]
                     </p>
                   }>
-                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed" : "text-xl text-gray-300 mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
+                    <p class={props.compact ? "text-base sm:text-lg text-gray-300 mb-3 sm:mb-4 leading-relaxed" : "text-lg sm:text-xl text-gray-300 mb-4 sm:mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
                   </Show>
                   <div class="flex flex-col items-center justify-center gap-2">
                     <time class="text-sm text-gray-300">{formatDate(news.created)}</time>
