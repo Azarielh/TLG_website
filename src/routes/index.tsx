@@ -255,6 +255,7 @@ export default function Home() {
           aria-label="Layout Classique"
         >
           Classique
+          
         </button>
         <button 
           onClick={() => setLayout('split')}
