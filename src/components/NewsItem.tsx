@@ -24,6 +24,7 @@ interface NewsItemProps {
 const NewsItem: Component<NewsItemProps> = (props) => {
   const pb = usePocketBase();
   const [menuOpen, setMenuOpen] = createSignal(false);
+  let menuContainerRef: HTMLDivElement | undefined;
 
   // Vérifier si l'utilisateur a le rôle Admin/Dev pour afficher le bouton (reactif)
   const [isAdminOrDev, setIsAdminOrDev] = createSignal(false);
@@ -47,6 +48,18 @@ const NewsItem: Component<NewsItemProps> = (props) => {
       const unsub = pb.authStore.onChange(() => check());
       // cleanup non nécessaire ici (component persistent) — acceptable pour small app
     }
+
+    // Fermer le menu si on clique en dehors
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuOpen() && menuContainerRef && !menuContainerRef.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   });
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -111,7 +124,7 @@ const NewsItem: Component<NewsItemProps> = (props) => {
       
       {/* Admin menu button - position absolue en haut à droite */}
       <Show when={mounted() && isAdminOrDev()}>
-        <div class="absolute top-4 right-4 z-20">
+        <div ref={menuContainerRef} class="absolute top-4 right-4 z-20">
           <button
             onClick={() => setMenuOpen(!menuOpen())}
             aria-label="Actions"
