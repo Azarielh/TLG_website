@@ -3,6 +3,7 @@ import { createSignal, createEffect, For, Show, onMount } from "solid-js";
 import { A } from "@solidjs/router";
 import MainLogo from "../components/MainLogo";
 import NewsCarousel from "../components/NewsCarousel";
+import Taglines from "../components/Taglines";
 import { fetchLatestNews } from "../tools/fetchnews";
 import { usePocketBase } from "../app";
 import type { NewsItemData } from "../components/NewsItem";
@@ -14,22 +15,6 @@ export default function Home() {
   const [isLoadingNews, setIsLoadingNews] = createSignal(true);
   const [currentNewsIndex, setCurrentNewsIndex] = createSignal(0);
   const [layout, setLayout] = createSignal<'classic' | 'split'>('classic');
-  
-  // Taglines dynamiques
-  const taglines = [
-    "Nous construisons notre légende",
-    "Une team, une passion, une victoire",
-    "Champions aujourd'hui, légendes demain"
-  ];
-  const [currentTagline, setCurrentTagline] = createSignal(0);
-
-  // Rotation des taglines
-  onMount(() => {
-    const taglineInterval = setInterval(() => {
-      setCurrentTagline((prev) => (prev + 1) % taglines.length);
-    }, 4000);
-    return () => clearInterval(taglineInterval);
-  });
 
   // Charger les dernières news via utilitaire (client-only)
   createEffect(async () => {
@@ -65,25 +50,6 @@ export default function Home() {
         <div class="text-3xl font-black text-yellow-400 mb-1">1</div>
         <div class="text-sm text-gray-400 font-medium">Membre</div>
       </div>
-    </div>
-  );
-
-  // Composant Taglines réutilisable
-  const Taglines = () => (
-    <div class="relative mb-10 overflow-visible z-99 min-h-16">
-      <For each={taglines}>
-        {(tagline, index) => (
-          <p 
-            class="absolute inset-x-0 flex items-center justify-center text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-yellow-400 via-yellow-200 to-yellow-400 transition-all duration-1000 z-99 py-2"
-            style={{
-              opacity: currentTagline() === index() ? 1 : 0,
-              transform: currentTagline() === index() ? 'translateY(0)' : 'translateY(20px)'
-            }}
-          >
-            {tagline}
-          </p>
-        )}
-      </For>
     </div>
   );
 
