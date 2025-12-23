@@ -2,6 +2,8 @@ import { Title } from "@solidjs/meta";
 import { createSignal, createEffect, For, Show, onMount } from "solid-js";
 import { A } from "@solidjs/router";
 import MainLogo from "../components/MainLogo";
+import NewsCarousel from "../components/NewsCarousel";
+import { fetchLatestNews } from "../tools/fetchnews";
 import { usePocketBase } from "../app";
 import type { NewsItemData } from "../components/NewsItem";
 import "../app.css";
@@ -29,47 +31,20 @@ export default function Home() {
     return () => clearInterval(taglineInterval);
   });
 
-  // Charger les dernières news
+  // Charger les dernières news via utilitaire (client-only)
   createEffect(async () => {
-    if (!pb) return;
+    const client = pb;
+    if (!client) return;
     try {
-      const records = await pb.collection("News").getList(1, 3, {
-        sort: "-created",
-        filter: 'content != ""',
-        expand: 'tags',
-      });
-      setLatestNews(records.items as unknown as NewsItemData[]);
+      setIsLoadingNews(true);
+      const items = await fetchLatestNews(client, { perPage: 3 });
+      setLatestNews(items);
     } catch (error) {
       console.error("Error loading latest news:", error);
     } finally {
       setIsLoadingNews(false);
     }
   });
-
-  // Auto-rotation du carrousel
-  createEffect(() => {
-    if (latestNews().length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentNewsIndex((prev) => (prev + 1) % latestNews().length);
-    }, 6000);
-    return () => clearInterval(interval);
-  });
-
-  const formatDate = (dateString: string) => {
-    return new Intl.DateTimeFormat('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    }).format(new Date(dateString));
-  };
-
-  const normalizeTags = (news: any): string[] => {
-    const raw = (news?.tags ?? (news?.expand && news.expand.tags) ?? []) as any[];
-    if (!raw) return [];
-    return raw
-      .map((t) => (typeof t === 'string' ? t : t?.name ?? t?.title ?? t?.id ?? ''))
-      .filter(Boolean);
-  };
 
   // Composant Stats Cards réutilisable
   const StatsCards = () => (
@@ -110,103 +85,6 @@ export default function Home() {
         )}
       </For>
     </div>
-  );
-
-  // Helper pour construire URL image PocketBase
-  const getCarouselImageUrl = (news: any) => {
-    if (news.image && news.collectionName && news.id) {
-      const pbUrl = 'https://pocketbase-z88kow4kk8cow80ogcskoo08.caesarovich.xyz';
-      return `${pbUrl}/api/files/${news.collectionName}/${news.id}/${news.image}`;
-    }
-    return null;
-  };
-
-  // Composant Carrousel News réutilisable
-  const NewsCarousel = (props: { compact?: boolean }) => (
-    <Show when={!isLoadingNews() && latestNews().length > 0} fallback={
-      <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-12 text-center">
-        <Show when={isLoadingNews()}>
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-          <p class="text-gray-400">Chargement des actualités...</p>
-        </Show>
-        <Show when={!isLoadingNews() && latestNews().length === 0}>
-          <p class="text-gray-400">Aucune actualité pour le moment.</p>
-        </Show>
-      </div>
-    }>
-      <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl border border-gray-700/50 shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex items-center justify-center">
-          <For each={latestNews()}>
-            {(news, index) => {
-              const imageUrl = getCarouselImageUrl(news);
-              return (
-              <A href="/news" class="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out cursor-pointer" style={{
-                display: currentNewsIndex() === index() ? 'block' : 'none',
-                opacity: currentNewsIndex() === index() ? 1 : 0
-              }}>
-                {/* Background image */}
-                <Show when={imageUrl}>
-                  <img 
-                    src={imageUrl!} 
-                    alt={news.title}
-                    class="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </Show>
-
-                {/* Overlay gradient pour la lisibilité */}
-                <div class="absolute inset-0 bg-linear-to-t from-gray-900/95 via-gray-900/70 to-gray-900/40"></div>
-                
-                {/* Contenu avec positioning au-dessus du background */}
-                <div class={`absolute inset-0 ${props.compact ? "p-4 sm:p-6" : "p-4 sm:p-6 md:p-10"} flex flex-col justify-end`}>
-                  <h3 class={props.compact ? "text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 sm:mb-3 leading-tight" : "text-2xl sm:text-3xl md:text-5xl font-black text-white mb-3 sm:mb-4 leading-tight"} style="font-family: 'Varsity', serif;">{news.title}</h3>
-                  <Show when={news.headlines || news.excerpt} fallback={
-                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed italic" : "text-xl text-gray-300 mb-6 leading-relaxed italic"}>
-                      [Aucun résumé disponible]
-                    </p>
-                  }>
-                    <p class={props.compact ? "text-base sm:text-lg text-gray-300 mb-3 sm:mb-4 leading-relaxed" : "text-lg sm:text-xl text-gray-300 mb-4 sm:mb-6 leading-relaxed"}>{news.headlines || news.excerpt}</p>
-                  </Show>
-                  <div class="flex flex-col items-center justify-center gap-2">
-                    <time class="text-sm text-gray-300">{formatDate(news.created)}</time>
-
-                    {/* Indicateurs intégrés au bloc pour la version compact (layout split) */}
-                    <Show when={props.compact && latestNews().length > 1}>
-                      <div class="flex justify-center gap-2">
-                        <For each={latestNews()}>
-                          {(_, idx) => (
-                            <button
-                              onClick={() => setCurrentNewsIndex(idx())}
-                              class="transition-all duration-300"
-                              aria-label={`Aller à la news ${idx() + 1}`}
-                            >
-                              <div class={`h-2 rounded-full transition-all duration-300 ${currentNewsIndex() === idx() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-400 hover:bg-gray-300'}`} />
-                            </button>
-                          )}
-                        </For>
-                      </div>
-                    </Show>
-                  </div>
-                </div>
-              </A>
-            );
-            }}
-          </For>
-        </div>
-
-        <Show when={!props.compact && latestNews().length > 1}>
-          <div class="flex justify-center gap-2">
-            <For each={latestNews()}>
-              {(_, index) => (
-                <button onClick={() => setCurrentNewsIndex(index())} class="transition-all duration-300" aria-label={`Aller à la news ${index() + 1}`}>
-                  <div class={`h-2 rounded-full transition-all duration-300 ${currentNewsIndex() === index() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-600 hover:bg-gray-500'}`} />
-                </button>
-              )}
-            </For>
-          </div>
-        </Show>
-      </div>
-    </Show>
   );
 
   // Composant CTA réutilisable
@@ -283,7 +161,12 @@ export default function Home() {
           <h2 class="text-3xl md:text-4xl font-black text-white mb-8" style="font-family: 'Varsity', serif;">
             <span class="text-yellow-400">⚡</span> Dernières Actualités
           </h2>
-          <NewsCarousel />
+          <NewsCarousel 
+            news={latestNews()} 
+            isLoading={isLoadingNews()} 
+            currentIndex={currentNewsIndex()} 
+            onIndexChange={setCurrentNewsIndex}
+          />
         </section>
 
         <CTASection />
@@ -318,7 +201,13 @@ export default function Home() {
 
               {/* Colonne droite - Carrousel */}
               <div class="mt-2 md:mt-4">
-                <NewsCarousel compact={true} />
+                <NewsCarousel 
+                  news={latestNews()} 
+                  isLoading={isLoadingNews()} 
+                  currentIndex={currentNewsIndex()} 
+                  onIndexChange={setCurrentNewsIndex}
+                  compact={true}
+                />
               </div>
             </div>
 
