@@ -95,9 +95,11 @@ export const RoleSchema = z.object({
   collectionName: z.string(),
   created: z.string(),
   description: z.string(),
+  icon: z.string(),
   id: z.string(),
   list: z.string(),
   name: z.string(),
+  recrutable: z.boolean(),
   updated: z.string(),
 });
 
@@ -131,13 +133,4 @@ export const NewsExpandSchema = z.object({
 
 export const NewsWithExpandSchema = NewsSchema.extend({
   expand: NewsExpandSchema.optional(),
-});
-
-
-export const recrutementExpandSchema = z.object({
-  name: z.lazy(() => RoleSchema).optional(),
-});
-
-export const recrutementWithExpandSchema = recrutementSchema.extend({
-  expand: recrutementExpandSchema.optional(),
 });

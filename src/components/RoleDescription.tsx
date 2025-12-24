@@ -11,6 +11,7 @@ interface RoleDescriptionProps {
 const RoleDescription: Component<RoleDescriptionProps> = (props) => {
   const pb = usePocketBase();
   const [description, setDescription] = createSignal("");
+  const [icon, setIcon] = createSignal("");
   const [isLoading, setIsLoading] = createSignal(false);
   const [error, setError] = createSignal("");
 
@@ -26,7 +27,7 @@ const RoleDescription: Component<RoleDescriptionProps> = (props) => {
       
       // Rechercher le rang par la propriété "name" qui correspond au rôle
       // Utiliser des simples quotes dans le filtre
-      const records = await pb.collection("Rank").getFullList({
+      const records = await pb.collection("Role").getFullList({
         filter: `name = '${roleName}'`,
         requestKey: null, // Désactiver l'auto-annulation
       });
@@ -37,6 +38,14 @@ const RoleDescription: Component<RoleDescriptionProps> = (props) => {
         const roleData = records[0] as any;
         console.log('✅ Role data:', roleData);
         console.log('📝 Description:', roleData.description);
+        console.log('🎨 Icon:', roleData.icon);
+        
+        // Stocker l'icône depuis la DB
+        if (roleData.icon) {
+          setIcon(roleData.icon);
+        } else {
+          setIcon("📋"); // Icône par défaut
+        }
         
         // Utiliser un placeholder si la description est vide
         if (roleData.description && roleData.description.trim() !== "") {
@@ -46,6 +55,7 @@ const RoleDescription: Component<RoleDescriptionProps> = (props) => {
         }
       } else {
         console.warn('⚠️ No role found with name:', roleName);
+        setIcon("📋");
         setDescription("Aucune description trouvée pour ce rôle.");
       }
     } catch (err: any) {
@@ -86,11 +96,7 @@ const RoleDescription: Component<RoleDescriptionProps> = (props) => {
             <div class="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-center">
               <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/30">
-                  <span class="text-2xl">
-                    {props.roleName === "Artiste" ? "🎨" : 
-                     props.roleName === "Créateur de contenu" ? "🎥" : 
-                     props.roleName === "Coach" ? "🎓" : "📋"}
-                  </span>
+                  <span class="text-2xl">{icon()}</span>
                 </div>
                 <h2 class="text-2xl font-bold text-white">{props.roleName}</h2>
               </div>

@@ -69,16 +69,8 @@ export default function academy() {
   const availableRoles = () => allRoles().filter(role => !displayedRoleIds().includes(role.id));
   const hasMoreRoles = () => availableRoles().length > 0;
 
-  const getRoleIcon = (roleName: string) => {
-    const iconMap: Record<string, string> = {
-      "Artiste": "🎨",
-      "Créateur de contenu": "🎥",
-      "Coach": "🎓",
-      "Community Manager": "💬",
-      "Analyste": "📊",
-      "Développeur": "💻"
-    };
-    return iconMap[roleName] || "📋";
+  const getRoleIcon = (role: RankRecord) => {
+    return role.icon || "📋";
   };
 
   onMount(async () => {
@@ -197,7 +189,7 @@ export default function academy() {
             </div>
 
             <a href="https://discord.gg/3SP3kdu3gJ" target="_blank" rel="noopener noreferrer" class="mt-8 w-full block px-6 py-3 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl text-black font-bold transition-all duration-300 hover:scale-105 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/50 text-center">
-              Postuler au Roster
+              Postuler en tant que Pro Player
             </a>
           </div>
 
@@ -258,7 +250,7 @@ export default function academy() {
                         "scale-90 opacity-60": hoveredRole() !== null && hoveredRole() !== getRoleName(role)
                       }}
                     >
-                      {getRoleIcon(getRoleName(role))} {getRoleName(role)}
+                      {getRoleIcon(role)} {getRoleName(role)}
                     </button>
                     
                     {/* Bouton de suppression pour admin/dev */}
@@ -312,7 +304,7 @@ export default function academy() {
                                 onClick={() => addRole(role.id)}
                                 class="w-full text-left px-4 py-3 hover:bg-gray-700 transition-colors duration-200 text-gray-200 border-b border-gray-700/50 last:border-b-0"
                               >
-                                {getRoleIcon(getRoleName(role))} {getRoleName(role)}
+                              {getRoleIcon(role)} {getRoleName(role)}
                               </button>
                             )}
                           </For>
