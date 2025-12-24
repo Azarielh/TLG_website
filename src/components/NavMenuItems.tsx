@@ -64,6 +64,12 @@ export const menuItems = [
     status: "🚧 En production",
   },
   {
+    id: "partenariat",
+    href: "/partenariat",
+    label: "Partenaires",
+    status: "Qui nous soutient",
+  },
+  {
     id: "academy",
     href: "/",
     label: "Académie",

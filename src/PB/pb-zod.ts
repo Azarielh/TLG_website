@@ -99,7 +99,7 @@ export const RoleSchema = z.object({
   id: z.string(),
   list: z.string(),
   name: z.string(),
-  recrutable: z.boolean(),
+  staff: z.boolean(),
   updated: z.string(),
 });
 
@@ -125,6 +125,8 @@ export const GamesSchema = z.object({
   updated: z.string(),
   winrate: z.number(),
 });
+
+// Skipped Partners (no records)
 
 
 export const NewsExpandSchema = z.object({
