@@ -34,7 +34,7 @@ export default function Partenariat() {
 
   const getLogoUrl = (partner: Partner) => {
     if (!partner.logo || !pb) return "";
-    return `${pb.baseUrl}/api/files/Partner/${partner.id}/${partner.logo}`;
+    return `${pb.baseUrl}/api/files/Partners/${partner.id}/${partner.logo}?download=false`;
   };
 
   return (
@@ -141,32 +141,41 @@ export default function Partenariat() {
                     href={partner.website || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-xl p-6 backdrop-blur-sm shadow-lg hover:shadow-xl hover:border-yellow-400/50 transition-all duration-300 group flex flex-col items-center justify-center gap-4"
+                    class="bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-xl backdrop-blur-sm shadow-lg hover:shadow-xl hover:border-yellow-400/50 transition-all duration-300 group flex flex-col h-full"
                   >
-                    <Show
-                      when={partner.logo}
-                      fallback={
-                        <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center">
-                          <span class="text-4xl">🎮</span>
+                    {/* Top section: Logo + Titre avec padding */}
+                    <div class="p-6 flex flex-col items-center gap-4">
+                      <Show
+                        when={partner.logo}
+                        fallback={
+                          <div class="h-24 w-24 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center">
+                            <span class="text-4xl">🎮</span>
+                          </div>
+                        }
+                      >
+                        <div class="h-24 flex items-center justify-center">
+                          <img
+                            src={getLogoUrl(partner)}
+                            alt={partner.name}
+                            class="max-h-24 max-w-full object-contain group-hover:scale-110 transition-transform duration-300"
+                          />
                         </div>
-                      }
-                    >
-                      <img
-                        src={getLogoUrl(partner)}
-                        alt={partner.name}
-                        class="max-h-24 max-w-full object-contain group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </Show>
-                    <div class="text-center">
-                      <h3 class="font-bold text-white group-hover:text-yellow-400 transition-colors duration-300">
-                        {partner.name}
-                      </h3>
-                      <Show when={partner.category}>
-                        <p class="text-sm text-gray-400">{partner.category}</p>
                       </Show>
+                      <div class="text-center">
+                        <h3 class="font-bold text-white group-hover:text-yellow-400 transition-colors duration-300">
+                          {partner.name}
+                        </h3>
+                        <Show when={partner.category}>
+                          <p class="text-sm text-gray-400">{partner.category}</p>
+                        </Show>
+                      </div>
                     </div>
+
+                    {/* Bottom section: Description centrée verticalement */}
                     <Show when={partner.description}>
-                      <p class="text-xs text-gray-400 text-center">{partner.description}</p>
+                      <div class="flex-grow p-6 flex items-center justify-center">
+                        <p class="text-xs text-gray-400 text-center">{partner.description}</p>
+                      </div>
                     </Show>
                   </a>
                 )}
