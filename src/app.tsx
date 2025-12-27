@@ -5,7 +5,6 @@ import { Suspense, createContext, useContext, createEffect } from "solid-js";
 import PocketBase from "pocketbase";
 import NavMain from "./components/NavMain";
 import Following from "./components/following";
-import PagePanel from "./components/pagepanel";
 import EshopButton from "./components/eshop_button";
 import BuildInProgress from "./components/buildinprogress";
 import "./app.css";
@@ -69,11 +68,9 @@ export default function App() {
         <PocketBaseProvider>
           <MetaProvider>
             <Title>TLG Website</Title>
-            <PagePanel overlayOpacity={0.8}>
               <NavMain />
               <Suspense>{props.children}</Suspense>
               <BuildInProgress />
-            </PagePanel>
             <Following />
           </MetaProvider>
         </PocketBaseProvider>

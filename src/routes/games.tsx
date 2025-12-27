@@ -121,7 +121,7 @@ const GAME_LOGOS: Record<string, string> = {
 };
 
 const GAME_BACKGROUNDS: Record<string, { src: string; position?: string; size?: string }> = {
-  "cs:go": { src: "/cs:go_bg.jpg" },
+  "cs:go": { src: "/games/game_bg/cs:go_bg.jpg" },
   "delta force": { src: "/deltaforce.jpg" },
   "fc25": { src: "/fc25.jpg", position: "60% center" },
   "fc 25": { src: "/fc25.jpg", position: "60% center" },

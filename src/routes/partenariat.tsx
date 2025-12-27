@@ -42,16 +42,6 @@ export default function Partenariat() {
       <Title>Partenariat - TLG</Title>
 
       <div class="w-full max-w-6xl">
-        {/* Header */}
-        <div class="text-center mb-16">
-          <h1 class="text-4xl sm:text-6xl font-black mb-4 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
-            Nos Partenaires
-          </h1>
-          <p class="text-gray-400 text-lg sm:text-xl max-w-3xl mx-auto">
-            Merci à nos partenaires de confiance qui contribuent au succès de The Legion
-          </p>
-        </div>
-
         {/* Section présentation */}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Offre Sponsoring */}

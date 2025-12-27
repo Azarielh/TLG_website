@@ -87,10 +87,10 @@ export default function Nav() {
   return (
     <>
       <nav class="fixed top-0 left-0 w-full min-h-14 z-60 bg-linear-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
-        <div class="w-[min(1200px,96%)] mx-auto flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4">
+        <div class="w-full flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4 px-4 md:px-6">
 
           {/* Left side: Mobile menu button + Logo */}
-          <div class="flex items-center gap-2 md:gap-3">
+          <div class="flex items-center gap-2 md:gap-3 shrink-0">
             {/* Mobile menu button */}
             <button
               class="lg:hidden text-cyan-400 px-3 py-2 rounded-lg bg-linear-to-br from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-cyan-400/30 hover:border-cyan-400/60 font-semibold transition-all shadow-[0_0_10px_rgba(34,211,238,0.3)] text-xl"
@@ -116,11 +116,13 @@ export default function Nav() {
               </div>
           </div>
 
-          {/* Desktop menu */}
-          <DesktopMenu />
+          {/* Desktop menu - centered */}
+          <div class="flex-1 flex justify-center">
+            <DesktopMenu />
+          </div>
 
           {/* Right side elements container */}
-          <div class="flex items-center gap-2 md:gap-3">
+          <div class="flex items-center gap-2 md:gap-3 shrink-0">
 
             {/* Eshop button - hidden on mobile when compact */}
             <Show when={isCompact()}>

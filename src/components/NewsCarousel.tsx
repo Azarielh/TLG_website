@@ -48,7 +48,7 @@ const NewsCarousel: Component<NewsCarouselProps> = (props) => {
       </div>
     }>
       <div class="relative">
-        <div class="relative overflow-hidden rounded-2xl border border-gray-700/50 shadow-2xl mb-6 min-h-[180px] md:min-h-[210px] flex items-center justify-center">
+        <div class="relative overflow-hidden rounded-2xl border border-gray-700/50 shadow-2xl mb-6 w-[95vw] mx-auto min-h-[300px] md:min-h-[350px]">
           <For each={props.news}>
             {(news, index) => {
               const imageUrl = getCarouselImageUrl(news);
@@ -57,51 +57,68 @@ const NewsCarousel: Component<NewsCarouselProps> = (props) => {
                 display: props.currentIndex === index() ? 'block' : 'none',
                 opacity: props.currentIndex === index() ? 1 : 0
               }}>
-                {/* Background image */}
-                <Show when={imageUrl}>
-                  <img 
-                    src={imageUrl!} 
-                    alt={news.title}
-                    class="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </Show>
-
-                {/* Overlay gradient pour la lisibilité */}
-                <div class="absolute inset-0 bg-linear-to-t from-gray-900/95 via-gray-900/70 to-gray-900/40"></div>
-                
-                {/* Contenu avec positioning au-dessus du background */}
-                <div class={`absolute inset-0 ${props.compact ? "p-4 sm:p-6" : "p-4 sm:p-6 md:p-10"} flex flex-col justify-end`}>
-                  <h3 class={props.compact ? "text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 sm:mb-3 leading-tight" : "text-2xl sm:text-3xl md:text-5xl font-black text-white mb-3 sm:mb-4 leading-tight"} style="font-family: 'Varsity', serif;">{news.title}</h3>
-                  <Show when={news.headlines} fallback={
-                    <p class={props.compact ? "text-lg text-gray-300 mb-4 leading-relaxed italic" : "text-xl text-gray-300 mb-6 leading-relaxed italic"}>
-                      [Aucun résumé disponible]
-                    </p>
-                  }>
-                    <p class={props.compact ? "text-base sm:text-lg text-gray-300 mb-3 sm:mb-4 leading-relaxed" : "text-lg sm:text-xl text-gray-300 mb-4 sm:mb-6 leading-relaxed"}>{news.headlines}</p>
+                {/* Layout: Image 100% en arrière-plan, partie gauche en overlay */}
+                <div class="w-full h-full relative">
+                  {/* Background image 100% */}
+                  <Show when={imageUrl}>
+                    <img 
+                      src={imageUrl!} 
+                      alt={news.title}
+                      class="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </Show>
-                  <div class="flex flex-col items-center justify-center gap-2">
-                    <time class="text-sm text-gray-300">{formatDate(news.created)}</time>
 
-                    {/* Indicateurs intégrés au bloc pour la version compact (layout split) */}
-                    <Show when={props.compact && props.news.length > 1}>
-                      <div class="flex justify-center gap-2">
-                        <For each={props.news}>
-                          {(_, idx) => (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                props.onIndexChange(idx());
-                              }}
-                              class="transition-all duration-300"
-                              aria-label={`Aller à la news ${idx() + 1}`}
-                            >
-                              <div class={`h-2 rounded-full transition-all duration-300 ${props.currentIndex === idx() ? 'w-8 bg-yellow-400' : 'w-2 bg-gray-400 hover:bg-gray-300'}`} />
-                            </button>
-                          )}
+                  {/* Overlay gradient pour la lisibilité globale */}
+                  <div class="absolute inset-0 bg-linear-to-r from-gray-900/90 via-gray-900/50 to-transparent z-0"></div>
+                  
+                  {/* Partie gauche: 20% - Titre, Author, Date - overlay translucide */}
+                  <div class="absolute left-0 top-0 h-full w-1/5 bg-gray-900/80 p-6 flex flex-col justify-between relative z-10">
+                    <div>
+                      <h3 class="text-xl font-black text-white mb-4 leading-tight line-clamp-5 break-keep hyphens-none" style="font-family: 'Varsity', serif;">
+                        {news.title}
+                      </h3>
+                      
+                      {/* Ligne de séparation */}
+                      <div class="border-b border-gray-600 mb-4"></div>
+                      
+                      {/* Auteur */}
+                      <Show when={news.author}>
+                        <p class="text-sm text-gray-300 font-medium">Par {news.author}</p>
+                      </Show>
+                    </div>
+                    
+                    {/* Tags - centré verticalement */}
+                    <Show when={news.tags && news.tags.length > 0}>
+                      <div class="flex flex-wrap gap-2 justify-center items-center content-center">
+                        <For each={news.tags}>
+                          {(tag: any) => {
+                            console.log('Tag object:', JSON.stringify(tag, null, 2));
+                            const tagName = tag?.name || tag?.title || (typeof tag === 'string' ? tag : 'Unknown');
+                            return (
+                              <span class="inline-block px-2 py-1 text-xs bg-yellow-400/20 text-yellow-300 border border-yellow-400/50 rounded">
+                                {tagName}
+                              </span>
+                            );
+                          }}
                         </For>
                       </div>
+                    </Show>
+                    
+                    {/* Date en bas */}
+                    <time class="text-sm text-gray-400">{formatDate(news.created)}</time>
+                  </div>
+
+                  {/* Partie droite: 80% - Headlines */}
+                  <div class="absolute right-0 top-0 h-full w-4/5 p-6 md:p-8 flex flex-col justify-end items-start z-20 bg-gradient-to-l from-black/60 to-transparent">
+                    <Show when={news.headlines && news.headlines.trim()} fallback={
+                      <p class="text-lg text-gray-400 leading-relaxed italic">
+                        [Aucun résumé disponible]
+                      </p>
+                    }>
+                      <p class="text-base md:text-lg text-white leading-relaxed font-medium drop-shadow-2xl max-w-2xl text-left">
+                        {news.headlines}
+                      </p>
                     </Show>
                   </div>
                 </div>
@@ -111,8 +128,9 @@ const NewsCarousel: Component<NewsCarouselProps> = (props) => {
           </For>
         </div>
 
-        <Show when={!props.compact && props.news.length > 1}>
-          <div class="flex justify-center gap-2">
+        {/* Indicateurs de navigation */}
+        <Show when={props.news.length > 1}>
+          <div class="flex justify-center gap-2 mt-6">
             <For each={props.news}>
               {(_, index) => (
                 <button onClick={() => props.onIndexChange(index())} class="transition-all duration-300" aria-label={`Aller à la news ${index() + 1}`}>

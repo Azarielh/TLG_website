@@ -34,12 +34,15 @@ export async function fetchLatestNews(
 
     // Normalise les enregistrements vers NewsItemData et harmonise video_url
     const items = res.items.map((rec: any) => {
+      // Les données expandues sont dans rec.expand.tags (PocketBase expand pattern)
+      const expandedTags = rec.expand?.tags || rec.tags || [];
+      
       const item: NewsItemData = {
         id: rec.id,
         title: rec.title,
         headlines: rec.headlines,
         content: rec.content,
-        tags: Array.isArray(rec.tags) ? rec.tags : [],
+        tags: Array.isArray(expandedTags) ? expandedTags : [],
         created: rec.created,
         updated: rec.updated,
         author: rec.author,
