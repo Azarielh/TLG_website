@@ -127,9 +127,10 @@ const RoleDescription: Component<RoleDescriptionProps> = (props) => {
                 <div class="space-y-6">
                   <div>
                     <h3 class="text-xl font-bold text-yellow-400 mb-3">Description du rôle</h3>
-                    <p class="text-gray-300 text-lg leading-relaxed whitespace-pre-wrap">
-                      {description()}
-                    </p>
+                    <div 
+                      class="text-gray-300 text-lg leading-relaxed"
+                      innerHTML={description()}
+                    />
                   </div>
 
                   <div class="border-t border-gray-700 pt-6">
