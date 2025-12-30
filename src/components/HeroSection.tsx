@@ -1,6 +1,7 @@
 import MainLogo from "./MainLogo";
 import Taglines from "./Taglines";
 import StatsCards from "./StatsCards";
+import PartnersFloating from "./PartnersFloating";
 
 interface HeroSectionProps {
   memberCount?: number;
@@ -17,6 +18,9 @@ export default function HeroSection(props: HeroSectionProps) {
           class="w-full h-full object-cover opacity-20"
         />
       </div>
+      
+      {/* Partenaires flottants */}
+      <PartnersFloating />
       
       {/* Contenu */}
       <div class="relative z-10 max-w-7xl mx-auto text-center pt-12 pb-12">

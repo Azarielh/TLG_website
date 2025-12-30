@@ -71,7 +71,7 @@ export const menuItems = [
   },
   {
     id: "academy",
-    href: "/",
+    href: "",
     label: "Académie",
     status: "Section à venir",
   },
