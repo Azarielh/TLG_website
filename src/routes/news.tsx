@@ -2,6 +2,7 @@ import { Title } from "@solidjs/meta";
 import { createSignal, createMemo, For, Show, createEffect, onMount, onCleanup } from "solid-js";
 import NewsItem, { type NewsItemData } from "../components/NewsItem";
 import AddNewsModal from "../components/AddNewsModal";
+import NewsCarousel from "../components/NewsCarousel";
 import { usePocketBase } from "../app";
 
 type SortOption = "recent" | "oldest";
@@ -17,6 +18,7 @@ export default function News() {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [editNews, setEditNews] = createSignal<NewsItemData | null>(null);
   const [canAddNews, setCanAddNews] = createSignal(false); // Client-only pour éviter hydration mismatch
+  const [currentNewsIndex, setCurrentNewsIndex] = createSignal(0);
 
   // Fonction pour charger/recharger les news
   const loadNews = async () => {
@@ -33,7 +35,16 @@ export default function News() {
         expand: 'tags',
       });
       
-      setNewsItems(records as unknown as NewsItemData[]);
+      // Transformer les records pour extraire les tags expandus
+      const transformedRecords = records.map((rec: any) => {
+        const expandedTags = rec.expand?.tags || rec.tags || [];
+        return {
+          ...rec,
+          tags: Array.isArray(expandedTags) ? expandedTags : [],
+        };
+      });
+      
+      setNewsItems(transformedRecords as unknown as NewsItemData[]);
     } catch (error) {
       console.error("❌ Error loading news:", error);
       setNewsItems([]);
@@ -187,6 +198,11 @@ export default function News() {
     return result;
   });
 
+  // Dernières news pour le carrousel
+  const latestNews = createMemo(() => {
+    return filteredAndSortedNews().slice(0, 5);
+  });
+
   const handleNewsAdded = () => {
     loadNews();
   };
@@ -196,7 +212,7 @@ export default function News() {
       <Title>News - TLG</Title>
 
       {/* En-tête amélioré avec gradient */}
-      <div class="w-full max-w-4xl mb-12">
+      <div class="w-[95vw] mx-auto mb-12">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
           <div class="text-center sm:text-left">
             <h1 class="text-4xl sm:text-6xl font-black mb-3 bg-linear-to-r from-white via-yellow-200 to-yellow-400 bg-clip-text text-transparent" style="font-family: 'Varsity', serif;">
@@ -206,7 +222,6 @@ export default function News() {
               Restez informé de toutes nos actualités
             </p>
           </div>
-          
           {/* Bouton visible uniquement si connecté ET avec un Rank */}
           <Show when={canAddNews()}>
             <button
@@ -222,7 +237,7 @@ export default function News() {
         </div>
 
         {/* Filtres et tri améliorés */}
-        <div class="flex flex-wrap items-center gap-3 bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-5 backdrop-blur-sm shadow-xl">
+        <div class="flex flex-wrap items-center gap-3 bg-linear-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-5 backdrop-blur-sm shadow-xl mb-8">
           {/* Label avec icône */}
           <span class="flex items-center gap-2 text-gray-400 text-sm font-bold">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,10 +304,20 @@ export default function News() {
             </span>
           </div>
         </div>
+
+        {/* Carrousel centré */}
+        <div class="flex justify-center mb-8">
+          <NewsCarousel
+            news={latestNews()} 
+            isLoading={isLoading()} 
+            currentIndex={currentNewsIndex()} 
+            onIndexChange={setCurrentNewsIndex}
+          />
+        </div>
       </div>
 
       {/* Liste des news */}
-      <div class="w-full max-w-4xl">
+      <div class="w-[95vw] mx-auto">
         <Show
           when={!isLoading()}
           fallback={

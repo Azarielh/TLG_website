@@ -93,8 +93,20 @@ const NewsCarousel: Component<NewsCarouselProps> = (props) => {
                       <div class="flex flex-wrap gap-2 justify-center items-center content-center">
                         <For each={news.tags}>
                           {(tag: any) => {
-                            console.log('Tag object:', JSON.stringify(tag, null, 2));
-                            const tagName = tag?.name || tag?.title || (typeof tag === 'string' ? tag : 'Unknown');
+                            // Extraire le nom du tag, peu importe le format
+                            let tagName = '';
+                            if (typeof tag === 'string') {
+                              tagName = tag;
+                            } else if (tag?.name) {
+                              tagName = tag.name;
+                            } else if (tag?.title) {
+                              tagName = tag.title;
+                            } else if (tag?.id) {
+                              // Fallback à l'ID si rien d'autre n'est disponible
+                              tagName = tag.id;
+                            } else {
+                              tagName = String(tag);
+                            }
                             return (
                               <span class="inline-block px-2 py-1 text-xs bg-yellow-400/20 text-yellow-300 border border-yellow-400/50 rounded">
                                 {tagName}
@@ -146,3 +158,4 @@ const NewsCarousel: Component<NewsCarouselProps> = (props) => {
 };
 
 export default NewsCarousel;
+
