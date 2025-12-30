@@ -121,16 +121,16 @@ const GAME_LOGOS: Record<string, string> = {
 };
 
 const GAME_BACKGROUNDS: Record<string, { src: string; position?: string; size?: string }> = {
-  "cs:go": { src: "/games/game_bg/cs:go_bg.jpg" },
-  "delta force": { src: "/deltaforce.jpg" },
-  "fc25": { src: "/fc25.jpg", position: "60% center" },
-  "fc 25": { src: "/fc25.jpg", position: "60% center" },
-  "valorant": { src: "/valorant.jpg" },
-  "league of legends": { src: "/lol.webp" },
-  "teamfight tactics": { src: "/tft.avif" },
-  "rocket league": { src: "/rocketleague.jpg" },
-  "fortnite": { src: "/fortnite.webp" },
-  "roblox": { src: "/roblox.jpg" },
+  "cs:go": { src: "/games/bg/csgo_bg.jpg" },
+  "delta force": { src: "/games/bg/deltaforce.jpg" },
+  "fc25": { src: "/games/bg/fc25.jpg", position: "60% center" },
+  "fc 25": { src: "/games/bg/fc25.jpg", position: "60% center" },
+  "valorant": { src: "/games/bg/valorant.jpg" },
+  "league of legends": { src: "/games/bg/lol.webp" },
+  "teamfight tactics": { src: "/games/bg/tft.avif" },
+  "rocket league": { src: "/games/bg/rocketleague.jpg" },
+  "fortnite": { src: "/games/bg/fortnite.webp" },
+  "roblox": { src: "/games/bg/roblox.jpg" },
 };
 
 export default function Games() {
