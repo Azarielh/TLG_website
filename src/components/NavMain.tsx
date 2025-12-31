@@ -86,8 +86,8 @@ export default function Nav() {
 
   return (
     <>
-      <nav class="fixed top-0 left-0 w-full min-h-14 z-60 bg-linear-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-visible" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
-        <div class="w-full flex items-center justify-between py-2 md:py-3 gap-2 md:gap-4 px-4 md:px-6">
+      <nav class="fixed top-0 left-0 w-full min-h-14 z-60 bg-linear-to-b from-[rgba(6,6,8,0.75)] to-[rgba(6,6,8,0.55)] backdrop-blur-md border-b border-transparent shadow-[0_1px_0_0_rgba(34,211,238,0.15),0_4px_20px_-2px_rgba(147,51,234,0.3)] overflow-hidden" style="border-image: linear-gradient(to right, rgba(34,211,238,0.3), rgba(59,130,246,0.3), rgba(147,51,234,0.3)) 1;">
+        <div class="w-full flex items-center justify-between py-0 gap-2 md:gap-4 px-4 md:px-6">
 
           {/* Left side: Mobile menu button + Logo */}
           <div class="flex items-center gap-2 md:gap-3 shrink-0">
@@ -124,12 +124,8 @@ export default function Nav() {
           {/* Right side elements container */}
           <div class="flex items-center gap-2 md:gap-3 shrink-0">
 
-            {/* Eshop button - hidden on mobile when compact */}
-            <Show when={isCompact()}>
-              <div class="hidden xs:block">
-                <EshopButton logoSrc="eshop_logo.svg" sizePx={80} class="shrink-0" />
-              </div>
-            </Show>
+            {/* Eshop button - integrated in navbar */}
+            <EshopButton logoSrc="/eshop_logo.svg" sizePx={80} class="shrink-0 overflow-hidden" />
             
             {/* Auth button / User Avatar */}
             <Show 
@@ -235,11 +231,7 @@ export default function Nav() {
             </div>
           </Show>
         </div>
-      </Show>
-      
-      <Show when={!isCompact()}>
-        <EshopButton logoSrc="eshop_logo.svg" />
-      </Show>
+      </Show> 
     </>
   );
 }
