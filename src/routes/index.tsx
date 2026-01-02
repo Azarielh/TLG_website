@@ -45,7 +45,7 @@ export default function Home() {
   });
 
   return (
-    <main id="home" class="relative z-10 flex flex-col items-center justify-start pt-20 pb-32 px-4 sm:px-6 min-h-screen">
+    <main id="home" class="pt-20 pb-32 px-4">
       <Title>TLG: The Legion - E-sport Excellence</Title>
 
       <HeroSection memberCount={userCount()} />

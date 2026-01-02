@@ -79,11 +79,19 @@ const PartnersFloating: Component = () => {
   const getLogoPosition = () => {
     const prog = progress();
     
-    // Mouvement vertical simple: de bas en haut
-    // Commence au bord supérieur des taglines (~250px) et disparait plus haut (~50px)
-    const startY = 250;
-    const endY = 50;
-    const y = startY - (prog * (startY - endY)); // Remonte de 250 à 50
+    // Adaptation dynamique en fonction de la hauteur du viewport
+    // Sur petits écrans, les logos stats sont plus bas, donc on ajuste
+    const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    
+    // Hauteur approximative du header + logo + taglines
+    // Varie selon la taille de l'écran
+    const contentHeight = viewportHeight > 768 ? 350 : (viewportHeight > 640 ? 300 : 250);
+    
+    // Mouvement vertical: de bas en haut
+    // Commence après le contenu et disparait en haut
+    const startY = contentHeight;
+    const endY = -100; // Disparait au-dessus
+    const y = startY - (prog * (startY - endY));
     
     // Opacité: reste à 1 jusqu'à 85% de l'animation, puis disparait lentement
     const opacity = prog < 0.85 ? 1 : Math.max(0, 1 - (prog - 0.85) / 0.15);
