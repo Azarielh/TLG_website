@@ -1,4 +1,5 @@
-import { Component, JSX } from "solid-js";
+import { Component, JSX, createSignal } from "solid-js";
+import { Portal } from "solid-js/web";
 
 type Placement = "top" | "bottom" | "left" | "right";
 
@@ -26,6 +27,8 @@ const arrowPosMap: Record<Placement, string> = {
 
 const SessionStatus: Component<Props> = (props) => {
   const placement = props.placement ?? "top";
+  const [isHovered, setIsHovered] = createSignal(false);
+  let triggerRef: HTMLDivElement | undefined;
 
   const renderIcon = () => {
     if (!props.icon) return null;
@@ -35,23 +38,63 @@ const SessionStatus: Component<Props> = (props) => {
     return props.icon as JSX.Element;
   };
 
+  const getPosition = () => {
+    if (!triggerRef) return {};
+    const rect = triggerRef.getBoundingClientRect();
+    const positions: Record<Placement, any> = {
+      top: {
+        left: `${rect.left + rect.width / 2}px`,
+        top: `${rect.top - 8}px`,
+        transform: "translateX(-50%) translateY(-100%)",
+      },
+      bottom: {
+        left: `${rect.left + rect.width / 2}px`,
+        top: `${rect.bottom + 8}px`,
+        transform: "translateX(-50%)",
+      },
+      left: {
+        left: `${rect.left - 8}px`,
+        top: `${rect.top + rect.height / 2}px`,
+        transform: "translateY(-50%) translateX(-100%)",
+      },
+      right: {
+        left: `${rect.right + 8}px`,
+        top: `${rect.top + rect.height / 2}px`,
+        transform: "translateY(-50%)",
+      },
+    };
+    return positions[placement];
+  };
+
   return (
-    <div class={`group inline-block relative ${props.class ?? ""}`}>
+    <div 
+      class={`inline-block relative ${props.class ?? ""}`} 
+      ref={triggerRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {props.children}
 
-      <div
-        class={`absolute ${placementMap[placement]} z-80 opacity-0 pointer-events-none group-hover:opacity-100 transform transition-all duration-150 ease-out`}
-        aria-hidden="true"
-      >
-        <div class="flex items-center gap-2 bg-[#16862ed9] mt-4 text-white text-sm px-3 py-1 rounded-full shadow-md backdrop-blur-sm">
-          {renderIcon()}
-          <span class="whitespace-nowrap">{props.text}</span>
-        </div>
-
+      <Portal>
         <div
-          class={`absolute w-3 h-3 bg-[#16862ed9] mt-4 rotate-45 ${arrowPosMap[placement]} shadow-md`}
-        />
-      </div>
+          class={`fixed z-[9999] opacity-0 pointer-events-none transition-all duration-150 ease-out ${isHovered() ? 'opacity-100' : ''}`}
+          aria-hidden="true"
+          style={{
+            left: getPosition().left,
+            top: getPosition().top,
+            transform: getPosition().transform,
+          }}
+        >
+          <div class="flex items-center gap-2 bg-[#16862ed9] mt-4 text-white text-sm px-3 py-1 rounded-full shadow-md backdrop-blur-sm">
+            {renderIcon()}
+            <span class="whitespace-nowrap">{props.text}</span>
+          </div>
+
+          <div
+            class={`absolute w-3 h-3 bg-[#16862ed9] rotate-45 shadow-md ${arrowPosMap[placement]}`}
+          />
+        </div>
+      </Portal>
     </div>
   );
 };
